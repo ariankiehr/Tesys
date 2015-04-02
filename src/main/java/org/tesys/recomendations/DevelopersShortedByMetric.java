@@ -38,7 +38,8 @@ public class DevelopersShortedByMetric {
 		for (Developer d : devs) {
 			DeveloperWithOneAcumMetric dwm = new DeveloperWithOneAcumMetric(d.getName(), null);
 			for (Issue i : d.getIssues()) {
-				Double val = i.getMetrics().get(m.getKey());
+				
+				Double val = m.evaluate(i);
 				if( val != null) {
 					if( dwm.getMetric() == null ) {
 						dwm.setMetric(val);
