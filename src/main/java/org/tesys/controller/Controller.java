@@ -36,6 +36,8 @@ import org.tesys.core.project.scm.SCMManager;
 import org.tesys.core.project.scm.ScmPostCommitDataPOJO;
 import org.tesys.core.project.scm.ScmPreCommitDataPOJO;
 import org.tesys.core.project.tracking.IssueTypePOJO;
+import org.tesys.recomendations.DeveloperWithOneAcumMetric;
+import org.tesys.recomendations.DevelopersShortedByMetric;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -427,5 +429,37 @@ public class Controller {
 
 		return response.build();
 	}
+	
+	
+	public static void main(String[] args) {
+		Controller c = new Controller();
+		
+		c.getDevelopersShortedByMetric("lines");
+	}
+	
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/getDevShortedMetric")
+	public Response getDevelopersShortedByMetric(@PathParam("metric") String metricKey) {
+		
+		ResponseBuilder response;
+		
+		//Verificar que existe
+		MetricDao dao = new MetricDao();
+		Metric m = dao.read(metricKey);
+		if( m == null ) {
+			response = Response.ok("{\"error\":\"metric doesn't exist\"}");
+		}
+		
+		DevelopersShortedByMetric d = new DevelopersShortedByMetric(m);
+		
+		for (DeveloperWithOneAcumMetric i : d.getDevelopersShortedByMetric()) {
+			System.out.println(i.getDeveloper() + " " + i.getMetric());
+		}
+		
+		response = Response.ok( d.getDevelopersShortedByMetric() );
+		return response.build();
+	}
+
 
 }
