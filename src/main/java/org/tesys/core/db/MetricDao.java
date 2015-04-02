@@ -49,9 +49,10 @@ public class MetricDao extends ElasticsearchDao<Metric> {
 	    JsonNode json = client.GET(
 		    UriBuilder.fromPath(resource).path(id).path(SOURCE)
 			    .toString()).readEntity(JsonNode.class);
-	    return factory.getMetric(json);
+	    Metric m = factory.getMetric(json);
+	    return m;
 	} catch (Exception e) {
-	    LOG.log(Level.SEVERE, e.toString(), e);
+	    //LOG.log(Level.SEVERE, e.toString(), e);
 	    return null;
 	}
     }
