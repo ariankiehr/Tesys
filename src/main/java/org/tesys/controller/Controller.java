@@ -1,6 +1,7 @@
 package org.tesys.controller;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -36,8 +37,8 @@ import org.tesys.core.project.scm.SCMManager;
 import org.tesys.core.project.scm.ScmPostCommitDataPOJO;
 import org.tesys.core.project.scm.ScmPreCommitDataPOJO;
 import org.tesys.core.project.tracking.IssueTypePOJO;
-import org.tesys.recomendations.DeveloperWithOneAcumMetric;
 import org.tesys.recomendations.DevelopersShortedByMetric;
+import org.tesys.recomendations.DevelopersShortedBySkills;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -431,33 +432,63 @@ public class Controller {
 	}
 	
 	
-	public static void main(String[] args) {
-		Controller c = new Controller();
-		
-		c.getDevelopersShortedByMetric("lines");
-	}
-	
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	@Path("/getDevShortedMetric")
+	@Path("/getdevmetric/{metric}")
 	public Response getDevelopersShortedByMetric(@PathParam("metric") String metricKey) {
 		
 		ResponseBuilder response;
 		
 		//Verificar que existe
 		MetricDao dao = new MetricDao();
-		Metric m = dao.read(metricKey);
+		Metric m;
+		try {
+			m = dao.read(metricKey);
+		} catch (Exception e) {
+			response = Response.ok("{\"error\":\"metric doesn't exist\"}");
+			return response.build();
+		}
+
 		if( m == null ) {
 			response = Response.ok("{\"error\":\"metric doesn't exist\"}");
+			return response.build();
 		}
 		
 		DevelopersShortedByMetric d = new DevelopersShortedByMetric(m);
 		
-		for (DeveloperWithOneAcumMetric i : d.getDevelopersShortedByMetric()) {
-			System.out.println(i.getDeveloper() + " " + i.getMetric());
+		response = Response.ok( d.getDevelopersShortedByMetric() );
+		return response.build();
+	}
+	
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/getdevskill/{skills}")
+	public Response getDevelopersShortedBySkills(@PathParam("skills") String skills) {
+		
+		ResponseBuilder response;
+		
+		//se espera o un skill o varios separados por &
+		//de la forma: localhost:8080/getdevskill/java&c++
+		
+		//se verifica que todos esten
+		List<String> lskills = Arrays.asList(skills.split("&"));
+		
+		ElasticsearchDao<SkillIndicator> dao = new ElasticsearchDao<SkillIndicator>(
+				SkillIndicator.class, ElasticsearchDao.DEFAULT_RESOURCE_SKILL);
+		
+		for (String id : lskills) {
+			
+			
+			if ( dao.search("{\"query\": { \"term\": {\"skillName\":  \"server\" }}}").isEmpty() ) {
+				response = Response.ok("{\"error\":\"skill "+ id +" doesn't exist\"}");
+				return response.build();
+			}
 		}
 		
-		response = Response.ok( d.getDevelopersShortedByMetric() );
+		DevelopersShortedBySkills d = new DevelopersShortedBySkills(lskills);
+
+		response = Response.ok( d.getDevelopersShortedBySkills() );
+
 		return response.build();
 	}
 

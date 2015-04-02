@@ -26,9 +26,18 @@ public class MetricFactory {
     
   }
   
-  public Metric getMetric(JsonNode jsonFormat) {
+  public Metric getMetric(JsonNode jsonFormat) throws NullPointerException {
      
-      IValue v = getValue(jsonFormat.get("value"));
+	  IValue v;
+      try{
+    	  if(jsonFormat!=null && jsonFormat.get("value") != null) {
+    		  v = getValue(jsonFormat.get("value"));
+    	  } else {
+    		  throw new NullPointerException();
+    	  }
+      } catch(Exception e) {
+    	  throw e;
+      }
       
       return new Metric(jsonFormat.get("key").asText(), 
                         jsonFormat.get("nombre").asText(),
