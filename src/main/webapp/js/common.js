@@ -3,9 +3,9 @@ requirejs.config({
   paths: {
     'jquery': 'libs/jquery-1.7.1.min',
     'extractor': 'elasticsearch/extractor',
-    'handlers': 'handlers',
+    'handlers': 'apps/handlers/hindex',
     'handlers.config': 'apps/handlers/hconfig',
-    'app': 'app-index',
+    'app': 'apps/app-index',
     'app.config': 'apps/app-config',
     'adaptor': 'charts/chartAdaptor',
     'bar': 'charts/barPlotter',
