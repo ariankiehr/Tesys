@@ -1,4 +1,4 @@
-define(["jquery", "extractor", "parser"], function($, extractor, Parser) {
+define(["jquery", "extractor"], function($, extractor) {
 	
 	/* Main function */
   var start = function() {
