@@ -8,53 +8,24 @@
 
     <div id="content">
     
-    
-    <script src="js/libs/jquery-1.7.1.min.js"></script> 
-    <script src="js/parser.js"></script>
-    <script>
-      $(document).ready(function () {
-        $("button").click(function () {
-          try {
-            var result = parser.parse($("input[name=fo]").val());
-            
-            var tosend = "{\"key\": \"" + $("input[name=id]").val() + "\"," +
-            			  "\"nombre\": \"" + $("input[name=no]").val() + "\"," +
-            			  "\"descripcion\": \"" + $("input[name=de]").val() + "\"," +
-            			  "\"procedencia\": \"" + $("input[name=po]").val() + "\"," +
-            			   result + "}"			   
-	
-    		$.ajax({
-            url: 'http://localhost:8080/tesys/rest/controller/newmetric',
-            type: 'post',
-            dataType: 'json',
-            contentType: "application/json; charset=utf-8",
-            success: function (data) {
-            	markers = JSON.stringify(data);
-           		$("span").html(markers);
-            },
-            data: tosend
-       		});
-    			
-            
-            
-          } catch (e) {
-            $("span").html(String(e));
-          }
-        });
-      });
-    </script>
+    <script data-main="js/boot-config.js" src="js/libs/require.js"></script>
+
     <h1>Complex Metrics</h1>
     <p>
-    	Identificador
-    	<input type="text" size=100 name="id" /><br>
+    	Identificador 
+      <input type="text" size=100 name="id" /><br>
     	Nombre
     	<input type="text" size=100 name="no"/><br>
     	Descripcion
     	<input type="text" size=100 name="de"/><br>
     	Procedencia
     	<input type="text" size=100 name="po"/><br>
+      <select id="metrics"></select> 
+      <button type="button" id="btnAddMetric">>></button>
     	Funcion
-      	<input type="text" size=100 name="fo" /><br> <button>Send</button> <br><span></span>
+      <input type="text" size=100 name="fo" id="functionEdit"/><br> 
+      <button type="button" id="send">Send</button> <br>
+      <span id="span"></span>
     </p>
 
     </div>
