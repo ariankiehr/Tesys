@@ -36,9 +36,15 @@ import org.tesys.core.estructures.Puntuacion;
 import org.tesys.core.project.scm.SCMManager;
 import org.tesys.core.project.scm.ScmPostCommitDataPOJO;
 import org.tesys.core.project.scm.ScmPreCommitDataPOJO;
+import org.tesys.core.project.tracking.IssuePOJO;
 import org.tesys.core.project.tracking.IssueTypePOJO;
+import org.tesys.core.project.tracking.ProjectTrackingRESTClient;
+import org.tesys.recomendations.DeveloperWithOneAcumMetric;
+import org.tesys.recomendations.DevelopersCriteriaIssues;
 import org.tesys.recomendations.DevelopersShortedByMetric;
 import org.tesys.recomendations.DevelopersShortedBySkills;
+import org.tesys.recomendations.IssueSimilarity;
+import org.tesys.recomendations.IssuesaAlike;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -466,7 +472,6 @@ public class Controller {
 	public Response getDevelopersShortedBySkills(@PathParam("skills") String skills) {
 		
 		ResponseBuilder response;
-		
 		//se espera o un skill o varios separados por &
 		//de la forma: localhost:8080/getdevskill/java&c++
 		
@@ -478,7 +483,6 @@ public class Controller {
 		
 		for (String id : lskills) {
 			
-			
 			if ( dao.search("{\"query\": { \"term\": {\"skillName\":  \"server\" }}}").isEmpty() ) {
 				response = Response.ok("{\"error\":\"skill "+ id +" doesn't exist\"}");
 				return response.build();
@@ -488,6 +492,51 @@ public class Controller {
 		DevelopersShortedBySkills d = new DevelopersShortedBySkills(lskills);
 
 		response = Response.ok( d.getDevelopersShortedBySkills() );
+
+		return response.build();
+	}
+	
+	
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/getdevtask/{task}/{criteria}")
+	public Response getRecomendedDevelopersForTask(@PathParam("task") String task,
+													@PathParam("criteria") String criteria) {
+		
+		ResponseBuilder response;
+
+		//transformo el issue key a el issue que exista en el jira con esa key
+		ProjectTrackingRESTClient pt = new ProjectTrackingRESTClient();
+		IssuePOJO ip = (IssuePOJO) pt.getIssue(task);
+		
+		if( ip == null ) {
+			response = Response.ok("{\"error\":\"task "+ task +" doesn't exist\"}");
+			return response.build();
+		}
+		
+		//conseguir metrica
+		//Verificar que existe
+		MetricDao dao = new MetricDao();
+		Metric m;
+		try {
+			m = dao.read(criteria);
+		} catch (Exception e) {
+			response = Response.ok("{\"error\":\"metric doesn't exist\"}");
+			return response.build();
+		}
+
+		if( m == null ) {
+			response = Response.ok("{\"error\":\"metric doesn't exist\"}");
+			return response.build();
+		}
+		
+		new IssuesaAlike().getSimilarIssuesTo(ip, new IssueSimilarity());
+		
+		List<DeveloperWithOneAcumMetric> d = 
+				new DevelopersCriteriaIssues().getBestDeveloperIssue(m,
+						new IssuesaAlike().getSimilarIssuesTo(ip, new IssueSimilarity()));
+		
+		response = Response.ok(d);
 
 		return response.build();
 	}
