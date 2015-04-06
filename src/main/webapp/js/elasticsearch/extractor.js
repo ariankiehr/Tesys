@@ -84,6 +84,7 @@ define(["jquery"], function($) {
                         issues.push(data["hits"]["hits"][0]["_source"]["issues"][i]["issueId"]);
                     }
                 }
+                $(htmlOptionsId).empty() ;
                 displayOptions(removeDuplications(issues), htmlOptionsId);
 
             }
