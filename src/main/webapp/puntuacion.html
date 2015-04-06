@@ -1,17 +1,61 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE HTML>
 <html>
   <head>
+    <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+    <meta content="utf-8" http-equiv="encoding">
     <title>Puntuacion de usuarios</title>
   </head>
+
+  <script src="js/libs/require.js"></script>
+  <script>
+  // El script no se modularizo por que la funcionalidad era muy simple.
+  requirejs(["./js/common"], function (common) { 
+    requirejs(['jquery', 'extractor'], function($, extractor) {
+      // inicializo los selects del form
+      extractor.getUsers('#puntuador');
+      extractor.getUsers('#puntuado');
+      extractor.displayOptions([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], '#puntuacion');
+      first = true ;
+      $('#puntuado').on('DOMNodeInserted', function() { 
+        if ( first  ){ 
+          // esto se ejecuta se inserta el primer elemento de #puntuado
+          extractor.getIssuesByUser($('#puntuado').val(), '#issues') ;
+          first = false ;
+        }
+      });
+
+      // este evento queda para cambiar los issues cuando se cambia el puntuado
+      $('#puntuado').on('change', function() {
+          extractor.getIssuesByUser($('#puntuado').val(), '#issues') ;
+      });
+
+      $('#send').click(function(event) {
+        var toSend = "{\"puntuador\": \"" + $('#puntuador').val() + "\"," +
+              "\"puntuado\": \"" + $('#puntuado').val() + "\"," +
+              "\"issue\": \"" + $('#issues').val() + "\"," +
+              "\"puntuacion\": \"" + $('#puntuacion').val() + "\"" +"}";
+        $.ajax({
+            url: 'http://localhost:8080/tesys/rest/controller/punt',
+            type: 'PUT',
+            dataType: 'json',
+            contentType: "application/json; charset=utf-8",
+            data: toSend,
+            success: function (data) {
+              alert("La puntuacion se ha realizado con exito");
+            }
+          });
+       });
+    });
+  });
+  </script>
   <body>
-  
-    <form action="http://localhost:8080/tesys/rest/controller/punt" method="get">
-      Puntuador: <input title="Puntuador" type="text" name="puntuador" /> 
-      Puntuado: <input title="Puntuado" type="text" name="puntuado" /> 
-      Tarea: <input title="Tarea" type="text" name="issue" /> 
-      Puntuacion: <input title="Puntuacion" type="text" name="puntuacion" /> 
-      <button class="sendButton" type="submit">Puntuar</button>
-    </form>
-  
+    <h1>Score</h1>
+    <p>
+      Puntuador: <select id="puntuador"></select> <br>
+      Puntuado: <select id="puntuado"></select> <br>
+      Tarea: <select id="issues"></select> <br>
+      Puntuacion: <select id="puntuacion"></select> <br> 
+      <button id="send" type="button">Puntuar</button>
+    </p>
   </body>
 </html>
