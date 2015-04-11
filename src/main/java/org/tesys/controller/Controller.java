@@ -185,23 +185,21 @@ public class Controller {
     @Path("/issues/{developer}")
     public Response getIssuesByDeveloper(@PathParam("developer") String developer) {
         
-        Integer version = 0; // Or last version
         AnalysisVersionsQuery avq = new AnalysisVersionsQuery();
-        
         List<Long> versiones = avq.execute();
-        
         ElasticsearchDao<Developer> dao;
+        ResponseBuilder response = Response.ok("{\"status\":\"404\"}");
+
         try {
             dao = new ElasticsearchDao<Developer>(
-                    Developer.class, ElasticsearchDao.DEFAULT_RESOURCE_DEVELOPERS + versiones.get(version));
+                    Developer.class, 
+                    ElasticsearchDao.DEFAULT_RESOURCE_DEVELOPERS 
+                        + versiones.get( versiones.size()-1 )); //devuelve la version mas actualizada de los analisis.
         } catch (Exception e) {
-            ResponseBuilder response = Response.ok("{\"status\":\"404\"}");
             return response.build();
         }
         
         List<Developer> developers = dao.readAll();
-        
-        ResponseBuilder response = Response.ok("{\"status\":\"404\"}");
 
         for (Developer d: developers) {
             if (d.getName().equals( developer )) {
