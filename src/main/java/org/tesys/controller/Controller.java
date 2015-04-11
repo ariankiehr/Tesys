@@ -28,6 +28,7 @@ import org.tesys.core.db.AnalysisVersionsQuery;
 import org.tesys.core.db.ElasticsearchDao;
 import org.tesys.core.db.MetricDao;
 import org.tesys.core.estructures.Developer;
+import org.tesys.core.estructures.Issue;
 import org.tesys.core.estructures.Metric;
 import org.tesys.core.estructures.MetricFactory;
 import org.tesys.core.estructures.Puntuacion;
@@ -163,6 +164,7 @@ public class Controller {
 			ResponseBuilder response = Response.ok("{\"status\":\"404\"}");
 			return response.build();
 		}
+		
 		List<Developer> developers = dao.readAll();
 
 		GenericEntity<List<Developer>> entity = new GenericEntity<List<Developer>>(
@@ -173,7 +175,88 @@ public class Controller {
 
 		return response.build();
 
-	}
+	}	
+	
+	/**
+     * Dado un developer, devuelve todos los issues asociados a ese developer.
+     */
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/issues/{developer}")
+    public Response getIssuesByDeveloper(@PathParam("developer") String developer) {
+        
+        Integer version = 0; // Or last version
+        AnalysisVersionsQuery avq = new AnalysisVersionsQuery();
+        
+        List<Long> versiones = avq.execute();
+        
+        ElasticsearchDao<Developer> dao;
+        try {
+            dao = new ElasticsearchDao<Developer>(
+                    Developer.class, ElasticsearchDao.DEFAULT_RESOURCE_DEVELOPERS + versiones.get(version));
+        } catch (Exception e) {
+            ResponseBuilder response = Response.ok("{\"status\":\"404\"}");
+            return response.build();
+        }
+        
+        List<Developer> developers = dao.readAll();
+        
+        ResponseBuilder response = Response.ok("{\"status\":\"404\"}");
+
+        for (Developer d: developers) {
+            if (d.getName().equals( developer )) {
+                List<Issue> issues = d.getIssues();
+                GenericEntity<List<Issue>> entity = new GenericEntity<List<Issue>>(issues) {};
+                response = Response.ok();
+                response.entity(entity);
+            }
+        }
+        return response.build();
+
+    }   
+    
+    
+    /**
+     * Dado un developer, devuelve todos los issues asociados a ese developer.
+     */
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/issue/{developer}/{issue}")
+    public Response getIssue(@PathParam("developer") String developer, @PathParam("issue") String issue) {
+        
+        Integer version = 0; // Or last version
+        AnalysisVersionsQuery avq = new AnalysisVersionsQuery();
+        
+        List<Long> versiones = avq.execute();
+        
+        ElasticsearchDao<Developer> dao;
+        try {
+            dao = new ElasticsearchDao<Developer>(
+                    Developer.class, ElasticsearchDao.DEFAULT_RESOURCE_DEVELOPERS + versiones.get(version));
+        } catch (Exception e) {
+            ResponseBuilder response = Response.ok("{\"status\":\"404\"}");
+            return response.build();
+        }
+        
+        List<Developer> developers = dao.readAll();
+        ResponseBuilder response = Response.ok("{\"status\":\"404\"}");
+
+        for (Developer d: developers) {
+            if (d.getName().equals( developer )) {
+                List<Issue> issues = d.getIssues();
+                for (Issue i: issues) {
+                    if (i.getIssueId().equals(issue) ) {
+                        GenericEntity<Issue> entity = new GenericEntity<Issue>(i) {};
+                        response = Response.ok();
+                        response.entity(entity);
+                    }
+                }
+            }
+        }
+
+        return response.build();
+    }   
+
 
 	/**
 	 * Este metodo devuelve los tipos de metricas que el programa maneja, esto
@@ -181,7 +264,6 @@ public class Controller {
 	 * son por ejemplo lineas de codigo) y las metricas definidas por el usuario
 	 * ( conocidas como compuestas que son convinaciones de simples)
 	 */
-
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/metrics")
@@ -209,6 +291,7 @@ public class Controller {
 		return response.build();
 
 	}
+	
 
 	/**
 	 * Devuleve los tipos de issues que existen en el project tracking, de esta
@@ -307,6 +390,24 @@ public class Controller {
 		return response.build();
 	}
 
+	/**
+     * Este metodo devuelve los tipos de skill que el programa maneja.
+     */
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/skills")
+    public Response getSkills() {
+        
+        ElasticsearchDao<SkillIndicator> dao = new ElasticsearchDao<SkillIndicator>(SkillIndicator.class, ElasticsearchDao.DEFAULT_RESOURCE_SKILL);
+        List<SkillIndicator> SkillIndicator = dao.readAll();
+        GenericEntity<List<SkillIndicator>> entity = new GenericEntity<List<SkillIndicator>>(SkillIndicator) {};
+        
+        ResponseBuilder response = Response.ok();
+        response.entity(entity);
+
+        return response.build();
+    }
+	
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
