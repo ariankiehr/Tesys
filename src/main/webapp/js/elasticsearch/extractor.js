@@ -1,9 +1,7 @@
 define(["jquery"], function($) {
 
     // Register listeners
-
-    var server = "http://localhost:9200/"
-
+    
     function removeDuplications(arr) {
         var uniqueVals = [];
         $.each(arr, function(i, el){
@@ -12,78 +10,62 @@ define(["jquery"], function($) {
         return uniqueVals ;
     }
 
-    /*
-    Get all Metric keys from ES
+    /**
+    * Get all Metric keys from ES
     */
     function getMetrics(htmlOptionsId) {
-        var query =
-            { 
-                "query" : { 
-                    "match_all" : {} 
-                },
-                "fields": []
-            } ;
-
         $.ajax({
-            type: 'POST',
-            url: server + "analyzer/metric/_search?size=200",
+            type: 'GET',
+            url: location+'rest/controller/metrics',
             dataType: "json", // data type of response
-            data: JSON.stringify( query, 2, null ),
             success: function (data) {
 
                 var metricKeys = [];
-                for (i = 0; i < data["hits"]["hits"].length; i++) {
-                    metricKeys.push(data["hits"]["hits"][i]["_id"]); 
+                for (var i = 0; i < data.length; i++) {
+                    metricKeys.push(data[i].key); 
                 } 
                 displayOptions(metricKeys, htmlOptionsId) ;
             }
         });
     }
-
-    /*
-    Get all Skill keys from ES
+    
+    /**
+    * Get all Skill keys from ES
     */
     function getSkills(htmlOptionsId) {
-
         $.ajax({
             type: 'GET',
-            url: server+"analyzer/skills/_search?size=200",
+            url: location+'rest/controller/skills',
             dataType: "json", 
-         
             success: function (data) {
 
                 var skills = [] ;
-                for (i = 0; i < data["hits"]["hits"].length ; i++) {
-                    skills.push(data["hits"]["hits"][i]["_source"]["skillName"]) ;
+                for (var i = 0; i < data.length ; i++) {
+                    skills.push(data[i].skillName) ;
                 }
-
+                $(htmlOptionsId).empty() ;
                 displayOptions(removeDuplications(skills), htmlOptionsId);
 
             }
         });
     }
-
+    
+    /**
+     * Dado un User devuelve todos los issues los cuales se ha desarrollado codigo.
+     * Se supone que un User desarrollo codigo si existe la metrica "lines".
+     */
     function getIssuesByUser(user, htmlOptionsId) {
-        var query = 
-            { "query":  
-              { "bool":  
-                { "must": [ { "match": { "name": user }} ] } 
-              } 
-            };
-
         $.ajax({
-            type: 'POST',
-            url: server+"analysis/_search",
+            type: 'GET',
+            url: location+'rest/controller/issues/'+user,
             dataType: "json", 
-            data: JSON.stringify( query, 2, null ),
-         
             success: function (data) {
                 var issues = [] ;
-                for (i = 0; i < data["hits"]["hits"][0]["_source"]["issues"].length ; i++) {
-                    if ( data["hits"]["hits"][0]["_source"]["issues"][i]["metrics"]["lines"] ) {
-                        issues.push(data["hits"]["hits"][0]["_source"]["issues"][i]["issueId"]);
-                    }
-                }
+                for (var i=0; i<data.length; i++) {
+                	if (data[i].metrics.lines) {
+                        issues.push(data[i].issueId);   
+                	}
+                } 
                 $(htmlOptionsId).empty() ;
                 displayOptions(removeDuplications(issues), htmlOptionsId);
 
@@ -91,104 +73,74 @@ define(["jquery"], function($) {
         });
     }
 
+    /**
+     * Inserta en un Select HTML todos los desarrolladores.
+     */
     function getUsers(htmlOptionsId) {
         $.ajax({
             type: 'GET',
-            url: server + "scm/user/_search?size=200",
+            url: location+'rest/controller/developers/0',
             dataType: "json", // data type of response
             success: function (data) {
-
                 var users = [];
-                for (i = 0; i < data["hits"]["hits"].length; i++) {
-                    users.push(data["hits"]["hits"][i]["_source"]["scmUser"]); 
+                for (var i = 0; i < data.length; i++) {
+                    users.push(data[i].name); 
                 } 
+                $(htmlOptionsId).empty() ;
                 displayOptions(removeDuplications(users), htmlOptionsId) ;
             }
         });
     }
 
+
+    /**
+     * Dado un issue y un user, realiza el grafico de las metricas.
+     * Las metricas graficadas seran un subconjunto del total de metricas.
+     */
+    function plotIssueMetrics(issueKey, user, chart) {
+        $.ajax({
+            type: 'GET',
+            url: location+'rest/controller/issue/'+user+'/'+issueKey,
+            dataType: "json", // data type of response
+            success: function (data) {
+                var metrics = data.metrics ;    
+                var tag = user + "::" + issueKey ;
+                chart.addGraph( tag, metrics) ;
+            }
+        });
+    }
+
+    /**
+     * Dado un issue y un user, realiza el grafico de los skills.
+     * Los skills graficados seran un subconjunto del total de skills.
+     */
+    function plotIssueSkills(issueKey, user, chart) {
+        $.ajax({
+            type: 'GET',
+            url: location+'rest/controller/issue/'+user+'/'+issueKey,
+            dataType: "json", // data type of response
+            success: function (data) {
+                var skills = {} ;
+                for (var i = 0; i<data.skills.length; i++) {
+                    skills[data.skills[i].skillName] = data.skills[i].skillWeight;
+                } 
+                var tag = user + "::" + issueKey ;
+                chart.addGraph(tag, skills) ;
+            }
+        });
+    }
+
+
+    /**
+     * Dado un Select de HTML inserta los elementos del arreglo result como
+     * elementos Options dentro del Select
+     */
     function displayOptions(result, htmlOptionsId) {
         $.each(result, function() {
             $(htmlOptionsId).append( new Option(this,this) );
         });
     }
-
-    function plotIssueMetrics(issueKey, user, chart) {
-     
-        var key = issueKey.split("-"); 
-
-        var query =         
-            { "query": 
-                  { "bool":
-                    { "must": [
-                        { "match": { "issues.issueId": key[0] }},
-                        { "match": { "issues.issueId": key[1] }},
-                        { "match": { "user": user }}                    
-                        ]
-                    }
-                  }
-            } ;
-
-        $.ajax({
-            type: 'POST',
-            url: server+"analysis/_search",
-            dataType: "json", // data type of response
-            data: JSON.stringify( query, 2, null ),
-            success: function (data) {
-                index = 0 ; //TODO deberia ser el ultimo.
-                issues = data["hits"]["hits"][index]["_source"]["issues"] ;
-
-                var metrics ;
-                for (i = 0; i < issues.length; i++) {
-                    if (issues[i]["issueId"] == issueKey) {
-                        metrics = issues[i]["metrics"] ;
-                    } 
-                } 
-                var tag = user + "::" + issueKey ;
-                chart.addGraph( tag, metrics) ;//TODO sacar esto
-            }
-        });
-    }
-
-    function plotIssueSkills(issueKey, user, chart) {
-        var key = issueKey.split("-"); 
-        var query =         
-            { "query": 
-                  { "bool":
-                    { "must": [
-                        { "match": { "issues.issueId": key[0] }},
-                        { "match": { "issues.issueId": key[1] }}
-                        ]
-                    }
-                  }
-            } ;
-
-        $.ajax({
-            type: 'POST',
-            url: server+"analysis/_search",
-            dataType: "json", // data type of response
-            data: JSON.stringify( query, 2, null ),
-            success: function (data) {
-                index = 0 ; //TODO deberia ser el ultimo.
-                issues = data["hits"]["hits"][index]["_source"]["issues"] ;
-                var skills = {} ;
-                for (i = 0; i < issues.length; i++) {
-                    if (issues[i]["issueId"] == issueKey) {
-                        if (issues[i]["skills"] != null) {
-
-                            for( j=0; j < issues[i]["skills"].length; j++ ) {
-                                skills[issues[i]["skills"][j]["skillName"]] =  issues[i]["skills"][j]["skillWeight"] ;
-                            }
-
-                        }
-                    } 
-                } 
-                var tag = user + "::" + issueKey ;
-                chart.addGraph( tag, skills) ;//TODO sacar esto
-            }
-        });
-    }
-
+    
     return { 
         'displayOptions': displayOptions, 
         'getMetrics': getMetrics,
