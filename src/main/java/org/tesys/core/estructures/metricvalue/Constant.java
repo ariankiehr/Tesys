@@ -1,4 +1,6 @@
-package org.tesys.core.estructures;
+package org.tesys.core.estructures.metricvalue;
+
+import org.tesys.core.estructures.Issue;
 
 public class Constant implements IValue {
     private Double value;

@@ -1,20 +1,20 @@
-package org.tesys.core.estructures;
+package org.tesys.core.estructures.metricvalue;
 
-public class Multiplicacion extends CompositeValue {
+import org.tesys.core.estructures.Issue;
 
-    public Multiplicacion(IValue izq, IValue der) {
+public class Suma extends CompositeValue {
+
+    public Suma(IValue izq, IValue der) {
 	super(izq, der);
     }
 
     @Override
     public String toString() {
-	return "{\"Multiplicacion\":[" + izq.toString() + "," + der.toString()
-		+ "]}";
+	return "{\"Suma\":[" + izq.toString() + "," + der.toString() + "]}";
     }
 
     @Override
     public Double evaluate(Issue issue) {
-    	
     	Double i = izq.evaluate(issue);
     	Double d = der.evaluate(issue);
     	
@@ -22,7 +22,7 @@ public class Multiplicacion extends CompositeValue {
     		return null;
     	}
     	
-	return (i * d);
+    	return (i + d);
     }
 
 }

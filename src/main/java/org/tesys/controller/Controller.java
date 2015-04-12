@@ -342,7 +342,7 @@ public class Controller {
 		Metric m;
 		try {
 			m = mf.getMetric(metric);
-		} catch (IOException e) {
+		} catch (Exception e) {
 			ResponseBuilder response = Response.ok("{\"status\":\"500\"}");
 			return response.build();
 		}
