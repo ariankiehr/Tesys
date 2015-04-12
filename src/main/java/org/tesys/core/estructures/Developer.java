@@ -47,6 +47,10 @@ public class Developer {
     public Date getTimestamp() {
         return timestamp;
     }
+    
+    public void addIssue(Issue i) {
+    	this.issues.add(i);
+    }
 
     public void setTimestamp(Date timestamp) {
         this.timestamp = timestamp;

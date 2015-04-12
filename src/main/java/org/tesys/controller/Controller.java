@@ -39,12 +39,12 @@ import org.tesys.core.project.scm.ScmPreCommitDataPOJO;
 import org.tesys.core.project.tracking.IssuePOJO;
 import org.tesys.core.project.tracking.IssueTypePOJO;
 import org.tesys.core.project.tracking.ProjectTrackingRESTClient;
-import org.tesys.recomendations.DeveloperWithOneAcumMetric;
 import org.tesys.recomendations.DevelopersCriteriaIssues;
 import org.tesys.recomendations.DevelopersShortedByMetric;
 import org.tesys.recomendations.DevelopersShortedBySkills;
 import org.tesys.recomendations.IssueSimilarity;
 import org.tesys.recomendations.IssuesaAlike;
+import org.tesys.recomendations.RecomendedDeveloper;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -533,11 +533,10 @@ public class Controller {
 			return response.build();
 		}
 		
-		new IssuesaAlike().getSimilarIssuesTo(ip, new IssueSimilarity());
+		List<Developer> l = new IssuesaAlike().getSimilarIssuesTo(ip, new IssueSimilarity());
 		
-		List<DeveloperWithOneAcumMetric> d = 
-				new DevelopersCriteriaIssues().getBestDeveloperIssue(m,
-						new IssuesaAlike().getSimilarIssuesTo(ip, new IssueSimilarity()));
+		
+		List<RecomendedDeveloper> d = new DevelopersCriteriaIssues().getBestDeveloperIssue(m, l, ip);
 		
 		response = Response.ok(d);
 
