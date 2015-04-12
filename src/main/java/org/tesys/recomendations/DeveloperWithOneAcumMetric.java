@@ -41,6 +41,7 @@ public class DeveloperWithOneAcumMetric implements Comparable<DeveloperWithOneAc
 		this.metric = metric;
 	}
 
+
 	@Override
 	public int compareTo(DeveloperWithOneAcumMetric d) {
 		if ( this.metric == null && d.metric == null ) {
@@ -56,7 +57,11 @@ public class DeveloperWithOneAcumMetric implements Comparable<DeveloperWithOneAc
 		if( this.metric < d.metric ) {
 			return 1;
 		}
-		return -1;
+		if( this.metric > d.metric ) {
+			return -11;
+		}
+		
+		return 0;
 	}
 	
 }
