@@ -44,7 +44,7 @@ public class DevelopersShortedByMetric {
 					if( dwm.getMetric() == null ) {
 						dwm.setMetric(val);
 					} else {
-						dwm.setMetric( dwm.getMetric() + val);
+						dwm.setMetric( m.getType().add( dwm.getMetric() , val));
 					}
 				}
 			}

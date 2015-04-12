@@ -82,7 +82,7 @@ public class MetricFactory {
 				IValue v2 = getValue(j.get(1));
 				try {
 					return (IValue) Class.forName(
-							"org.tesys.core.estructures."
+							"org.tesys.core.estructures.metricvalue."
 									+ json.fieldNames().next().toString())
 							.getConstructors()[0].newInstance(v1, v2);
 				} catch (Exception e) {
@@ -92,7 +92,7 @@ public class MetricFactory {
 				// hoja
 				try {
 					return (IValue) Class.forName(
-							"org.tesys.core.estructures."
+							"org.tesys.core.estructures.metricvalue."
 									+ json.fieldNames().next().toString())
 							.getConstructors()[0].newInstance(json.elements()
 							.next().asText());

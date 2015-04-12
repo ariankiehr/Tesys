@@ -337,6 +337,7 @@ public class Controller {
 	@Path("/newmetric")
 	public Response addMetric(String metric) {
 		
+
 		
 		MetricFactory mf = new MetricFactory();
 		Metric m;
@@ -346,6 +347,8 @@ public class Controller {
 			ResponseBuilder response = Response.ok("{\"status\":\"500\"}");
 			return response.build();
 		}
+		
+
 
 		MetricDao dao = new MetricDao();
 
