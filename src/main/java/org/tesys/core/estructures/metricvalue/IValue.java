@@ -1,4 +1,6 @@
-package org.tesys.core.estructures;
+package org.tesys.core.estructures.metricvalue;
+
+import org.tesys.core.estructures.Issue;
 
 /**
  * Ivalue es un decorate que se utiliza para poder obtener un valor numerico de

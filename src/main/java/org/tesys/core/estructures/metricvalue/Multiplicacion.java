@@ -1,14 +1,17 @@
-package org.tesys.core.estructures;
+package org.tesys.core.estructures.metricvalue;
 
-public class Division extends CompositeValue {
+import org.tesys.core.estructures.Issue;
 
-    public Division(IValue izq, IValue der) {
+public class Multiplicacion extends CompositeValue {
+
+    public Multiplicacion(IValue izq, IValue der) {
 	super(izq, der);
     }
 
     @Override
     public String toString() {
-	return "{\"Division\":[" + izq.toString() + "," + der.toString() + "]}";
+	return "{\"Multiplicacion\":[" + izq.toString() + "," + der.toString()
+		+ "]}";
     }
 
     @Override
@@ -21,11 +24,7 @@ public class Division extends CompositeValue {
     		return null;
     	}
     	
-    	if( d == 0.0 ){
-    		d = d + 0.1;
-    	}
-    	
-    	return (i / d);
+	return (i * d);
     }
 
 }

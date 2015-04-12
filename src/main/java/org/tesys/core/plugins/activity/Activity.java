@@ -8,6 +8,7 @@ import java.util.Observer;
 import org.tesys.core.db.ElasticsearchDao;
 import org.tesys.core.db.ValidDeveloperQuery;
 import org.tesys.core.estructures.Metric;
+import org.tesys.core.estructures.metrictypes.NumericMetric;
 import org.tesys.core.project.scm.RevisionPOJO;
 import org.tesys.core.project.scm.SCMManager;
 
@@ -77,10 +78,10 @@ public class Activity implements Observer {
     
     public List<Metric> getMetrics() {
         List<Metric> metrics = new ArrayList<Metric>() ;
-        metrics.add( new Metric( "reads", "Cantidad de Lecturas", "Cantidad de veces que el desarrollador leyo archivos de codigo del projecto", "activity", null ) );
-        metrics.add( new Metric( "reads_time", "Tiempo en Lecturas", "Tiempo (en minutos) gastado por el desarrollador leyo archivos de codigo del projecto", "activity", null ) );
-        metrics.add( new Metric( "writes", "Cantidad de Lecturas", "Cantidad de veces que el desarrollador escribio archivos de codigo del projecto", "activity", null ) );
-        metrics.add( new Metric( "writes_time", "Tiempo en Lecturas", "Tiempo (en minutos) gastado por el desarrollador escribio archivos de codigo del projecto", "activity", null ) );
+        metrics.add( new Metric( "reads", "Cantidad de Lecturas", "Cantidad de veces que el desarrollador leyo archivos de codigo del projecto", "activity", null , new NumericMetric() ) );
+        metrics.add( new Metric( "reads_time", "Tiempo en Lecturas", "Tiempo (en minutos) gastado por el desarrollador leyo archivos de codigo del projecto", "activity", null , new NumericMetric()) );
+        metrics.add( new Metric( "writes", "Cantidad de Lecturas", "Cantidad de veces que el desarrollador escribio archivos de codigo del projecto", "activity", null, new NumericMetric() ) );
+        metrics.add( new Metric( "writes_time", "Tiempo en Lecturas", "Tiempo (en minutos) gastado por el desarrollador escribio archivos de codigo del projecto", "activity", null, new NumericMetric() ) );
         return metrics;
     }
 

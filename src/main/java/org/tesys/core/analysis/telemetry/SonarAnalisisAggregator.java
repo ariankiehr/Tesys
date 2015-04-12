@@ -9,7 +9,9 @@ import org.tesys.core.analysis.sonar.SonarMetricPOJO;
 import org.tesys.core.db.ElasticsearchDao;
 import org.tesys.core.estructures.Issue;
 import org.tesys.core.estructures.Metric;
-import org.tesys.core.estructures.SimpleValue;
+import org.tesys.core.estructures.metrictypes.NumericMetric;
+import org.tesys.core.estructures.metrictypes.PercentMetric;
+import org.tesys.core.estructures.metricvalue.SimpleValue;
 
 /**
  * Clase encargada de recolectar todos los datos del sonar, dado que sonar
@@ -39,9 +41,15 @@ public class SonarAnalisisAggregator extends AggregatorDecorator {
 	SonarAnalizer sa = SonarAnalizer.getInstance();
 	List<SonarMetricPOJO> ml = sa.getMetrics();
 	for (SonarMetricPOJO metric : ml) {
-	    metrics.add(new Metric(metric.getKey(), metric.getName(), metric
-		    .getDescription(), "SonarQube", new SimpleValue(metric
-		    .getKey())));
+		if( metric.getType().equals("PERCENT")  ) {
+		    metrics.add(new Metric(metric.getKey(), metric.getName(), metric
+				    .getDescription(), "SonarQube", new SimpleValue(metric
+				    .getKey()), new PercentMetric()));
+		} else {
+		    metrics.add(new Metric(metric.getKey(), metric.getName(), metric
+				    .getDescription(), "SonarQube", new SimpleValue(metric
+				    .getKey()), new NumericMetric()));
+		}
 	}
 
 	return metrics;

@@ -1,4 +1,4 @@
-package org.tesys.core.estructures;
+package org.tesys.core.estructures.metricvalue;
 
 /**
  * Esta clase es de donde deben heredar las operaciones aritmeticas (o de otro indole)

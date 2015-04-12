@@ -1,5 +1,8 @@
 package org.tesys.core.estructures;
 
+import org.tesys.core.estructures.metrictypes.MetricTypeDescriptor;
+import org.tesys.core.estructures.metricvalue.IValue;
+
 /**
  * Esta clase representa una metrica, una metrica es un medio por el cual se
  * pueden ordenar issues, estas metricas pueden estar definidas por los los
@@ -23,17 +26,28 @@ public class Metric {
     private String nombre;
     private String descripcion;
     private String procedencia;
-    private IValue value;
+    private MetricTypeDescriptor type;
+
+	private IValue value;
 
     public Metric(String key, String nombre, String descripcion,
-	    String procedencia, IValue value) {
+	    String procedencia, IValue value, MetricTypeDescriptor type) {
 	super();
 	this.key = key;
 	this.nombre = nombre;
 	this.descripcion = descripcion;
 	this.procedencia = procedencia;
 	this.value = value;
+	this.type = type;
     }
+    
+    public MetricTypeDescriptor getType() {
+		return type;
+	}
+
+	public void setType(MetricTypeDescriptor type) {
+		this.type = type;
+	}
 
     public String getKey() {
 	return key;
@@ -84,7 +98,7 @@ public class Metric {
 	return "{\"key\":\"" + key + "\", \"nombre\":\"" + nombre
 		+ "\", \"descripcion\":\"" + descripcion
 		+ "\", \"procedencia\":\"" + procedencia + "\", \"value\":"
-		+ value + "}";
+		+ value + ", \"type\":\""+ type + "\"}";
     }
 
 }
