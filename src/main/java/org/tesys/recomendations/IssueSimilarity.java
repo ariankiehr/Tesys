@@ -13,14 +13,14 @@ public class IssueSimilarity {
 		List<String> labelsi = Arrays.asList(i.getLabels());
 		
 		
-		if( ip.getIssuetype().equals(i.getIssueType()) ) {
+		//if( ip.getIssuetype().equals(i.getIssueType()) ) {
 			for (String l : labelsi) {
 				if(labelsip.contains(l)){
 					return true;
 				}
 			}
 			
-		}
+		//}
 		
 		
 		return false;

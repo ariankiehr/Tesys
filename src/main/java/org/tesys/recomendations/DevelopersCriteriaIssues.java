@@ -31,7 +31,11 @@ public class DevelopersCriteriaIssues {
 				if(metric==null) {
 					metric = criteria.evaluate(i);
 				} else {
-					metric = criteria.getType().avg(metric, criteria.evaluate(i));
+					Double cm = criteria.evaluate(i);
+					if(cm!=null) {
+						metric = criteria.getType().avg(metric, cm);
+					}
+					
 				}
 				
 			}

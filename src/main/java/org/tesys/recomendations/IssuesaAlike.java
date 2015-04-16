@@ -12,37 +12,25 @@ import org.tesys.core.project.tracking.IssuePOJO;
 public class IssuesaAlike {
 	
 	public List<Developer> getSimilarIssuesTo(IssuePOJO ip, IssueSimilarity issi) {
-		List<Issue> lissue = new LinkedList<Issue>();
-		List<Developer> ldeveloper = new LinkedList<Developer>();
+
+		ElasticsearchDao<Developer> daoi = new ElasticsearchDao<Developer>(Developer.class,
+				ElasticsearchDao.DEFAULT_RESOURCE_DEVELOPERS);
 		
-		//Traigo todos los issues ya analizados en la db
-		ElasticsearchDao<Issue> daoi = new ElasticsearchDao<Issue>(Issue.class,
-				ElasticsearchDao.DEFAULT_RESOURCE_ISSUE_METRIC);
 		
-		List<Issue> idb = daoi.readAll();
+		List<Developer> ld  = daoi.readAll();
+		List<Developer> ldeveloper = new LinkedList<Developer>(ld);
 		
-		//Se guardan todos los issues relacionados
-		for (Issue issue : idb) {
-			if( ip.getIssuetype().equals(issue.getIssueType()) && issi.areSimilar(ip, issue) ) {
-				lissue.add(issue);
-			}
-		}
-		
-		//ahora se clasifican en developers
-		boolean exist;
-		for (Issue issue : lissue) {
-			exist=false;
-			for (Developer dev : ldeveloper) {
-				if( dev.getName().equals(issue.getUser()) ) {
-					dev.addIssue(issue);
-					exist=true;
+		for (Developer d : ld) {
+			List<Issue> li = d.getIssues();
+			List<Issue> lissue = new LinkedList<Issue>(li);
+			for (Issue i : li) {
+				if(!issi.areSimilar(ip, i)) {
+					lissue.remove(i);
 				}
 			}
-			if(exist==false) {
-				Developer d = new Developer();
-				d.setName(issue.getUser());
-				d.addIssue(issue);
-				ldeveloper.add(d);
+			d.setIssues(lissue);
+			if( d.getIssues().isEmpty() ){
+				ldeveloper.remove(d);
 			}
 		}
 
