@@ -507,7 +507,7 @@ public class Controller {
 													@PathParam("criteria") String criteria) {
 		
 		ResponseBuilder response;
-
+	
 		//transformo el issue key a el issue que exista en el jira con esa key
 		ProjectTrackingRESTClient pt = new ProjectTrackingRESTClient();
 		IssuePOJO ip = (IssuePOJO) pt.getIssue(task);
@@ -533,9 +533,26 @@ public class Controller {
 			return response.build();
 		}
 		
+		//---- completa labels del issue de jira con los de ES si es que ya existe, por el problema de que en jira no hay
+		ElasticsearchDao<Developer> daoi = new ElasticsearchDao<Developer>(Developer.class,
+				ElasticsearchDao.DEFAULT_RESOURCE_DEVELOPERS);
+		
+		List<Developer> ld  = daoi.readAll();
+		
+		for (Developer d : ld) {
+			List<Issue> li = d.getIssues();
+			
+			for (Issue i : li) {
+				if(i.getIssueId().equals(task)) {
+					ip.setLabels(i.getLabels());
+				}
+			}
+			
+		}
+		//-------
+
 		List<Developer> l = new IssuesaAlike().getSimilarIssuesTo(ip, new IssueSimilarity());
-		
-		
+
 		List<RecomendedDeveloper> d = new DevelopersCriteriaIssues().getBestDeveloperIssue(m, l, ip);
 		
 		response = Response.ok(d);
