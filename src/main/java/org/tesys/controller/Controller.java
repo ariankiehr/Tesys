@@ -509,13 +509,13 @@ public class Controller {
 		ResponseBuilder response;
 	
 		//transformo el issue key a el issue que exista en el jira con esa key
-		ProjectTrackingRESTClient pt = new ProjectTrackingRESTClient();
+		/*ProjectTrackingRESTClient pt = new ProjectTrackingRESTClient();
 		IssuePOJO ip = (IssuePOJO) pt.getIssue(task);
 		
 		if( ip == null ) {
 			response = Response.ok("{\"error\":\"task "+ task +" doesn't exist\"}");
 			return response.build();
-		}
+		}*/
 		
 		//conseguir metrica
 		//Verificar que existe
@@ -539,12 +539,14 @@ public class Controller {
 		
 		List<Developer> ld  = daoi.readAll();
 		
+		Issue ip = null;
+		
 		for (Developer d : ld) {
 			List<Issue> li = d.getIssues();
 			
 			for (Issue i : li) {
 				if(i.getIssueId().equals(task)) {
-					ip.setLabels(i.getLabels());
+					ip = i;
 				}
 			}
 			
@@ -553,9 +555,9 @@ public class Controller {
 
 		List<Developer> l = new IssuesaAlike().getSimilarIssuesTo(ip, new IssueSimilarity());
 
-		List<RecomendedDeveloper> d = new DevelopersCriteriaIssues().getBestDeveloperIssue(m, l, ip);
+		List<RecomendedDeveloper> dr = new DevelopersCriteriaIssues().getBestDeveloperIssue(m, l, ip);
 		
-		response = Response.ok(d);
+		response = Response.ok(dr);
 
 		return response.build();
 	}
