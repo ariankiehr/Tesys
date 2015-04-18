@@ -6,7 +6,7 @@ define(["jquery", "extractor", "parser"], function($, extractor) {
   });
 
 
-  $('#send').click(function () {
+  $('#send').click(function () { 
     try {
       var result = parser.parse($("input[name=fo]").val());
       
@@ -17,7 +17,7 @@ define(["jquery", "extractor", "parser"], function($, extractor) {
                result + "}";  
 
       $.ajax({
-          url: 'http://localhost:8080/tesys/rest/controller/newmetric',
+          url: location+'/rest/controller/newmetric',
           type: 'post',
           dataType: 'json',
           contentType: "application/json; charset=utf-8",

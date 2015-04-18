@@ -1,0 +1,57 @@
+<!DOCTYPE HTML>
+<html>
+<meta charset="utf-8">
+  <head>
+    <title>Analysis</title>
+  </head>
+  <body>
+
+    <div id="content">
+    
+    <h1>Analysis</h1>
+
+    <p>
+      Proyect Source: <br>
+      Repository <input type="text" size=10 name="repo"/><br>
+      Revision <input type="text" size=10 name="rev"/><br>
+
+      Sonar Source: <br>
+      URL: <input type="text" size=10 name="url" /><br>
+      Key: <input type="text" size=10 name="key"/><br>
+      User: <input type="text" size=10 name="user"/><br>
+      Pass: <input type="text" size=10 name="pass"/><br>
+
+      
+      <button type="button" id="addAnalysis">Add Analysis</button>
+    </p>
+    <p>
+      <button type="button" id="joinMetrics">Join Metrics</button>
+    </p>
+    <script src="js/libs/require.js"></script>
+    <script>
+    // El script no se modularizo por que la funcionalidad era muy simple.
+    requirejs(["./js/common"], function (common) { 
+      requirejs(['jquery', 'extractor'], function($, extractor) {
+        $('#joinMetrics').click(function(event) {
+          extractor.joinMetrics();
+        });
+
+        $('#addAnalysis').click(function(event) {
+          extractor.storeAnalysis(
+            $('#url').val(), 
+            $('#user').val(),
+            $('#pass').val(),
+            $('#repo').val(),
+            $('#rev').val(),
+            $('#key').val()
+          ); 
+        });
+      });
+    });
+    </script>
+
+
+    </div>
+
+  </body>
+</html>

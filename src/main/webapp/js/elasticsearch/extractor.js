@@ -1,7 +1,6 @@
 define(["jquery"], function($) {
 
     // Register listeners
-    
     function removeDuplications(arr) {
         var uniqueVals = [];
         $.each(arr, function(i, el){
@@ -130,6 +129,59 @@ define(["jquery"], function($) {
         });
     }
 
+    function storeAnalysis(sonarUrl, sonarUser, sonarPass, repository, revision, sonarKey) {
+        var toSend = "{\"url\": \"" + sonarUrl + "\"," +
+            "\"user\": \"" + sonarUser + "\"," +
+            "\"pass\": \"" + sonarPass + "\"," +
+            "\"repository\": \"" + repository + "\"," +
+            "\"revision\": \"" + revision + "\"," +
+            "\"sonarKey\": \"" + sonarKey + "\"," +"}";
+        $.ajax({
+            url: location+'rest/controller/sonar',
+            type: 'PUT',
+            dataType: 'json',
+            contentType: "application/json; charset=utf-8",
+            data: toSend,
+            success: function (data) {
+                //TODO ver casos de error
+              alert("analisis almacenado");
+            }
+        });
+    }
+
+
+    function joinMetrics() {
+        $.ajax({
+            url: location+'rest/controller/analyzer',
+            type: 'PUT',
+            dataType: 'json',
+            contentType: "application/json; charset=utf-8",
+            success: function (data) {
+                //TODO ver casos de error
+              alert("Se a ejecutado el analisis de tesys");
+            }
+        });   
+    }
+
+    function score(puntuador, puntuado, issue, puntuacion) { 
+        var toSend = "{\"puntuador\": \"" + puntuador + "\"," +
+                  "\"puntuado\": \"" + puntuado + "\"," +
+                  "\"issue\": \"" + issue + "\"," +
+                  "\"puntuacion\": \"" + puntuacion + "\"" +"}";
+    
+        $.ajax({
+            url: location+'rest/controller/punt',
+            type: 'PUT',
+            dataType: 'json',
+            contentType: "application/json; charset=utf-8",
+            data: toSend,
+            success: function (data) {
+                //TODO ver casos de error
+              alert("La puntuacion se ha realizado con exito");
+            }
+        });
+
+    }
 
     /**
      * Dado un Select de HTML inserta los elementos del arreglo result como
@@ -149,7 +201,11 @@ define(["jquery"], function($) {
         'getSkills' : getSkills,
         'removeDuplications': removeDuplications, 
         'plotIssueMetrics': plotIssueMetrics, 
-        'plotIssueSkills': plotIssueSkills
+        'plotIssueSkills': plotIssueSkills,
+        'score': score,
+        'storeAnalysis': storeAnalysis,
+        'joinMetrics': joinMetrics
+
     };
 });
 
