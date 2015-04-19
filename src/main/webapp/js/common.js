@@ -1,15 +1,18 @@
 requirejs.config({
   baseUrl: 'js',
   paths: {
-    'jquery': 'libs/jquery-1.7.1.min',
     'extractor': 'elasticsearch/extractor',
     'handlers': 'apps/handlers/hindex',
     'handlers.config': 'apps/handlers/hconfig',
-    'app': 'apps/app-index',
+    'app': 'apps/app',
     'app.config': 'apps/app-config',
     'adaptor': 'charts/chartAdaptor',
     'bar': 'charts/barPlotter',
     'radar': 'charts/radarPlotter',
+    'jquery': 'libs/jquery-1.11.2.min',
+    'bootstrap': 'libs/bootstrap.min',
+    'underscore': 'libs/underscore-min',
+    'backbone': 'libs/backbone-min',
     'amcharts': 'libs/amcharts/amcharts',
     'amcharts.radar': 'libs/amcharts/radar',
     'amcharts.serial': 'libs/amcharts/serial',
@@ -17,6 +20,16 @@ requirejs.config({
   },
 
   shim: {
+    'underscore': {
+      exports: '_'
+    },
+    'backbone': {
+      deps: ['underscore', 'jquery'],
+      exports: 'Backbone'
+    },
+    'bootstrap': {
+      deps: ['jquery']
+    },
     'amcharts': {
       exports: 'AmCharts',
       init: function() {

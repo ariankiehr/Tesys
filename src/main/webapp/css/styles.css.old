@@ -1,0 +1,109 @@
+* {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 12px;
+}
+
+
+ul {
+	list-style-type: none;
+	padding-left: 0px;
+	margin-top: 0px;
+}
+
+li a { 
+	text-decoration:none;
+	display: block;  
+	color: #000000;
+	border-bottom:solid 1px #CCCCCC;
+	padding: 8px;
+}
+
+li a:hover {
+	background-color: #4B0A1E;
+	color: #BA8A92;
+}
+
+input {
+	max-width: 100px;
+
+	border:1px solid #ccc;
+	min-height:20px;
+	outline: none;
+}
+
+
+textarea {
+	margin-bottom:15px;
+  	margin-top:5px;
+	height: 200px;
+  	width:200px;
+  	resize: none;
+
+}
+
+label {
+	display:block;
+}
+
+button {
+	min-height:20px;
+  	outline: none;
+}
+
+select {
+	max-width: 150px;
+}
+
+.charts {
+	border: 1px solid; 
+	position: absolute;
+	top: 0px;
+	/*overflow-y: scroll;*/ 
+	margin: 5% 0% 0%; 
+	width:90%;
+  
+}
+
+.header {
+	padding-top: 5px;
+	padding-left: 50px;
+}
+
+
+.mainArea {
+	position: relative;
+	width:300px;
+  	padding: 5px;
+  	float:left;
+}
+
+.issueArea {
+	position: relative;
+	width:300px;
+  	padding: 5px;
+}
+
+
+.chartArea {
+	border: 1px solid; 
+	height: 400px;
+	position: relative ;
+	width: 70%;
+	margin: 1% ;
+	float:left;
+
+}
+
+.mainArea input { 
+  margin-bottom:15px;
+  margin-top:5px;
+  width:280px;
+}
+
+.list {
+
+}
+
+#searchKey {
+	width:160px;
+}
