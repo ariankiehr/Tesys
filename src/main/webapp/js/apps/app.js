@@ -1,4 +1,4 @@
-define(["jquery", "underscore", "backbone", "extractor", "bootstrap"], function($, _, Backbone, extractor) {
+define(["jquery", "underscore", "backbone", "extractor", "tesys", "bootstrap"], function($, _, Backbone, extractor, tesys) {
 	
 	/* Main function */
   var start = function() {/*
@@ -11,6 +11,13 @@ define(["jquery", "underscore", "backbone", "extractor", "bootstrap"], function(
 		//Busco los issues del primer item seleccionado
 		extractor.getIssuesByUser($('#users').find('option:selected').val(), '#issues') ;
 	*/
+    tesys.getUsers(function(data){
+      console.log(JSON.stringify(data));
+      $.each(data, function(i, dev){
+        console.log(dev);
+      })
+    });
+
     var Developer = Backbone.Model.extend({
       defaults: {
         name: 'hello',
@@ -38,9 +45,6 @@ define(["jquery", "underscore", "backbone", "extractor", "bootstrap"], function(
 
       },
       render: function(){
-        console.log("RENDERING") ;
-        console.log("ID=" + $(this.el).attr('id'));
-        console.log("ID$=" + this.$el.attr('id'));
         
         var element =
           $('<a>', 
@@ -69,7 +73,6 @@ define(["jquery", "underscore", "backbone", "extractor", "bootstrap"], function(
         $.each(this.model.get('issues'), function(index, issue){
           result+="<a href=#"+issue+" class=list-group-item>"+issue+"</a>";
         });
-        console.log(result);
         return $(result);
       }
     });
@@ -91,9 +94,9 @@ define(["jquery", "underscore", "backbone", "extractor", "bootstrap"], function(
       },
       appendItem: function(item){
         var itemView = new DeveloperView({model: item});
-        console.log("ID FATHER=" + $(this.el).attr('id'));
 
-        console.log($(this.el).append(itemView.render().el));
+        $(this.el).append(itemView.render().el);
+        
       }
     });
     
