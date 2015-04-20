@@ -907,9 +907,9 @@
     ts.addParser({
         id: "currency",
         is: function (s) {
-            return /^[Â£$â‚¬?.]/.test(s);
+            return /^[£$€?.]/.test(s);
         }, format: function (s) {
-            return $.tablesorter.formatFloat(s.replace(new RegExp(/[Â£$â‚¬]/g), ""));
+            return $.tablesorter.formatFloat(s.replace(new RegExp(/[£$€]/g), ""));
         }, type: "numeric"
     });
 
