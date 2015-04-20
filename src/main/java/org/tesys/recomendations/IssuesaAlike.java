@@ -6,12 +6,12 @@ import java.util.List;
 import org.tesys.core.db.ElasticsearchDao;
 import org.tesys.core.estructures.Developer;
 import org.tesys.core.estructures.Issue;
-import org.tesys.core.project.tracking.IssuePOJO;
+
 
 
 public class IssuesaAlike {
 	
-	public List<Developer> getSimilarIssuesTo(IssuePOJO ip, IssueSimilarity issi) {
+	public List<Developer> getSimilarIssuesTo(Issue ip, IssueSimilarity issi) {
 
 		ElasticsearchDao<Developer> daoi = new ElasticsearchDao<Developer>(Developer.class,
 				ElasticsearchDao.DEFAULT_RESOURCE_DEVELOPERS);

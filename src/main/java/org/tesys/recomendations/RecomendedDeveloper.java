@@ -12,19 +12,31 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 public class RecomendedDeveloper {
 	
 	protected String developer;
+	protected String developerName;
+
+
 	protected Double metric;
 	protected Double trust;
 	protected Double similarity;
 	
 	public RecomendedDeveloper() {}
 	
-	public RecomendedDeveloper(String developer, Double metric, Double trust,
+	public RecomendedDeveloper(String developer, String developerName, Double metric, Double trust,
 			Double similarity) {
 		super();
+		this.developerName = developerName;
 		this.developer = developer;
 		this.metric = metric;
 		this.trust = trust;
 		this.similarity = similarity;
+	}
+	
+	public String getDeveloperName() {
+		return developerName;
+	}
+
+	public void setDeveloperName(String developerName) {
+		this.developerName = developerName;
 	}
 
 	public String getDeveloper() {

@@ -8,11 +8,10 @@ import java.util.List;
 import org.tesys.core.estructures.Developer;
 import org.tesys.core.estructures.Issue;
 import org.tesys.core.estructures.Metric;
-import org.tesys.core.project.tracking.IssuePOJO;
 
 public class DevelopersCriteriaIssues {
 	
-	public List<RecomendedDeveloper> getBestDeveloperIssue(Metric criteria, List<Developer> similarIssues, IssuePOJO ip) {
+	public List<RecomendedDeveloper> getBestDeveloperIssue(Metric criteria, List<Developer> similarIssues, Issue ip) {
 		List<RecomendedDeveloper> developers = new LinkedList<RecomendedDeveloper>();
 		List<String> originalLabels = new ArrayList<String>(Arrays.asList(ip.getLabels()));
 		
@@ -40,7 +39,7 @@ public class DevelopersCriteriaIssues {
 				
 			}
 			
-			developers.add( new RecomendedDeveloper(d.getName(), metric, (double)d.getIssues().size(), similarity) );
+			developers.add( new RecomendedDeveloper(d.getName(), d.getDisplayName(), metric, (double)d.getIssues().size(), similarity) );
 		}
 		
 		

@@ -4,11 +4,11 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.tesys.core.estructures.Issue;
-import org.tesys.core.project.tracking.IssuePOJO;
+
 
 public class IssueSimilarity {
 	
-	public boolean areSimilar(IssuePOJO ip, Issue i) {
+	public boolean areSimilar(Issue ip, Issue i) {
 		List<String> labelsip = Arrays.asList(ip.getLabels());
 		List<String> labelsi = Arrays.asList(i.getLabels());
 		

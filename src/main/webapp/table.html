@@ -1,0 +1,80 @@
+<!DOCTYPE HTML>
+<html>
+<meta charset="utf-8">
+<head>
+<title>Table</title>
+<LINK REL=StyleSheet HREF="css/styles.css" TYPE="text/css" MEDIA=screen>
+</head>
+<body>
+	<script type="text/javascript" src="js/libs/jquery-1.7.1.min.js"></script>
+	<script type="text/javascript"
+		src="js/libs/tablesorter/jquery.tablesorter.js"></script>
+
+	<script>
+		$(document).ready(
+				function() {
+					//ordena
+					$("myTable").tablesorter();
+					//cuando se pide la recomendacion
+					$("#ajax-append").click(
+							function() {
+								document.getElementById("met").textContent=document.getElementById("metric").value;
+								
+								$("#myTable tbody tr").remove();
+								$("#myTable").trigger("update");
+								$.get("rest/controller/getdevtask/" +
+										document.getElementById("issue").value +
+										"/" +
+										document.getElementById("metric").value, function(
+										response) {
+									
+									// $("#table_of_items tr").remove(); 
+									$.each(response, function(i, item) {
+										$('<tr>').append(
+												$('<td>').text(item.developerName+" ("+item.developer+")"),
+												$('<td>').text(item.metric),
+												$('<td>').text(item.trust),
+												$('<td>').text(item.similarity))
+												.appendTo('#myTable');
+									});
+
+									$("#myTable").trigger("update");
+
+									$("#myTable").tablesorter({
+										sortList : [ [ 0, 0 ] ]
+									});
+									
+									$("#myTable").trigger("update");
+
+								});
+
+								return false;
+							});
+				});
+	</script>
+
+	<table>
+		<tr>
+			<th>Tarea del JIRA:</th>
+			<th><input type="text" id="issue" /></th>
+			<th>Metrica:</th>
+			<th><input type="text" id="metric" /></th>
+			<th><form action=""><input type="submit" id="ajax-append" size="100" value="Recomendar"></form></th>
+		</tr>
+	</table>
+
+	<table id="myTable" class="tablesorter">
+		<thead>
+			<tr>
+				<th>Desarrollador</th>
+				<th id="met">Metrica</th>
+				<th>Cantidad de tareas similares</th>
+				<th>Nivel de similitud de las tareas</th>
+			</tr>
+		</thead>
+		<tbody>
+		</tbody>
+	</table>
+
+</body>
+</html>
