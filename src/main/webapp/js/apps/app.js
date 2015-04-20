@@ -1,89 +1,116 @@
-define(["jquery", "underscore", "backbone", "extractor", "tesys", "bootstrap"], function($, _, Backbone, extractor, tesys) {
+define(["jquery", "underscore", "backbone", "extractor", "tesys", "backbone-relational", "bootstrap"], function($, _, Backbone, extractor, tesys) {
 	
 	/* Main function */
-  var start = function() {/*
-		var skillPlotter ;
-		var metricPlotter ;
-
-		extractor.getUsers('#users') ;
-		extractor.getSkills('#skills') ;
-		extractor.getMetrics('#metrics') ;
-		//Busco los issues del primer item seleccionado
-		extractor.getIssuesByUser($('#users').find('option:selected').val(), '#issues') ;
-	*/
-    tesys.getUsers(function(data){
-      console.log(JSON.stringify(data));
-      $.each(data, function(i, dev){
-        console.log(dev);
-      })
-    });
-
-    var Developer = Backbone.Model.extend({
-      defaults: {
-        name: 'hello',
+  var start = function() {
+    var data = [
+      { 'displayName': 'Leandro Lezcano',
+        'name': 'llezcano',
         issues: [
-          'ISSUE-1',
-          'ISSUE-2'
+          { 'issueId': 'POL-22' }, 
+          { 'issueId': 'POL-44' }
+
+        ]
+      }, 
+      { 'displayName': 'Ezequiel Trapani',
+        'name': 'etrapani',
+        issues: [
+          { 'issueId': 'MON-56' }, 
+          { 'issueId': 'MON-84' }
         ]
       }
+    ];
+
+    var Issue = Backbone.RelationalModel.extend({
+      idAttribute: 'issueId'
     });
 
-    var DeveloperList = Backbone.Collection.extend({
+    var IssueCollection = Backbone.Collection.extend({
+      model: Issue
+    });
+
+    var Developer = Backbone.RelationalModel.extend({
+      idAttribute: 'name',
+      relations: [{
+        type: Backbone.HasMany, 
+        key: 'issues',
+        relatedModel: Issue,
+        collectionType: IssueCollection,
+        reverseRelation: {
+          key: 'name',
+          includeInJSON: 'id'
+          // 'relatedModel' is automatically set to 'Zoo'; the 'relationType' to 'HasOne'.
+        }
+      }] 
+    });
+
+    var DeveloperCollection = Backbone.Collection.extend({
       model: Developer
     });
 
+    var developers = new DeveloperCollection(data);
 
-
-    var DeveloperView = Backbone.View.extend({
+    var IssueView = Backbone.View.extend({
+      events: {
+        'click': 'select'
+      },
       initialize: function(){
-        // every function that uses 'this' as the current object should be in here
-        _.bindAll(this, 'render', 'listIssues'); 
-        //this.render();
-        
-        //issuesE: element for insert issues
-        this.issuesEl = '#'+this.model.get('name') ;
-
+        _.bindAll(this, 'render', 'select'); 
       },
       render: function(){
-        
-        var element =
-          $('<a>', 
-            { 'href': '#'+this.model.get('name'), 
-              'class': 'list-group-item list-group-item-success', 
-              'data-parent': '#MainMenu',
-              'data-toggle': 'collapse',
-            })
-          .append(this.model.get('name'))
-           // );
-        .add(
-          $(  '<div>', 
-            { 'class': 'panel-collapse collapse',
-              'id': this.model.get('name')
-            }).append(this.listIssues()))
-        ;
-
-        this.$el.append(element);
-
-  
+        this.$el = $('<a>', {
+          'href': '#'+this.model.get('issueId'), 
+          'id': this.model.get('issueId'),
+          'class': 'list-group-item',
+        }).append(this.model.get('issueId'));
         return this; // for chainable calls, like .render().el
       },
-      listIssues: function(){
-        var result = "" ;
-        //inserto la lista de issues asociadas al developer
-        $.each(this.model.get('issues'), function(index, issue){
-          result+="<a href=#"+issue+" class=list-group-item>"+issue+"</a>";
-        });
-        return $(result);
+      select: function() {
+        alert("Issue: " + this.model.get('issueId')+ " clicked" );
       }
     });
 
-    var DeveloperListView = Backbone.View.extend({
+    var DeveloperView = Backbone.View.extend({  
+      initialize: function(){
+        _.bindAll(this, 'render', 'listIssues'); 
+      },
+      render: function(){ 
+        var element = this.$el.append(
+          $('<a>', 
+            { 'href': '#'+this.model.get('name'),
+              'class': 'list-group-item list-group-item-success',
+              'data-parent': '#MainMenu',
+              'data-toggle': 'collapse',
+            })
+          .append(this.model.get('displayName'))
+        );
+        this.listIssues(element) ;
+        return this; // for chainable calls, like .render().el
+      },
+      listIssues: function(element){ 
+
+        //issuesPanel es el panel desplegable (collapse) donde se listaran los issues
+        var issuesPanel = $('<div>', {
+          'class': 'panel-collapse collapse',
+          'id': this.model.get('name')
+        });
+
+        //recorro todos los issues y los muestro en el panel
+        _(this.model.get('issues').models).each(function(issue){
+          var issueView = new IssueView({ model: issue });
+          issuesPanel.append(issueView.render().$el.prop('outerHTML'));
+        });
+        element.append(issuesPanel);
+        return this;
+      }
+    });
+
+    var DeveloperCollectionView = Backbone.View.extend({
       el: $('#developers-issues'), // el attaches to existing element
       initialize: function(developerList){
+
         // every function that uses 'this' as the current object should be in here
-        _.bindAll(this, 'render');
+        _.bindAll(this, 'render', 'appendItem');
         this.collection = developerList;
-        this.counter = 0;
         this.render();
       },
       render: function(){
@@ -94,44 +121,11 @@ define(["jquery", "underscore", "backbone", "extractor", "tesys", "bootstrap"], 
       },
       appendItem: function(item){
         var itemView = new DeveloperView({model: item});
-
-        $(this.el).append(itemView.render().el);
-        
+        this.$el.append(itemView.render().el);
       }
     });
-    
-    var developer = new Developer();
-    var dev1 = new Developer({
-        name: 'pepe',
-        issues: [
-          'ISSUE-1',
-          'asdasd-2'
-        ]
-      });
-    var dev2 = new Developer({
-        name: 'heladsdsalo',
-        issues: [
-          'ISSUdwadwaE-1',
-          'ISSUE-2'
-        ]
-      });
-    var dev3 = new Developer({
-        name: 'heldwadwalo',
-        issues: [
-          'ISSUdwadwaE-1',
-          'ISSUE-2'
-        ]
-      });
 
-    var developerList = new DeveloperList([developer, dev1, dev2, dev3]);
-
-
-    var developerView = new DeveloperView({
-      model: developer
-    });
-    
-    var devListView = new DeveloperListView(developerList);
-
+    var devListView = new DeveloperCollectionView(developers);
 
 	};
 
