@@ -15,11 +15,18 @@ define(
   
   var IssueView = Backbone.View.extend({
     tagName: 'a',
+
+    //constants definitions 
+    UNSELECTED_COLOR: "white", 
+    SELECTED_COLOR: "darksalmon", 
+    //end constants definitions
+    
     events: {
       'click': 'select'
     },
     initialize: function(){
       _.bindAll(this, 'render', 'select'); 
+      this.isSelected = false;
       this.render();
     },
     render: function(){
@@ -30,7 +37,12 @@ define(
       return this; // for chainable calls, like .render().el
     },
     select: function() {
-      console.log("clicked issue: " + this.model.get('issueId'));
+      this.isSelected = !this.isSelected;
+      if(this.isSelected) {
+        this.el.style.backgroundColor = this.SELECTED_COLOR ; 
+      } else {
+        this.el.style.backgroundColor = this.UNSELECTED_COLOR ;
+      }
     }
   });
 
@@ -42,6 +54,7 @@ define(
       _.bindAll(this, 'render', 'listIssues', 'select'); 
     },
     render: function(){ 
+
       var element = this.$el.append(
         $('<a>', 
           { 'href': '#'+this.model.get('name'),
@@ -51,6 +64,7 @@ define(
           })
         .append(this.model.get('displayName'))
       );
+
       this.listIssues(element) ;
       return this; // for chainable calls, like .render().el
     },
