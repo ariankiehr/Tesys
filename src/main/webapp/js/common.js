@@ -18,7 +18,10 @@ requirejs.config({
     'amcharts': 'libs/amcharts/amcharts',
     'amcharts.radar': 'libs/amcharts/radar',
     'amcharts.serial': 'libs/amcharts/serial',
-    'parser': 'parser'
+    'parser': 'parser',
+    'model': 'apps/models/model',
+    'view': 'apps/views/view'
+
   },
 
   shim: {
