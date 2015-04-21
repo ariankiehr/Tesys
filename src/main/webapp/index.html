@@ -117,17 +117,17 @@
 					<li><a href="#" id="recom"><i
 							class="glyphicon glyphicon-flash"></i> Recomendaciones</a></li>
 					<li><a href="#" id="test""><i
-							class="glyphicon glyphicon-link"></i> Links</a></li>
+							class="glyphicon glyphicon-link"></i> Test</a></li>
 					<li><a href="javascript:;"><i
-							class="glyphicon glyphicon-list-alt"></i> Reports</a></li>
+							class="glyphicon glyphicon-list-alt"></i>..</a></li>
 					<li><a href="javascript:;"><i
-							class="glyphicon glyphicon-book"></i> Books</a></li>
+							class="glyphicon glyphicon-book"></i>..</a></li>
 					<li><a href="javascript:;"><i
-							class="glyphicon glyphicon-briefcase"></i> Tools</a></li>
+							class="glyphicon glyphicon-briefcase"></i>..</a></li>
 					<li><a href="javascript:;"><i
-							class="glyphicon glyphicon-time"></i> Real-time</a></li>
+							class="glyphicon glyphicon-time"></i>..</a></li>
 					<li><a href="javascript:;"><i
-							class="glyphicon glyphicon-plus"></i> Advanced..</a></li>
+							class="glyphicon glyphicon-plus"></i>..</a></li>
 				</ul>
 
 				<hr>
@@ -149,32 +149,39 @@
 
 						<!-- TABLA RECOMENDACION-->
 						<div id="div-table" style="display: none">
-							<div class="well">
-								<table>
-									<tr>
-										<th>Tarea del JIRA:</th>
-										<th><input type="text" id="issue" /></th>
-										<th>Metrica:</th>
-										<th><input type="text" id="metric" /></th>
-										<th><form action="">
-												<input type="submit" id="ajax-append" size="100"
-													value="Recomendar">
-											</form></th>
-									</tr>
-								</table>
+
+							<div class="well"><h4>Recomendaciones</h4></div>
+
+							<div class="panel panel-default">
+								<div class="panel-heading">
+									<table>
+										<tr>
+											<th>Tarea del JIRA</th>
+											<th><input type="text" id="issue" /></th>
+											<th>Metrica</th>
+											<th><input type="text" id="metric" /></th>
+											<th><form action="">
+													<input type="submit" id="ajax-append" size="100"
+														value="Recomendar">
+												</form></th>
+										</tr>
+									</table>
+								</div>
+								<div class="panel-body">
+									<table id="myTable" class="tablesorter">
+										<thead>
+											<tr>
+												<th>Desarrollador</th>
+												<th id="met">Metrica</th>
+												<th>#Tareas similares</th>
+												<th>#Similitudes</th>
+											</tr>
+										</thead>
+										<tbody>
+										</tbody>
+									</table>
+								</div>
 							</div>
-							<table id="myTable" class="tablesorter">
-								<thead>
-									<tr>
-										<th>Desarrollador</th>
-										<th id="met">Metrica</th>
-										<th>Cantidad de tareas similares</th>
-										<th>Nivel de similitud de las tareas</th>
-									</tr>
-								</thead>
-								<tbody>
-								</tbody>
-							</table>
 						</div>
 						<!-- FIN TABLA RECOMENDACION-->
 						<!-- TEST-->

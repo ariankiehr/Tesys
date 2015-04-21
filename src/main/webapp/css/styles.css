@@ -30,16 +30,16 @@ footer {
   border-radius: 10px;
 }
 
-table.tablesorter {
+table, table.tablesorter {
 	font-family:sans-serif;
-	background-color: #CDCDCD;
-	margin:10px 0pt 15px;
+	background-color: #FFF;
+	margin:5px 0pt 10px;
 	font-size: 10pt;
 	width: 100%;
 	text-align: left;
 }
 table.tablesorter thead tr th, table.tablesorter tfoot tr th {
-	background-color: #e6EEEE;
+	background-color: #eFEEEE;
 	border: 1px solid #FFF;
 	font-size: 10pt;
 	padding: 4px;
@@ -53,7 +53,8 @@ table.tablesorter thead tr .header {
 table.tablesorter tbody td {
 	color: #3D3D3D;
 	padding: 4px;
-	background-color: #FFF;
+	border: 1px solid #FFF;
+	background-color: #e6EEEE;
 	vertical-align: top;
 }
 table.tablesorter tbody tr.odd td {
