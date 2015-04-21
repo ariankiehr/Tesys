@@ -17,7 +17,8 @@ requirejs.config({
     'amcharts': 'libs/amcharts/amcharts',
     'amcharts.radar': 'libs/amcharts/radar',
     'amcharts.serial': 'libs/amcharts/serial',
-    'parser': 'parser'
+    'parser': 'parser',
+    'tablesorter': 'libs/tablesorter/jquery.tablesorter.js'
   },
 
   shim: {
