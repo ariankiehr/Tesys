@@ -13,6 +13,14 @@ define(
     tesys
   ) {
 
+  var Metric = Backbone.Model.extend({
+    idAttribute: 'key'
+  });
+  
+  var MetricCollection = Backbone.Collection.extend({
+    model: Metric
+  });
+
   var Issue = Backbone.RelationalModel.extend({
     idAttribute: 'issueId'
   });
@@ -40,12 +48,13 @@ define(
     model: Developer
   });
 
-
   return {
     Issue: Issue,
     IssueCollection: IssueCollection,
     Developer: Developer,
-    DeveloperCollection: DeveloperCollection
+    DeveloperCollection: DeveloperCollection,
+    Metric: Metric,
+    MetricCollection: MetricCollection
   };
 
 });
