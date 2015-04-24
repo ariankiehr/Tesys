@@ -30,7 +30,7 @@ define(["adaptor"], function (adaptor) {
 		this.chart.animateAgain();
 	};
 
-	 RadarChartPlotter.prototype.build = function (amChart, key) {
+	 RadarChartPlotter.prototype.build = function (amChart, keys) {
 		this.chart = amChart ;
 		this.adaptor = new adaptor() ;
 		this.keys = keys ;

@@ -29,7 +29,7 @@ define(["adaptor"], function (adaptor) {
     this.chart.animateAgain();
   };
 
-  BarChartPlotter.prototype.build = function (amChart, key) {
+  BarChartPlotter.prototype.build = function (amChart, keys) {
     this.chart = amChart ;
     this.adaptor = new adaptor() ;
     this.keys = keys ;
