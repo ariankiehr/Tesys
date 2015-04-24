@@ -11,9 +11,7 @@ define(["adaptor"], function (adaptor) {
 		this.chart = amChart ;
 		this.adaptor = new adaptor() ;
 		this.keys = keys ;
-	    this.dataProvider = this.adaptor.generateDataProvider(this.keys);
-
-
+	  this.dataProvider = this.adaptor.generateDataProvider(this.keys);
 	}
 
 	//tag: string
@@ -21,19 +19,24 @@ define(["adaptor"], function (adaptor) {
 	//graph: json (amChart addGraph format)
 	RadarChartPlotter.prototype.addGraph = function (tag, values) {
 		this.adaptor.addDataToProvider(tag, values, this.dataProvider) ;
-		
-	    this.chart.addGraph({
-	        "balloonText": tag+" [ [[category]] ] = [["+tag+"]] % (from [[total]]) ",
-	        "bullet": "round",
-	        "fillAlphas": 0.3, //mas claro u oscuro el relleno del Graph
-	        "valueField": tag
-	    });
-	    
+    this.chart.addGraph({
+      "balloonText": tag+" [ [[category]] ] = [["+tag+"]] % (from [[total]]) ",
+      "bullet": "round",
+      "fillAlphas": 0.3, //mas claro u oscuro el relleno del Graph
+      "valueField": tag
+    });
 		this.chart.dataProvider = this.adaptor.normalizeDataProvider(this.dataProvider) ;
 		this.chart.validateData();
 		this.chart.animateAgain();
 	};
 
+	 RadarChartPlotter.prototype.build = function (amChart, key) {
+		this.chart = amChart ;
+		this.adaptor = new adaptor() ;
+		this.keys = keys ;
+	  this.dataProvider = this.adaptor.generateDataProvider(this.keys); 
+  };
+  
 	return RadarChartPlotter ;
 
 });
