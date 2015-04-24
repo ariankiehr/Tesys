@@ -5,7 +5,9 @@ define(
     'extractor',
     'tesys',
     'amcharts.serial',
+    'amcharts.radar',
     'bar',
+    'radar',
     'backbone-relational',
     'bootstrap'
   ], 
@@ -14,14 +16,45 @@ define(
     extractor, 
     tesys,
     AmCharts,
-    bar
+    AmCharts,
+    bar,
+    radar
   ) {
   
-  // Arreglo de metrics keys 
-  var metricsToPlot = ['progress', 'quacode', 'estimated', 'prec'];
+  /**
+   * [issueTrackerMetrics Conjunto de metricas (keys) para los issues sin
+   * codigo]
+   * @type {Array}
+   */
+  var issueTrackerMetrics = ['progress', 'quacode', 'estimated', 'prec'] ;
+ 
+  /**
+   * [metricsToPlot Conjunto de metricas (keys) a graficar]
+   * @type {String Array}
+   */
+  var metricsToPlot = []; 
+
+  /**
+   * [skillsToPlot Conjunto de skills (keys) a graficar]
+   * @type {String Array}
+   */
+  var skillsToPlot = []; 
   
-  // Aqui se crea un AmChart en el elemento del DOM con id metrics.
-  var chart = AmCharts.makeChart("metricChart", {    
+  /**
+   * [issuesViewsToPlot Conjunto de vistas a graficar. Se corresponden con los
+   * issues seleccionados.]
+   * @type {IssueView Array}
+   */
+  var issuesViewsToPlot = [] ; 
+
+  /**
+   * [newSerialChart Crea un grafico nuevo para dibujar metricas en el elemento del
+   *  DOM con id "metricChart" (si existia entonces el anterior se pisa)]
+   *  
+   * @return {[AmCharts]} [Grafico, el cual se dibujara]
+   */
+  function newSerialChart(){
+    return AmCharts.makeChart("metricChart", {    
       "type": "serial",
       "categoryField": "skill",
       "gridAboveGraphs": true,
@@ -37,12 +70,66 @@ define(
           "minMaxMultiplier": 1,
           "axisAlpha": 0.15 //hace mas clara u oscura la linea de los ejes
       }]   
-  });
+    });
+  }
 
-  var metricsPlotHandler = new bar(chart, metricsToPlot) ;
+  /**
+   * [rePlotMetrics Vuelve a graficar todos los issues seleccionados y metricas 
+   * seleccionadas]
+   */
+  function rePlotMetrics(){
+    //TODO ver en que casos la unica opcion es hacer un replot, hay que ver
+    //bien la interfaz del AmCharts.
+    if (issuesViewsToPlot.length>=0){
+      metricsPlotHandler = new bar(newSerialChart(), metricsToPlot) ;
+      _(issuesViewsToPlot).each(function(issueView){
+        issueView.plot();
+      });
+    } 
+  }
 
-  
+    /**
+   * [newSerialChart Crea un grafico nuevo para dibujar los skills en el 
+   * elemento del DOM con id "skillChart" (si existia entonces el anterior se
+   * pisa)]
+   *  
+   * @return {[AmCharts]} [Grafico, el cual se dibujara]
+   */
+  function newRadarChart(){
+    return AmCharts.makeChart("skillChart", {    
+            "type": "radar",
+            "categoryField": "skill",
+            "valueAxes": [{
+                "axisTitleOffset": 20,
+                "min": 0,
+                "max": 1,
+                "minMaxMultiplier": 1,
+                "axisAlpha": 0.15 //hace mas clara u oscura la linea de los ejes
+            }]   
+    });
+  }
 
+  /**
+   * [rePlotSkills Vuelve a graficar todos los issues seleccionados y skills 
+   * seleccionadas]
+   */
+  function rePlotSkills(){
+    //TODO ver en que casos la unica opcion es hacer un replot, hay que ver
+    //bien la interfaz del AmCharts.
+    if (issuesViewsToPlot.length>0){
+      console.log("reploting skills");
+      skillsPlotHandler = new radar(newRadarChart(), skillsToPlot) ;
+      _(issuesViewsToPlot).each(function(issueView){
+        issueView.plot();
+      });
+    } 
+  }
+
+  var metricsPlotHandler ;
+
+  var skillsPlotHandler ;
+
+  // *** ISSUES ***
 
   var IssueView = Backbone.View.extend({
     tagName: 'a',
@@ -55,10 +142,8 @@ define(
     events: {
       'click': 'select'
     },
-    initialize: function(){//metricsPlotHandler, skillsPlotHandler){
+    initialize: function(){
       _.bindAll(this, 'render', 'select', 'plot'); 
-   //   this.metricsPlotHandler = metricsPlotHandler; 
-   //   this.skillsPlotHandler = skillsPlotHandler;
       this.isSelected = false;
       this.render();
     },
@@ -84,47 +169,56 @@ define(
       
       return this; // for chainable calls, like .render().el
     },
+
+    /**
+     * [select Este metodo se ocupa de cambiar de estado a un issue 
+     * (seleccionado/no-seleccionado) de manera tal de que se lleve un registro
+     * de los issues que estan seleccionados. 
+     *   Este evento se dispara cuando se hace click sobre un issue.]
+     */
     select: function() { 
       this.isSelected = !this.isSelected;
       if(this.isSelected) {
         this.el.style.backgroundColor = this.SELECTED_COLOR ;
+        issuesViewsToPlot.push(this);
         this.plot(); 
       } else {
+        issuesViewsToPlot = _.without(issuesViewsToPlot, this);
         this.el.style.backgroundColor = this.UNSELECTED_COLOR ;
-        //this.unplot();
+        rePlotMetrics();
+        //rePlotSkills();
       }
-      
     },
 
+    /**
+     * [plot Dibuja el gráfico del issue dentro del metricsPlotHandler]
+     */
     plot: function(){
       var tag = this.model.get('user') + "::" + this.model.get('issueId') ;
-      console.log("ploting "+ tag);
-
-      if (!_.isEmpty(this.model.get('metrics'))){
-        console.log("ploting metrics") ;
-        // console.log(JSON.stringify(this.model.get('metrics')));
-        // this.metricsPlotHandler.plot(tag, this.mode.get('metrics'));
-         metricsPlotHandler.addGraph(tag, this.model.get('metrics')) ;
-        
+      if (metricsPlotHandler){
+        if (!_.isEmpty(this.model.get('metrics'))){
+           metricsPlotHandler.addGraph(tag, this.model.get('metrics')) ;
+        }
       }
-
-      if (!_.isEmpty(this.model.get('skills'))){
-        var skills = {} ;
-        _(this.model.get('skills')).each(function(skill){
+      /*
+      if (skillsPlotHandler){
+        if (!_.isEmpty(this.model.get('skills'))){
+          console.log("plotting skills");
+          var skills = {} ;
 
           // convert skills to simple array
-          skills[skill.skillName] = skill.skillWeight;
-        });
+          _(this.model.get('skills')).each(function(skill){
+            skills[skill.skillName] = skill.skillWeight;
+          });
 
-        // this.skillPlotHandler.plot(tag, skills);
-        console.log("ploting skills") ;
-        // console.log(JSON.stringify(skills));
-      }
-      
-      
-    },
-
+          skillsPlotHandler = new radar(newRadarChart(), skillsToPlot) ;
+          skillsPlotHandler.addGraph(tag, skills) ;
+        }
+      }*/
+    } 
   });
+
+  // *** DEVELOPERS ***
 
   var DeveloperView = Backbone.View.extend({ 
 
@@ -179,7 +273,7 @@ define(
       return this;
     },
     select: function() {
-      console.log("clicked developer: " + this.model.get('name'));
+      //console.log("clicked developer: " + this.model.get('name'));
     }
   });
 
@@ -203,6 +297,8 @@ define(
       this.$el.append(itemView.render().el);
     }
   });
+
+  // *** METRICS ***
 
   var MetricView = Backbone.View.extend({
     //constants definition
@@ -230,20 +326,23 @@ define(
     select: function() {
       this.isSelected = !this.isSelected;
       if(this.isSelected) {
-        this.el.style.backgroundColor = this.SELECTED_COLOR ; 
+        this.el.style.backgroundColor = this.SELECTED_COLOR ;
+        metricsToPlot.push(this.model.get('key'));
       } else {
         this.el.style.backgroundColor = this.UNSELECTED_COLOR ;
+        metricsToPlot = _.without(metricsToPlot, this.model.get('key'));
       }
-    }
+      rePlotMetrics();
+      //rePlotSkills();
 
+    }
   });
 
   var MetricCollectionView = Backbone.View.extend({
-    el: $('#metrics'), // el attaches to existing element
-    initialize: function(metricCollection){
+  //  el: $('#metrics'), // el attaches to existing element
+    initialize: function(){
       // every function that uses 'this' as the current object should be in here
       _.bindAll(this, 'render', 'appendItem');
-      this.collection = metricCollection;
       this.render();
     },
     render: function(){
@@ -257,7 +356,6 @@ define(
       var metricView = new MetricView({model: item});
       this.$el.append(metricView.render().el);
     }
-
   });
 
   return {

@@ -13,6 +13,18 @@ define(
     tesys
   ) {
 
+  // *** SKILLS MODEL ***
+  
+  var Skill = Backbone.RelationalModel.extend({
+    idAttribute: ''
+  });
+
+  var SkillCollection = Backbone.Collection.extend({
+    model: Skill
+  });
+
+  // *** METRICS MODEL ***
+
   var Metric = Backbone.Model.extend({
     idAttribute: 'key'
   });
@@ -20,6 +32,8 @@ define(
   var MetricCollection = Backbone.Collection.extend({
     model: Metric
   });
+
+  // *** DEVELOPERS MODEL ***
 
   var Issue = Backbone.RelationalModel.extend({
     idAttribute: 'issueId'
@@ -54,7 +68,9 @@ define(
     Developer: Developer,
     DeveloperCollection: DeveloperCollection,
     Metric: Metric,
-    MetricCollection: MetricCollection
+    MetricCollection: MetricCollection,
+    Skill: Skill,
+    SkillCollection: SkillCollection
   };
 
 });
