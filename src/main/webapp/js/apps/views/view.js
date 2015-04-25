@@ -27,107 +27,9 @@ define(
    * @type {Array}
    */
   var issueTrackerMetrics = ['progress', 'quacode', 'estimated', 'prec'] ;
- 
-  /**
-   * [metricsToPlot Conjunto de metricas (keys) a graficar]
-   * @type {String Array}
-   */
-  var metricsToPlot = []; 
+  var issuesViewsToPlot = [] ;
 
-  /**
-   * [skillsToPlot Conjunto de skills (keys) a graficar]
-   * @type {String Array}
-   */
-  var skillsToPlot = []; 
-  
-  /**
-   * [issuesViewsToPlot Conjunto de vistas a graficar. Se corresponden con los
-   * issues seleccionados.]
-   * @type {IssueView Array}
-   */
-  var issuesViewsToPlot = [] ; 
-
-  /**
-   * [newSerialChart Crea un grafico nuevo para dibujar metricas en el elemento del
-   *  DOM con id "metricChart" (si existia entonces el anterior se pisa)]
-   *  
-   * @return {[AmCharts]} [Grafico, el cual se dibujara]
-   */
-  function newSerialChart(){
-    return AmCharts.makeChart("metricChart", {    
-      "type": "serial",
-      "categoryField": "skill",
-      "gridAboveGraphs": true,
-      "valueAxes": [{
-          "gridColor":"#FFFFFF",
-          "gridAlpha": 0.2,
-          "dashLength": 0,
-          "tickPosition":"start",
-          "tickLength":20,
-          "axisTitleOffset": 20,
-          "min": 0,
-          "max": 1,
-          "minMaxMultiplier": 1,
-          "axisAlpha": 0.15 //hace mas clara u oscura la linea de los ejes
-      }]   
-    });
-  }
-
-  /**
-   * [rePlotMetrics Vuelve a graficar todos los issues seleccionados y metricas 
-   * seleccionadas]
-   */
-  function rePlotMetrics(){
-    //TODO ver en que casos la unica opcion es hacer un replot, hay que ver
-    //bien la interfaz del AmCharts.
-    if (issuesViewsToPlot.length>=0){
-      metricsPlotHandler = new bar(newSerialChart(), metricsToPlot) ;
-      _(issuesViewsToPlot).each(function(issueView){
-        issueView.plot();
-      });
-    } 
-  }
-
-    /**
-   * [newSerialChart Crea un grafico nuevo para dibujar los skills en el 
-   * elemento del DOM con id "skillChart" (si existia entonces el anterior se
-   * pisa)]
-   *  
-   * @return {[AmCharts]} [Grafico, el cual se dibujara]
-   */
-  function newRadarChart(){
-    return AmCharts.makeChart("skillChart", {    
-            "type": "radar",
-            "categoryField": "skill",
-            "valueAxes": [{
-                "axisTitleOffset": 20,
-                "min": 0,
-                "max": 1,
-                "minMaxMultiplier": 1,
-                "axisAlpha": 0.15 //hace mas clara u oscura la linea de los ejes
-            }]   
-    });
-  }
-
-  /**
-   * [rePlotSkills Vuelve a graficar todos los issues seleccionados y skills 
-   * seleccionadas]
-   */
-  function rePlotSkills(){
-    //TODO ver en que casos la unica opcion es hacer un replot, hay que ver
-    //bien la interfaz del AmCharts.
-    if (issuesViewsToPlot.length>0){
-      console.log("reploting skills");
-      skillsPlotHandler = new radar(newRadarChart(), skillsToPlot) ;
-      _(issuesViewsToPlot).each(function(issueView){
-        issueView.plot();
-      });
-    } 
-  }
-
-  var metricsPlotHandler ;
-
-  var skillsPlotHandler ;
+  var metricTypes = ['metrics', 'skills'];
 
   // *** ISSUES ***
 
@@ -142,8 +44,9 @@ define(
     events: {
       'click': 'select'
     },
-    initialize: function(){
-      _.bindAll(this, 'render', 'select', 'plot'); 
+    initialize: function(options){
+      this.options = options || {};
+      _.bindAll(this, 'render', 'select', 'plot', 'tag'); 
       this.isSelected = false;
       this.render();
     },
@@ -170,6 +73,10 @@ define(
       return this; // for chainable calls, like .render().el
     },
 
+    tag: function(){
+      return this.model.get('user') + "::" + this.model.get('issueId') ;
+    },
+
     /**
      * [select Este metodo se ocupa de cambiar de estado a un issue 
      * (seleccionado/no-seleccionado) de manera tal de que se lleve un registro
@@ -185,23 +92,30 @@ define(
       } else {
         issuesViewsToPlot = _.without(issuesViewsToPlot, this);
         this.el.style.backgroundColor = this.UNSELECTED_COLOR ;
-        rePlotMetrics();
-        //rePlotSkills();
+        console.log("remove: \n"+ this.tag());
+        var self = this;
+        _(this.options.plotter).each(function(p){
+          p.removeGraph(self.tag());
+        });
       }
     },
 
     /**
-     * [plot Dibuja el gráfico del issue dentro del metricsPlotHandler]
+     * [plot Dibuja el gráfico del issue dentro del plotter]
      */
     plot: function(){
-      var tag = this.model.get('user') + "::" + this.model.get('issueId') ;
-      if (metricsPlotHandler){
+      //Ploting metrics
+      console.log(this.tag());
+
+      if (this.options.plotter[0]){
         if (!_.isEmpty(this.model.get('metrics'))){
-           metricsPlotHandler.addGraph(tag, this.model.get('metrics')) ;
+          console.log("plotting metrics");
+          this.options.plotter[0].addGraph(this.tag(), this.model.get('metrics'));
         }
       }
-      /*
-      if (skillsPlotHandler){
+
+      //Ploting skills
+      if (this.options.plotter[1]){
         if (!_.isEmpty(this.model.get('skills'))){
           console.log("plotting skills");
           var skills = {} ;
@@ -210,11 +124,10 @@ define(
           _(this.model.get('skills')).each(function(skill){
             skills[skill.skillName] = skill.skillWeight;
           });
-
-          skillsPlotHandler = new radar(newRadarChart(), skillsToPlot) ;
-          skillsPlotHandler.addGraph(tag, skills) ;
+          this.options.plotter[1].addGraph(this.tag(), skills);
         }
-      }*/
+      }
+
     } 
   });
 
@@ -230,7 +143,8 @@ define(
     events: {
       'click': 'select'
     } ,
-    initialize: function(){
+    initialize: function(options){
+      this.options = options || {};
       _.bindAll(this, 'render', 'listIssues', 'select'); 
     },
     render: function(){ 
@@ -251,7 +165,6 @@ define(
       }
 
       this.el.appendChild(devNameContainer);
-
       self.listIssues();
       return this; // for chainable calls, like .render().el
     },
@@ -261,11 +174,15 @@ define(
       var devIssuesContainer = document.createElement("div");
       devIssuesContainer.setAttribute('class', 'panel-collapse collapse');
       devIssuesContainer.id = this.model.get('name') ;
-
+      var self = this;
       _(this.model.get('issues').models).each(function(issue){
         //recorro todos los issues, por cada issue del modelo le asocio una vista.
         //la cual la agrego a devIssuesContainer
-        var issueView = new IssueView({ model: issue });
+        var issueView = new IssueView(
+          { model: issue, 
+            plotter: self.options.plotter
+          }
+        );
         devIssuesContainer.appendChild(issueView.render().el);
       });
 
@@ -279,11 +196,11 @@ define(
 
   var DeveloperCollectionView = Backbone.View.extend({
     el: $('#developers-issues'), // el attaches to existing element
-    initialize: function(developerList){
+    initialize: function(options){
+      this.options = options || {};
 
       // every function that uses 'this' as the current object should be in here
       _.bindAll(this, 'render', 'appendItem');
-      this.collection = developerList;
       this.render();
     },
     render: function(){
@@ -293,7 +210,11 @@ define(
       }, this);
     },
     appendItem: function(item){
-      var itemView = new DeveloperView({model: item});
+      var itemView = new DeveloperView(
+        { model: item, 
+          plotter: this.options.plotter
+        }
+      );
       this.$el.append(itemView.render().el);
     }
   });
@@ -309,7 +230,9 @@ define(
     events: {
       'click': 'select'
     },
-    initialize: function(){
+    initialize: function(options){
+      this.options = options || {};
+
       // every function that uses 'this' as the current object should be in here
       _.bindAll(this, 'render' ,'select');
       this.isSelected = false;
@@ -327,20 +250,30 @@ define(
       this.isSelected = !this.isSelected;
       if(this.isSelected) {
         this.el.style.backgroundColor = this.SELECTED_COLOR ;
-        metricsToPlot.push(this.model.get('key'));
+        this.options.metricsToPlot.array.push(this.model.get('key'));
       } else {
         this.el.style.backgroundColor = this.UNSELECTED_COLOR ;
-        metricsToPlot = _.without(metricsToPlot, this.model.get('key'));
+        this.options.metricsToPlot.array = _.without(
+          this.options.metricsToPlot.array, 
+          this.model.get('key')
+        );
       }
-      rePlotMetrics();
-      //rePlotSkills();
+
+      if (issuesViewsToPlot.length>=0){
+        this.options.plotter.build(this.options.metricsToPlot.array);
+        _(issuesViewsToPlot).each(function(issueView){
+          issueView.plot();
+        });
+      } 
+
 
     }
   });
 
   var MetricCollectionView = Backbone.View.extend({
   //  el: $('#metrics'), // el attaches to existing element
-    initialize: function(){
+    initialize: function(options){
+      this.options = options || {};
       // every function that uses 'this' as the current object should be in here
       _.bindAll(this, 'render', 'appendItem');
       this.render();
@@ -353,7 +286,12 @@ define(
       return this;
     },
     appendItem: function(item){
-      var metricView = new MetricView({model: item});
+      var metricView = new MetricView(
+        { model: item, 
+          metricsToPlot: this.options.metricsToPlot,
+          plotter: this.options.plotter
+        }
+      );
       this.$el.append(metricView.render().el);
     }
   });

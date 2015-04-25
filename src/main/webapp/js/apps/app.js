@@ -6,6 +6,8 @@ define(
     'tesys',  
     'model', 
     'view', 
+    'bar',
+    'radar',
     'backbone-relational', 
     'bootstrap'
   ], 
@@ -14,11 +16,56 @@ define(
     extractor, 
     tesys, 
     model, 
-    view
+    view,
+    bar,
+    radar
   ) {
 	
 	/* Main function */
   var start = function() {
+
+    var metricsToPlot = { array:[] };
+    var skillsToPlot = { array:[] };
+    
+    var metricsPlotter = new bar(
+      "metricChart", 
+      {    
+        "type": "serial",
+        "categoryField": "skill",
+        "gridAboveGraphs": true,
+        "valueAxes": [{
+            "gridColor":"#FFFFFF",
+            "gridAlpha": 0.2,
+            "dashLength": 0,
+            "tickPosition":"start",
+            "tickLength":20,
+            "axisTitleOffset": 20,
+            "min": 0,
+            "max": 1,
+            "minMaxMultiplier": 1,
+            "axisAlpha": 0.15 //hace mas clara u oscura la linea de los ejes
+        }]   
+      }, 
+      []
+    );
+
+    var skillPlotter = new radar( 
+      "skillChart", 
+      {    
+        "type": "radar",
+        "categoryField": "skill",
+        "valueAxes": [{
+            "axisTitleOffset": 20,
+            "min": 0,
+            "max": 1,
+            "minMaxMultiplier": 1,
+            "axisAlpha": 0.15 //hace mas clara u oscura la linea de los ejes
+        }]   
+      },
+      []
+    );
+
+
     var developers;
     var devListView;
 
@@ -28,9 +75,14 @@ define(
       dataType: 'json',
       success: function(data) {
         developers = new model.DeveloperCollection(data);
-        devListView = new view.DeveloperCollectionView(developers);
+        devListView = new view.DeveloperCollectionView(
+          { collection: developers, 
+            plotter: [metricsPlotter, skillPlotter],
+          }
+        );
       }
     });
+
 
     var metrics ;
     var metricsView ;
@@ -41,9 +93,17 @@ define(
       dataType: 'json',
       success: function(data) {
         metrics = new model.MetricCollection(data);
-        metricsView = new view.MetricCollectionView({collection: metrics, el: $('#metrics')});
+        metricsView = new view.MetricCollectionView(
+          { collection: metrics, 
+            el: $('#metrics'), 
+            metricsToPlot: metricsToPlot,
+            plotter: metricsPlotter,
+          }
+        );
       }
     });
+
+
 
     var skills ;
     var skillsView ;
@@ -61,7 +121,12 @@ define(
         });
 
         skills = new model.MetricCollection(adaptedData);
-        skillsView = new view.MetricCollectionView({collection: skills, el: $('#skills')});
+        skillsView = new view.MetricCollectionView(
+          { collection: skills, 
+            el: $('#skills'), 
+            metricsToPlot: skillsToPlot,
+            plotter: skillPlotter
+          });
       }
     });
 
