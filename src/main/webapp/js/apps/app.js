@@ -1,19 +1,12 @@
 define(
   [ 'jquery', 
-    'underscore', 
-    'backbone', 
-    'extractor',
     'tesys',  
     'model', 
     'view', 
     'bar',
     'radar',
-    'backbone-relational', 
-    'bootstrap'
   ], 
-  function($, _, 
-    Backbone, 
-    extractor, 
+  function($, 
     tesys, 
     model, 
     view,
@@ -23,7 +16,8 @@ define(
 	
 	/* Main function */
   var start = function() {
-
+    //TODO arreglar el sig bug. Cuand se elije un nuevo issue para graficar, 
+    //desaparece el grafico que esta en el panel inactivo.
     var metricsToPlot = { array:[] };
     var skillsToPlot = { array:[] };
     
@@ -78,6 +72,7 @@ define(
         devListView = new view.DeveloperCollectionView(
           { collection: developers, 
             plotter: [metricsPlotter, skillPlotter],
+            attrToPlot: ['metrics', 'skills']
           }
         );
       }
@@ -98,6 +93,7 @@ define(
             el: $('#metrics'), 
             metricsToPlot: metricsToPlot,
             plotter: metricsPlotter,
+            type: 'metrics'
           }
         );
       }
@@ -125,7 +121,8 @@ define(
           { collection: skills, 
             el: $('#skills'), 
             metricsToPlot: skillsToPlot,
-            plotter: skillPlotter
+            plotter: skillPlotter,
+            type: 'skills'
           });
       }
     });

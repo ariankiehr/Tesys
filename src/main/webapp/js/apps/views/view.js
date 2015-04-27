@@ -4,8 +4,6 @@ define(
     'backbone',
     'extractor',
     'tesys',
-    'amcharts.serial',
-    'amcharts.radar',
     'bar',
     'radar',
     'backbone-relational',
@@ -15,8 +13,6 @@ define(
     Backbone, 
     extractor, 
     tesys,
-    AmCharts,
-    AmCharts,
     bar,
     radar
   ) {
@@ -46,7 +42,7 @@ define(
     },
     initialize: function(options){
       this.options = options || {};
-      _.bindAll(this, 'render', 'select', 'plot', 'tag'); 
+      _.bindAll(this, 'render', 'select', 'plot', 'tag', 'adapt'); 
       this.isSelected = false;
       this.render();
     },
@@ -101,33 +97,57 @@ define(
     },
 
     /**
-     * [plot Dibuja el gráfico del issue dentro del plotter]
+     * [adapt convierte un atributo del modelo en un arreglo, para poder ser
+     * graficado en un formato estandar]
+     * @param  {[type]} attributeToAdapt [el atributo puede ser 'metrics' o 
+     * 'skills']
+     * @return {[JSON of metricKey:metricValue]}                  
+     * [es el formato estandar con el cual se le pasaran los valores a graficar
+     * al plotter]
+     */
+    adapt: function(attributeToAdapt){
+      if (attributeToAdapt == 'metrics'){
+        return this.model.get('metrics');
+      } else if (attributeToAdapt == 'skills') {
+        var skills = {} ;
+
+        // convert skills to simple array
+        _(this.model.get('skills')).each(function(skill){
+          skills[skill.skillName] = skill.skillWeight;
+        });
+        return skills;
+      }
+
+    },
+
+    /**
+     * [plot Dibuja el gráfico del issue dentro del conjunto de plotters]
      */
     plot: function(){
       //Ploting metrics
       console.log(this.tag());
+      var self = this;
+      $(this.options.attrToPlot).each(function(i, attr){
+        if (self.options.plotter[i]){
+          var toPlot = self.adapt(attr) ;
+          if (!_.isEmpty(toPlot)){
+            console.log("plotting " + attr);
+            self.options.plotter[i].addGraph(self.tag(), toPlot);
+            console.log(self.options.plotter[i].chart);
+          }
+        }
+      });
+    },
 
-      if (this.options.plotter[0]){
-        if (!_.isEmpty(this.model.get('metrics'))){
-          console.log("plotting metrics");
-          this.options.plotter[0].addGraph(this.tag(), this.model.get('metrics'));
+    plotSingle: function(plotter, attr) {
+      if (plotter) {
+        var toPlot = this.adapt(attr) ;
+        if (!_.isEmpty(toPlot)){
+          console.log("plotting " + attr);
+          plotter.addGraph(this.tag(), toPlot);
+          console.log(plotter.chart);
         }
       }
-
-      //Ploting skills
-      if (this.options.plotter[1]){
-        if (!_.isEmpty(this.model.get('skills'))){
-          console.log("plotting skills");
-          var skills = {} ;
-
-          // convert skills to simple array
-          _(this.model.get('skills')).each(function(skill){
-            skills[skill.skillName] = skill.skillWeight;
-          });
-          this.options.plotter[1].addGraph(this.tag(), skills);
-        }
-      }
-
     } 
   });
 
@@ -180,7 +200,8 @@ define(
         //la cual la agrego a devIssuesContainer
         var issueView = new IssueView(
           { model: issue, 
-            plotter: self.options.plotter
+            plotter: self.options.plotter,
+            attrToPlot: self.options.attrToPlot
           }
         );
         devIssuesContainer.appendChild(issueView.render().el);
@@ -212,7 +233,8 @@ define(
     appendItem: function(item){
       var itemView = new DeveloperView(
         { model: item, 
-          plotter: this.options.plotter
+          plotter: this.options.plotter,
+          attrToPlot: this.options.attrToPlot
         }
       );
       this.$el.append(itemView.render().el);
@@ -261,8 +283,9 @@ define(
 
       if (issuesViewsToPlot.length>=0){
         this.options.plotter.build(this.options.metricsToPlot.array);
+        var self = this;
         _(issuesViewsToPlot).each(function(issueView){
-          issueView.plot();
+          issueView.plotSingle(self.options.plotter, self.options.type);
         });
       } 
 
@@ -289,7 +312,8 @@ define(
       var metricView = new MetricView(
         { model: item, 
           metricsToPlot: this.options.metricsToPlot,
-          plotter: this.options.plotter
+          plotter: this.options.plotter,
+          type: this.options.type
         }
       );
       this.$el.append(metricView.render().el);
