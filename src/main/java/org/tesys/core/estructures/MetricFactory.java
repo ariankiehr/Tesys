@@ -60,6 +60,7 @@ public class MetricFactory {
 				v = getValue(jsonFormat.get("value"));
 				t = getType(jsonFormat.get("type"));
 			} else {
+				System.out.println(jsonFormat.get("key"));
 				throw new NullPointerException();
 			}
 		} catch (Exception e) {

@@ -14,10 +14,14 @@ requirejs.config({
     'bootstrap': 'libs/bootstrap.min',
     'underscore': 'libs/underscore-min',
     'backbone': 'libs/backbone-min',
+    'backbone-relational':'libs/backbone-relational',
     'amcharts': 'libs/amcharts/amcharts',
     'amcharts.radar': 'libs/amcharts/radar',
     'amcharts.serial': 'libs/amcharts/serial',
-    'parser': 'parser'
+    'parser': 'parser',
+    'model': 'apps/models/model',
+    'view': 'apps/views/view'
+
   },
 
   shim: {
@@ -27,6 +31,9 @@ requirejs.config({
     'backbone': {
       deps: ['underscore', 'jquery'],
       exports: 'Backbone'
+    },
+    'backbone-relational' : {
+        deps: ['backbone']
     },
     'bootstrap': {
       deps: ['jquery']
