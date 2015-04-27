@@ -49,7 +49,6 @@ define(['adaptor', 'amcharts.serial'], function (adaptor, AmCharts) {
       this.amChartHTMLContainer, 
       this.amChartParams
     );
-    this.adaptor = new adaptor() ;
     this.keys = keys ;
     this.dataProvider = this.adaptor.generateDataProvider(this.keys);    
   };
