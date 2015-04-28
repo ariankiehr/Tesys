@@ -152,7 +152,7 @@ define(
       var tosend = "{\"key\": \"" + $("#submitMetricId").val() + "\"," +
               "\"nombre\": \"" + $("#submitMetricName").val() + "\"," +
               "\"descripcion\": \"" + $("#submitMetricDescription").val() + "\"," +
-              "\"procedencia\": \"" + $("submitMetricProcedence").val() + "\"," +
+              "\"procedencia\": \"" + $("#submitMetricProcedence").val() + "\"," +
                result + "}";  
 
       $.ajax({
