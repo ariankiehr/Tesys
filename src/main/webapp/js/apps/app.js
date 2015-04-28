@@ -5,7 +5,8 @@ define(
     'view', 
     'bar',
     'radar',
-    'extractor'
+    'extractor',
+    'parser'
   ], 
   function($, 
     tesys, 
@@ -135,6 +136,40 @@ define(
         $('#puntuacion').val()
       ); 
     });
+
+    // Complex metrics form
+    
+    extractor.getMetrics('#submitMetricSelect') ;
+    $('#submitMetricBtnAddMetric').click(function() {
+      // Appends metric into complex metric function
+      $('#submitMetricFunction').val($('#submitMetricFunction').val() + " " + $('#submitMetricSelect').find('option:selected').val()) ;
+    });
+
+  $('#submitMetricBtnSend').click(function () { 
+    try {
+      var result = parser.parse($("#submitMetricFunction").val());
+      
+      var tosend = "{\"key\": \"" + $("#submitMetricId").val() + "\"," +
+              "\"nombre\": \"" + $("#submitMetricName").val() + "\"," +
+              "\"descripcion\": \"" + $("#submitMetricDescription").val() + "\"," +
+              "\"procedencia\": \"" + $("submitMetricProcedence").val() + "\"," +
+               result + "}";  
+
+      $.ajax({
+          url: location+'/rest/controller/newmetric',
+          type: 'post',
+          dataType: 'json',
+          contentType: "application/json; charset=utf-8",
+          success: function (data) {
+            markers = JSON.stringify(data);
+            $("#submitMetricSpan").html(markers);
+          },
+          data: tosend
+        });          
+    } catch (e) {
+      $("#submitMetricSpan").html(String(e));
+    }
+  });
 
 
   };
