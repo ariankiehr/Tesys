@@ -171,7 +171,17 @@ define(
     }
   });
 
-
+  //Sonar Analysis Submit
+    $('#submitAnalysisBtnSend').click(function(event) {
+      extractor.storeAnalysis(
+        $('#submitAnalysisUrl').val(), 
+        $('#submitAnalysisUser').val(),
+        $('#submitAnalysisPass').val(),
+        $('#submitAnalysisRepo').val(),
+        $('#submitAnalysisRev').val(),
+        $('#submitAnalysisKey').val()
+      ); 
+    });
   };
 
   return { 
