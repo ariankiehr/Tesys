@@ -208,45 +208,63 @@
         <div class="panel panel-default" >
           <div class="panel-heading">
             <div class="panel-title"> <i class="glyphicon glyphicon-wrench pull-right"></i>
-             <h4 class="">Send Analysis</h4>
+             <h4 class="">Submit Sonar Analysis</h4>
             </div>
           </div>
           <div class="panel-body">
             <form class="form form-vertical">
               <div class="control-group">
-                <label class="">Name</label>
+                <label class="">Proyect Source:</label>
+                <hr class="">
+              </div>            
+              <div class="control-group">
+                <label class="">Repository</label>
                 <div class="controls">
-                  <input class="form-control" placeholder="Enter Name" type="text">
+                  <input class="form-control" placeholder="Enter Repository Name" type="text" id="submitAnalysisRepo">
                 </div>
               </div>
               <div class="control-group">
-                <label class="">Title</label>
+                <label class="">Revision</label>
                 <div class="controls">
-                  <input class="form-control" placeholder="Password" type="password">
+                  <input class="form-control" placeholder="Enter Revision" type="text" id="submitAnalysisRev">
                 </div>
               </div>
               <div class="control-group">
-                <label class="">Details</label>
+                <br>
+                <hr class="">
+                <label class="">Sonar Source:</label>
+                <hr class="">
+              </div>   
+              <div class="control-group">
+                <label class="">URL</label>
                 <div class="controls">
-                  <textarea class="form-control"></textarea>
+                  <input class="form-control" placeholder="Enter Sonar URL" type="text" id="submitAnalysisUrl">
                 </div>
               </div>
               <div class="control-group">
-                <label class="">Select</label>
+                <label class="">Key</label>
                 <div class="controls">
-                  <select class="form-control">
-                    <option class="">General Question</option>
-                    <option class="">Server Issues</option>
-                    <option class="">Billing Question</option>
-                  </select>
+                  <input class="form-control" placeholder="Enter Sonar Projet Key" type="text" id="submitAnalysisKey">
+                </div>
+              </div>              
+              <div class="control-group">
+                <label class="">User</label>
+                <div class="controls">
+                  <input class="form-control" placeholder="Enter Sonar Username" type="text" id="submitAnalysisUser">
                 </div>
               </div>
               <div class="control-group">
-                <label class=""></label>
+                <label class="">Pass</label>
                 <div class="controls">
-                  <button type="button" class="btn btn-primary">Post</button>
+                  <input class="form-control" placeholder="Enter Sonar Password" type="password" id="submitAnalysisPass">
                 </div>
               </div>
+              <div class="control-group">
+                <br>
+                <div class="controls">
+                  <button type="button" class="btn btn-primary" id="submitAnalysisBtnSend">Submit</button>
+                </div>
+              </div>   
             </form>
           </div>
         </div>
