@@ -5,19 +5,24 @@ define(
     'view', 
     'bar',
     'radar',
+    'extractor',
+    'tesys'
   ], 
   function($, 
     tesys, 
     model, 
     view,
     bar,
-    radar
+    radar,
+    extractor,
+    tesys
   ) {
 	
 	/* Main function */
   var start = function() {
     //TODO arreglar el sig bug. Cuand se elije un nuevo issue para graficar, 
-    //desaparece el grafico que esta en el panel inactivo.
+    //desaparece el grafico que esta en el panel inactivo. Esto se debe a 
+    //que AmCharts no puede graficar sobre un tab inactivo.
     var metricsToPlot = { array:[] };
     var skillsToPlot = { array:[] };
     
@@ -59,34 +64,21 @@ define(
       []
     );
 
-
     var developers;
     var devListView;
-
-    $.ajax({ //TODO reemplazar por un llamado ajax al controller
-      url: "file:////home/leandro/Tesis/workspace/tesys/src/main/webapp/developers-issues.json",
-      type: 'GET',
-      dataType: 'json',
-      success: function(data) {
-        developers = new model.DeveloperCollection(data);
-        devListView = new view.DeveloperCollectionView(
-          { collection: developers, 
-            plotter: [metricsPlotter, skillPlotter],
-            attrToPlot: ['metrics', 'skills']
-          }
-        );
-      }
+    tesys.getAnalysis(function(data){
+      developers = new model.DeveloperCollection(data);
+      devListView = new view.DeveloperCollectionView(
+        { collection: developers, 
+          plotter: [metricsPlotter, skillPlotter],
+          attrToPlot: ['metrics', 'skills']
+        }
+      );
     });
-
 
     var metrics ;
     var metricsView ;
-
-    $.ajax({ //TODO reemplazar por un llamado ajax al controller
-      url: "file:////home/leandro/Tesis/workspace/tesys/src/main/webapp/metrics.json",
-      type: 'GET',
-      dataType: 'json',
-      success: function(data) {
+    tesys.getMetrics(function(data){
         metrics = new model.MetricCollection(data);
         metricsView = new view.MetricCollectionView(
           { collection: metrics, 
@@ -96,19 +88,12 @@ define(
             type: 'metrics'
           }
         );
-      }
     });
-
 
 
     var skills ;
     var skillsView ;
-
-    $.ajax({ //TODO reemplazar por un llamado ajax al controller
-      url: "file:////home/leandro/Tesis/workspace/tesys/src/main/webapp/skills.json",
-      type: 'GET',
-      dataType: 'json',
-      success: function(data) {
+    tesys.getSkills(function(data){
 
         //adapt skills to metrics format
         var adaptedData = [];
@@ -124,14 +109,40 @@ define(
             plotter: skillPlotter,
             type: 'skills'
           });
+    });
+    
+    // Punctuation Form
+
+    extractor.getUsers('#puntuador');
+    extractor.getUsers('#puntuado');
+    first = true ;
+    $('#puntuado').on('DOMNodeInserted', function() { 
+      if ( first  ){ 
+        // esto se ejecuta se inserta el primer elemento de #puntuado
+        extractor.getIssuesByUser($('#puntuado').val(), '#issues') ;
+        first = false ;
       }
     });
 
+    // este evento queda para cambiar los issues cuando se cambia el puntuado
+    $('#puntuado').on('change', function() {
+        extractor.getIssuesByUser($('#puntuado').val(), '#issues') ;
+    });
 
-	};
+    $('#submitPunctuation').click(function() {
+      extractor.score(
+        $('#puntuador').val(), 
+        $('#puntuado').val(),
+        $('#issues').val(),
+        $('#puntuacion').val()
+      ); 
+    });
 
-	return { 
-		'start': start 
-	};
+
+  };
+
+  return { 
+    'start': start 
+  };
 	
 });
