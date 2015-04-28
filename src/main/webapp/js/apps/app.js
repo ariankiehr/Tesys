@@ -5,8 +5,7 @@ define(
     'view', 
     'bar',
     'radar',
-    'extractor',
-    'tesys'
+    'extractor'
   ], 
   function($, 
     tesys, 
@@ -14,8 +13,7 @@ define(
     view,
     bar,
     radar,
-    extractor,
-    tesys
+    extractor
   ) {
 	
 	/* Main function */
