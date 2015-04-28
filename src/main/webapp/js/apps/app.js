@@ -5,19 +5,23 @@ define(
     'view', 
     'bar',
     'radar',
+    'extractor',
+    'parser'
   ], 
   function($, 
     tesys, 
     model, 
     view,
     bar,
-    radar
+    radar,
+    extractor
   ) {
 	
 	/* Main function */
   var start = function() {
     //TODO arreglar el sig bug. Cuand se elije un nuevo issue para graficar, 
-    //desaparece el grafico que esta en el panel inactivo.
+    //desaparece el grafico que esta en el panel inactivo. Esto se debe a 
+    //que AmCharts no puede graficar sobre un tab inactivo.
     var metricsToPlot = { array:[] };
     var skillsToPlot = { array:[] };
     
@@ -59,34 +63,21 @@ define(
       []
     );
 
-
     var developers;
     var devListView;
-
-    $.ajax({ //TODO reemplazar por un llamado ajax al controller
-      url: "file:////home/leandro/Tesis/workspace/tesys/src/main/webapp/developers-issues.json",
-      type: 'GET',
-      dataType: 'json',
-      success: function(data) {
-        developers = new model.DeveloperCollection(data);
-        devListView = new view.DeveloperCollectionView(
-          { collection: developers, 
-            plotter: [metricsPlotter, skillPlotter],
-            attrToPlot: ['metrics', 'skills']
-          }
-        );
-      }
+    tesys.getAnalysis(function(data){
+      developers = new model.DeveloperCollection(data);
+      devListView = new view.DeveloperCollectionView(
+        { collection: developers, 
+          plotter: [metricsPlotter, skillPlotter],
+          attrToPlot: ['metrics', 'skills']
+        }
+      );
     });
-
 
     var metrics ;
     var metricsView ;
-
-    $.ajax({ //TODO reemplazar por un llamado ajax al controller
-      url: "file:////home/leandro/Tesis/workspace/tesys/src/main/webapp/metrics.json",
-      type: 'GET',
-      dataType: 'json',
-      success: function(data) {
+    tesys.getMetrics(function(data){
         metrics = new model.MetricCollection(data);
         metricsView = new view.MetricCollectionView(
           { collection: metrics, 
@@ -96,19 +87,12 @@ define(
             type: 'metrics'
           }
         );
-      }
     });
-
 
 
     var skills ;
     var skillsView ;
-
-    $.ajax({ //TODO reemplazar por un llamado ajax al controller
-      url: "file:////home/leandro/Tesis/workspace/tesys/src/main/webapp/skills.json",
-      type: 'GET',
-      dataType: 'json',
-      success: function(data) {
+    tesys.getSkills(function(data){
 
         //adapt skills to metrics format
         var adaptedData = [];
@@ -124,14 +108,84 @@ define(
             plotter: skillPlotter,
             type: 'skills'
           });
+    });
+    
+    // Punctuation Form
+
+    extractor.getUsers('#puntuador');
+    extractor.getUsers('#puntuado');
+    first = true ;
+    $('#puntuado').on('DOMNodeInserted', function() { 
+      if ( first  ){ 
+        // esto se ejecuta se inserta el primer elemento de #puntuado
+        extractor.getIssuesByUser($('#puntuado').val(), '#issues') ;
+        first = false ;
       }
     });
 
+    // este evento queda para cambiar los issues cuando se cambia el puntuado
+    $('#puntuado').on('change', function() {
+        extractor.getIssuesByUser($('#puntuado').val(), '#issues') ;
+    });
 
-	};
+    $('#submitPunctuation').click(function() {
+      extractor.score(
+        $('#puntuador').val(), 
+        $('#puntuado').val(),
+        $('#issues').val(),
+        $('#puntuacion').val()
+      ); 
+    });
 
-	return { 
-		'start': start 
-	};
+    // Complex metrics form
+    
+    extractor.getMetrics('#submitMetricSelect') ;
+    $('#submitMetricBtnAddMetric').click(function() {
+      // Appends metric into complex metric function
+      $('#submitMetricFunction').val($('#submitMetricFunction').val() + " " + $('#submitMetricSelect').find('option:selected').val()) ;
+    });
+
+  $('#submitMetricBtnSend').click(function () { 
+    try {
+      var result = parser.parse($("#submitMetricFunction").val());
+      
+      var tosend = "{\"key\": \"" + $("#submitMetricId").val() + "\"," +
+              "\"nombre\": \"" + $("#submitMetricName").val() + "\"," +
+              "\"descripcion\": \"" + $("#submitMetricDescription").val() + "\"," +
+              "\"procedencia\": \"" + $("#submitMetricProcedence").val() + "\"," +
+               result + "}";  
+
+      $.ajax({
+          url: location+'/rest/controller/newmetric',
+          type: 'post',
+          dataType: 'json',
+          contentType: "application/json; charset=utf-8",
+          success: function (data) {
+            markers = JSON.stringify(data);
+            $("#submitMetricSpan").html(markers);
+          },
+          data: tosend
+        });          
+    } catch (e) {
+      $("#submitMetricSpan").html(String(e));
+    }
+  });
+
+  //Sonar Analysis Submit
+    $('#submitAnalysisBtnSend').click(function(event) {
+      extractor.storeAnalysis(
+        $('#submitAnalysisUrl').val(), 
+        $('#submitAnalysisUser').val(),
+        $('#submitAnalysisPass').val(),
+        $('#submitAnalysisRepo').val(),
+        $('#submitAnalysisRev').val(),
+        $('#submitAnalysisKey').val()
+      ); 
+    });
+  };
+
+  return { 
+    'start': start 
+  };
 	
 });

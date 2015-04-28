@@ -131,6 +131,207 @@
       </div>
     </div><!--/container-->
     <!-- /Main -->
+    <br>
+    <hr class="">
+    <br>
+
+    <!--TODO Submit forms-->
+    <div class="container">
+      <div class="col-md-6 col-md-offset-3">
+        <div class="panel panel-default" >
+          <div class="panel-heading">
+            <div class="panel-title"> <i class="glyphicon glyphicon-wrench pull-right"></i>
+             <h4 class="">Submit Punctuation</h4>
+            </div>
+          </div>
+          <div class="panel-body">
+              <div class="control-group">
+                <label class="">From</label>
+                <div class="controls">
+                  <input class="form-control" placeholder="Enter Username" type="text" id="puntuador"/>
+                  <input class="form-control" placeholder="Enter Password" type="password"/> 
+                </div>
+              </div>
+
+              <div class="control-group">
+                <label class="">To</label>
+                <div class="controls">
+                  <select class="form-control" id="puntuado"></select>
+                </div>
+              </div>
+
+              <div class="control-group">
+                <label class="">On</label>
+                <div class="controls">
+                  <select class="form-control" id="issues"></select> 
+                </div>
+              </div>
+              <div class="control-group">
+                <label class="">Points</label>
+                <div class="controls">
+                  <select class="form-control" id="puntuacion">
+                    <option class="">1</option>
+                    <option class="">2</option>
+                    <option class="">3</option>
+                    <option class="">4</option>
+                    <option class="">5</option>
+                    <option class="">6</option>
+                    <option class="">7</option>
+                    <option class="">8</option>
+                    <option class="">9</option>
+                    <option class="">10</option>
+                  </select>
+                </div>
+              </div>    
+              <div class="control-group">
+                <label class=""></label>
+                <div class="controls">
+                  <button class="btn btn-primary" type="submit" id="submitPunctuation">Send</button>
+                </div> 
+              </div>         
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <br>
+    <hr class="">
+    <br>
+
+
+    <div class="container">
+      <div class="col-md-6 col-md-offset-3">
+        <div class="panel panel-default" >
+          <div class="panel-heading">
+            <div class="panel-title"> <i class="glyphicon glyphicon-wrench pull-right"></i>
+             <h4 class="">Submit Complex Metric</h4>
+            </div>
+          </div>
+          <div class="panel-body">
+              <div class="control-group">
+                <label class="">Identifier</label>
+                <div class="controls">
+                  <input class="form-control" placeholder="Metric identifier" type="text" id="submitMetricId"/>
+                </div>
+              </div>
+
+              <div class="control-group">
+                <label class="">Name</label>
+                <div class="controls">
+                  <input class="form-control" placeholder="Metric name" type="text" id="submitMetricName"/>
+                </div>
+              </div>
+
+              <div class="control-group">
+                <label class="">Description</label>
+                <div class="controls">
+                  <input class="form-control" placeholder="Metric description" type="text" id="submitMetricDescription"/>
+                </div>
+              </div>
+              <div class="control-group">
+                <label class="">Procedence</label>
+                <div class="controls">
+                  <input class="form-control" placeholder="Metric procedence" type="text" id="submitMetricProcedence"/>
+                </div>
+              </div>    
+              <div class="control-group">
+                <label class="">Select metric</label>
+                <div class="controls">
+                  <select class="form-control" id="submitMetricSelect"></select>
+                  <button type="button" class="btn btn-primary" id="submitMetricBtnAddMetric">Add</button>
+                </div>
+              </div>
+              <div class="control-group">
+                <label class="">Function</label>
+                <div class="controls">
+                  <input class="form-control" type="text" id="submitMetricFunction"/>
+                  <span id="submitMetricSpan"></span>
+                </div> 
+              </div>
+              <div class="control-group">
+                <label class=""></label>
+                <div class="controls">
+                  <button type="button" class="btn btn-primary" id="submitMetricBtnSend">Send</button>
+                </div>
+              </div>         
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <br>
+    <hr class="">
+    <br>
+    <div class="container">
+      <div class="col-md-4">
+        <div class="panel panel-default" >
+          <div class="panel-heading">
+            <div class="panel-title"> <i class="glyphicon glyphicon-wrench pull-right"></i>
+             <h4 class="">Submit Sonar Analysis</h4>
+            </div>
+          </div>
+          <div class="panel-body">
+            <form class="form form-vertical">
+              <div class="control-group">
+                <label class="">Proyect Source:</label>
+                <hr class="">
+              </div>            
+              <div class="control-group">
+                <label class="">Repository</label>
+                <div class="controls">
+                  <input class="form-control" placeholder="Enter Repository Name" type="text" id="submitAnalysisRepo">
+                </div>
+              </div>
+              <div class="control-group">
+                <label class="">Revision</label>
+                <div class="controls">
+                  <input class="form-control" placeholder="Enter Revision" type="text" id="submitAnalysisRev">
+                </div>
+              </div>
+              <div class="control-group">
+                <br>
+                <hr class="">
+                <label class="">Sonar Source:</label>
+                <hr class="">
+              </div>   
+              <div class="control-group">
+                <label class="">URL</label>
+                <div class="controls">
+                  <input class="form-control" placeholder="Enter Sonar URL" type="text" id="submitAnalysisUrl">
+                </div>
+              </div>
+              <div class="control-group">
+                <label class="">Key</label>
+                <div class="controls">
+                  <input class="form-control" placeholder="Enter Sonar Projet Key" type="text" id="submitAnalysisKey">
+                </div>
+              </div>              
+              <div class="control-group">
+                <label class="">User</label>
+                <div class="controls">
+                  <input class="form-control" placeholder="Enter Sonar Username" type="text" id="submitAnalysisUser">
+                </div>
+              </div>
+              <div class="control-group">
+                <label class="">Pass</label>
+                <div class="controls">
+                  <input class="form-control" placeholder="Enter Sonar Password" type="password" id="submitAnalysisPass">
+                </div>
+              </div>
+              <div class="control-group">
+                <br>
+                <div class="controls">
+                  <button type="button" class="btn btn-primary" id="submitAnalysisBtnSend">Submit</button>
+                </div>
+              </div>   
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--/panel -->
+
+
 
   </body>
 </html>

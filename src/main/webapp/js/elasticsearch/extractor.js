@@ -135,7 +135,7 @@ define(["jquery"], function($) {
             "\"pass\": \"" + sonarPass + "\"," +
             "\"repository\": \"" + repository + "\"," +
             "\"revision\": \"" + revision + "\"," +
-            "\"sonarKey\": \"" + sonarKey + "\"," +"}";
+            "\"sonarKey\": \"" + sonarKey + "\"" +"}";
         $.ajax({
             url: location+'rest/controller/sonar',
             type: 'PUT',
