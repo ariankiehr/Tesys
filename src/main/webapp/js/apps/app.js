@@ -1,142 +1,191 @@
-define(["jquery", "underscore", "backbone", "extractor", "tesys", "bootstrap"], function($, _, Backbone, extractor, tesys) {
+define(
+  [ 'jquery', 
+    'tesys',  
+    'model', 
+    'view', 
+    'bar',
+    'radar',
+    'extractor',
+    'parser'
+  ], 
+  function($, 
+    tesys, 
+    model, 
+    view,
+    bar,
+    radar,
+    extractor
+  ) {
 	
 	/* Main function */
-  var start = function() {/*
-		var skillPlotter ;
-		var metricPlotter ;
+  var start = function() {
+    //TODO arreglar el sig bug. Cuand se elije un nuevo issue para graficar, 
+    //desaparece el grafico que esta en el panel inactivo. Esto se debe a 
+    //que AmCharts no puede graficar sobre un tab inactivo.
+    var metricsToPlot = { array:[] };
+    var skillsToPlot = { array:[] };
+    
+    var metricsPlotter = new bar(
+      "metricChart", 
+      {    
+        "type": "serial",
+        "categoryField": "skill",
+        "gridAboveGraphs": true,
+        "valueAxes": [{
+            "gridColor":"#FFFFFF",
+            "gridAlpha": 0.2,
+            "dashLength": 0,
+            "tickPosition":"start",
+            "tickLength":20,
+            "axisTitleOffset": 20,
+            "min": 0,
+            "max": 1,
+            "minMaxMultiplier": 1,
+            "axisAlpha": 0.15 //hace mas clara u oscura la linea de los ejes
+        }]   
+      }, 
+      []
+    );
 
-		extractor.getUsers('#users') ;
-		extractor.getSkills('#skills') ;
-		extractor.getMetrics('#metrics') ;
-		//Busco los issues del primer item seleccionado
-		extractor.getIssuesByUser($('#users').find('option:selected').val(), '#issues') ;
-	*/
-    tesys.getUsers(function(data){
-      console.log(JSON.stringify(data));
-      $.each(data, function(i, dev){
-        console.log(dev);
-      })
-    });
-
-    var Developer = Backbone.Model.extend({
-      defaults: {
-        name: 'hello',
-        issues: [
-          'ISSUE-1',
-          'ISSUE-2'
-        ]
-      }
-    });
-
-    var DeveloperList = Backbone.Collection.extend({
-      model: Developer
-    });
-
-
-
-    var DeveloperView = Backbone.View.extend({
-      initialize: function(){
-        // every function that uses 'this' as the current object should be in here
-        _.bindAll(this, 'render', 'listIssues'); 
-        //this.render();
-        
-        //issuesE: element for insert issues
-        this.issuesEl = '#'+this.model.get('name') ;
-
+    var skillPlotter = new radar( 
+      "skillChart", 
+      {    
+        "type": "radar",
+        "categoryField": "skill",
+        "valueAxes": [{
+            "axisTitleOffset": 20,
+            "min": 0,
+            "max": 1,
+            "minMaxMultiplier": 1,
+            "axisAlpha": 0.15 //hace mas clara u oscura la linea de los ejes
+        }]   
       },
-      render: function(){
-        
-        var element =
-          $('<a>', 
-            { 'href': '#'+this.model.get('name'), 
-              'class': 'list-group-item list-group-item-success', 
-              'data-parent': '#MainMenu',
-              'data-toggle': 'collapse',
-            })
-          .append(this.model.get('name'))
-           // );
-        .add(
-          $(  '<div>', 
-            { 'class': 'panel-collapse collapse',
-              'id': this.model.get('name')
-            }).append(this.listIssues()))
-        ;
+      []
+    );
 
-        this.$el.append(element);
+    var developers;
+    var devListView;
+    tesys.getAnalysis(function(data){
+      developers = new model.DeveloperCollection(data);
+      devListView = new view.DeveloperCollectionView(
+        { collection: developers, 
+          plotter: [metricsPlotter, skillPlotter],
+          attrToPlot: ['metrics', 'skills']
+        }
+      );
+    });
 
-  
-        return this; // for chainable calls, like .render().el
-      },
-      listIssues: function(){
-        var result = "" ;
-        //inserto la lista de issues asociadas al developer
-        $.each(this.model.get('issues'), function(index, issue){
-          result+="<a href=#"+issue+" class=list-group-item>"+issue+"</a>";
+    var metrics ;
+    var metricsView ;
+    tesys.getMetrics(function(data){
+        metrics = new model.MetricCollection(data);
+        metricsView = new view.MetricCollectionView(
+          { collection: metrics, 
+            el: $('#metrics'), 
+            metricsToPlot: metricsToPlot,
+            plotter: metricsPlotter,
+            type: 'metrics'
+          }
+        );
+    });
+
+
+    var skills ;
+    var skillsView ;
+    tesys.getSkills(function(data){
+
+        //adapt skills to metrics format
+        var adaptedData = [];
+        $.each(data, function(index, el) {
+          adaptedData.push({'key': el.skillName, 'nombre': el.skillName});
         });
-        return $(result);
+
+        skills = new model.MetricCollection(adaptedData);
+        skillsView = new view.MetricCollectionView(
+          { collection: skills, 
+            el: $('#skills'), 
+            metricsToPlot: skillsToPlot,
+            plotter: skillPlotter,
+            type: 'skills'
+          });
+    });
+    
+    // Punctuation Form
+
+    extractor.getUsers('#puntuador');
+    extractor.getUsers('#puntuado');
+    first = true ;
+    $('#puntuado').on('DOMNodeInserted', function() { 
+      if ( first  ){ 
+        // esto se ejecuta se inserta el primer elemento de #puntuado
+        extractor.getIssuesByUser($('#puntuado').val(), '#issues') ;
+        first = false ;
       }
     });
 
-    var DeveloperListView = Backbone.View.extend({
-      el: $('#developers-issues'), // el attaches to existing element
-      initialize: function(developerList){
-        // every function that uses 'this' as the current object should be in here
-        _.bindAll(this, 'render');
-        this.collection = developerList;
-        this.counter = 0;
-        this.render();
-      },
-      render: function(){
-        var self = this;
-        _(this.collection.models).each(function(item){ // in case collection is not empty
-          self.appendItem(item);
-        }, this);
-      },
-      appendItem: function(item){
-        var itemView = new DeveloperView({model: item});
-
-        $(this.el).append(itemView.render().el);
-        
-      }
+    // este evento queda para cambiar los issues cuando se cambia el puntuado
+    $('#puntuado').on('change', function() {
+        extractor.getIssuesByUser($('#puntuado').val(), '#issues') ;
     });
-    
-    var developer = new Developer();
-    var dev1 = new Developer({
-        name: 'pepe',
-        issues: [
-          'ISSUE-1',
-          'asdasd-2'
-        ]
-      });
-    var dev2 = new Developer({
-        name: 'heladsdsalo',
-        issues: [
-          'ISSUdwadwaE-1',
-          'ISSUE-2'
-        ]
-      });
-    var dev3 = new Developer({
-        name: 'heldwadwalo',
-        issues: [
-          'ISSUdwadwaE-1',
-          'ISSUE-2'
-        ]
-      });
 
-    var developerList = new DeveloperList([developer, dev1, dev2, dev3]);
-
-
-    var developerView = new DeveloperView({
-      model: developer
+    $('#submitPunctuation').click(function() {
+      extractor.score(
+        $('#puntuador').val(), 
+        $('#puntuado').val(),
+        $('#issues').val(),
+        $('#puntuacion').val()
+      ); 
     });
+
+    // Complex metrics form
     
-    var devListView = new DeveloperListView(developerList);
+    extractor.getMetrics('#submitMetricSelect') ;
+    $('#submitMetricBtnAddMetric').click(function() {
+      // Appends metric into complex metric function
+      $('#submitMetricFunction').val($('#submitMetricFunction').val() + " " + $('#submitMetricSelect').find('option:selected').val()) ;
+    });
 
+  $('#submitMetricBtnSend').click(function () { 
+    try {
+      var result = parser.parse($("#submitMetricFunction").val());
+      
+      var tosend = "{\"key\": \"" + $("#submitMetricId").val() + "\"," +
+              "\"nombre\": \"" + $("#submitMetricName").val() + "\"," +
+              "\"descripcion\": \"" + $("#submitMetricDescription").val() + "\"," +
+              "\"procedencia\": \"" + $("#submitMetricProcedence").val() + "\"," +
+               result + "}";  
 
-	};
+      $.ajax({
+          url: location+'/rest/controller/newmetric',
+          type: 'post',
+          dataType: 'json',
+          contentType: "application/json; charset=utf-8",
+          success: function (data) {
+            markers = JSON.stringify(data);
+            $("#submitMetricSpan").html(markers);
+          },
+          data: tosend
+        });          
+    } catch (e) {
+      $("#submitMetricSpan").html(String(e));
+    }
+  });
 
-	return { 
-		'start': start 
-	};
+  //Sonar Analysis Submit
+    $('#submitAnalysisBtnSend').click(function(event) {
+      extractor.storeAnalysis(
+        $('#submitAnalysisUrl').val(), 
+        $('#submitAnalysisUser').val(),
+        $('#submitAnalysisPass').val(),
+        $('#submitAnalysisRepo').val(),
+        $('#submitAnalysisRev').val(),
+        $('#submitAnalysisKey').val()
+      ); 
+    });
+  };
+
+  return { 
+    'start': start 
+  };
 	
 });

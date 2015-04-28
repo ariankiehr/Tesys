@@ -1,5 +1,5 @@
 define(["jquery"], function($) {
-  function getUsers(callback) {
+  function getAnalysis(callback) {
     $.ajax({
       type: 'GET',
       url: location+'rest/controller/developers/0',
@@ -10,7 +10,31 @@ define(["jquery"], function($) {
     });
   }
 
+  function getMetrics(callback) {
+    $.ajax({
+        type: 'GET',
+        url: location+'rest/controller/metrics',
+        dataType: "json", // data type of response
+        success: function (data) {
+          callback(data) ;
+        }
+    });
+  }
+
+  function getSkills(callback) {
+    $.ajax({
+      type: 'GET',
+      url: location+'rest/controller/skills',
+      dataType: "json", 
+      success: function (data) {
+        callback(data);
+      }
+    });
+  }
+
   return {    
-    'getUsers': getUsers,
+    'getAnalysis': getAnalysis,
+    'getMetrics': getMetrics,
+    'getSkills': getSkills
   };
 });

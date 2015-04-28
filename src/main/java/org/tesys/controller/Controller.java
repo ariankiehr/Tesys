@@ -36,9 +36,7 @@ import org.tesys.core.estructures.Puntuacion;
 import org.tesys.core.project.scm.SCMManager;
 import org.tesys.core.project.scm.ScmPostCommitDataPOJO;
 import org.tesys.core.project.scm.ScmPreCommitDataPOJO;
-import org.tesys.core.project.tracking.IssuePOJO;
 import org.tesys.core.project.tracking.IssueTypePOJO;
-import org.tesys.core.project.tracking.ProjectTrackingRESTClient;
 import org.tesys.recomendations.DevelopersCriteriaIssues;
 import org.tesys.recomendations.DevelopersShortedByMetric;
 import org.tesys.recomendations.DevelopersShortedBySkills;
@@ -211,7 +209,7 @@ public class Controller {
         List<Developer> developers = dao.readAll();
 
         for (Developer d: developers) {
-            if (d.getName().equals( developer )) {
+            if (developer.equals( d.getName() )) {
                 List<Issue> issues = d.getIssues();
                 GenericEntity<List<Issue>> entity = new GenericEntity<List<Issue>>(issues) {};
                 response = Response.ok();
