@@ -144,7 +144,7 @@ define(["jquery"], function($) {
             data: toSend,
             success: function (data) {
                 //TODO ver casos de error
-              alert("analisis almacenado");
+              alert("analysis stored");
             }
         });
     }
@@ -158,7 +158,7 @@ define(["jquery"], function($) {
             contentType: "application/json; charset=utf-8",
             success: function (data) {
                 //TODO ver casos de error
-              alert("Se a ejecutado el analisis de tesys");
+              alert("Tesys analysis successful");
             }
         });   
     }
@@ -177,7 +177,7 @@ define(["jquery"], function($) {
             data: toSend,
             success: function (data) {
                 //TODO ver casos de error
-              alert("La puntuacion se ha realizado con exito");
+              alert("Puntuation stored successful");
             }
         });
 
