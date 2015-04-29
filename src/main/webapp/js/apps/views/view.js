@@ -183,9 +183,12 @@ define(
       } else {
         devNameContainer.style.textDecoration = this.DECORATION_HAS_ISSUES;
       }
-
-      this.el.appendChild(devNameContainer);
-      self.listIssues();
+      
+      if(this.model.get('displayName') != null) {
+          this.el.appendChild(devNameContainer);
+          self.listIssues();
+      }
+      
       return this; // for chainable calls, like .render().el
     },
     listIssues: function(){ 
