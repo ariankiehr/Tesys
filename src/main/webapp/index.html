@@ -13,28 +13,22 @@
     <link href="css/styles.css" rel="stylesheet">
   </head>
   <body id="body">
-
-
     <script data-main="js/boot-index.js" src="js/libs/require.js"></script>
-
-   	<script type="text/javascript" src="js/libs/jquery-1.7.1.min.js"></script>
+   	<script type="text/javascript" src="js/libs/jquery-1.11.2.min.js"></script>
    	<script type="text/javascript" src="js/libs/tablesorter/jquery.tablesorter.js"></script>
-
-
-	<script>
+    <script>
 		$(document).ready(function() {
 			$("#recom").click(function(e) {
 				$("#div-test").prop("style", "display:none");
-				document.getElementById("div-table").style.display = "block"
+				document.getElementById("div-table").style.display = "block";
 				return false;
 			});
 			
 			$("#test").click(function(e) {
 				$("#div-table").prop("style", "display:none");
-				document.getElementById("div-test").style.display = "block"
+				document.getElementById("div-test").style.display = "block";
 				return false;
 			});
-			
 			
 			//ordena
 			$("myTable").tablesorter();
@@ -71,7 +65,7 @@
 					});
 
 		});
-	</script>
+    </script>
 
     <!-- Header -->
     <div id="top-nav" class="navbar navbar-inverse navbar-static-top">
@@ -85,8 +79,10 @@
       </div><!-- /container -->
     </div>
     <!-- /Header -->
-    <!-- Main -->
 
+    <!-- Main -->
+    <div class="container">
+      <div class="row">
       <!--Developers list -->
         <div id="MainMenu" class="col-md-3">
           <div class="list-group panel panel-default">
@@ -96,74 +92,85 @@
         </div>
       <!--/Developers list-->
 
-      <!--tabs-->
-      <div class="col-md-8">
-        <ul class="nav nav-tabs" id="myTab">
-          <li class="active"><a href="#metricPane" data-toggle="tab">Metrics</a></li>
-          <li><a href="#skillPane" data-toggle="tab">Skills</a></li>
-        </ul>
-        
-        <div class="tab-content">
-          <!--TODO meter mas distancia aca-->
-          <div class="tab-pane active panel-body" id="metricPane">
-            <!--contenido de un panel-->
-            <div class="col-md-4" style="overflow-y: auto; height:400px;">
-              <ul class="nav nav-stacked" id="metrics">
-                <!--li><a> Metric 1 </a></li-->
-              </ul>
+        <!--tabs-->
+        <div class="col-md-8">
+          <ul class="nav nav-tabs" id="myTab">
+            <li class="active"><a href="#metricPane" data-toggle="tab">Metrics</a></li>
+            <li><a href="#skillPane" data-toggle="tab">Skills</a></li>
+          </ul>
+          
+          <div class="tab-content">
+            <!--TODO meter mas distancia aca-->
+            <div class="tab-pane active panel-body" id="metricPane">
+              <!--contenido de un panel-->
+              <div class="col-md-4" style="overflow-y: auto; height:400px;">
+                <ul class="nav nav-stacked" id="metrics">
+                  <!--li><a> Metric 1 </a></li-->
+                </ul>
+              </div>
+              <div id="metricChart" style="height: 400px;"></div>
             </div>
-            <div id="metricChart" style="height: 400px;"></div>
-          </div>
-          <!--/contenido de un panel-->
-          <div class="tab-pane panel-body" id="skillPane">
-            <div class="col-md-4" style="overflow-y: auto; height:400px;">
-              <ul class="nav nav-stacked" id="skills">
-                <!--li><a> skill 1 </a></li-->
-              </ul>
+            <!--/contenido de un panel-->
+            <div class="tab-pane panel-body" id="skillPane">
+              <div class="col-md-4" style="overflow-y: auto; height:400px;">
+                <ul class="nav nav-stacked" id="skills">
+                  <!--li><a> skill 1 </a></li-->
+                </ul>
+              </div>
+              <div id="skillChart" style="height: 400px;"></div>
             </div>
-            <div id="skillChart" style="height: 400px;"></div>
           </div>
         </div>
+        <!--/tabs-->
       </div>
-      <!--/tabs-->
+    </div>
+    <!-- Charts -->
 
-						<!-- TABLA RECOMENDACION-->
-						<div id="div-table" >
+    <br>
+    <hr class="">
+    <br>
 
-							<div class="well"><h4>Recomendaciones</h4></div>
+    <div class="container">
+			<!-- TABLA RECOMENDACION-->
+			<div class="col-md-12" id="div-table" >
+				<div class="well"><h4>Recomendaciones</h4></div>
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<table>
+							<tr>
+								<th>Tarea del JIRA</th>
+								<th><input type="text" id="issue" /></th>
+								<th>Metrica</th>
+								<th><input type="text" id="metric" /></th>
+								<th><form action="">
+										<input type="submit" id="ajax-append" size="100"
+											value="Recomendar">
+									</form></th>
+							</tr>
+						</table>
+					</div>
+					<div class="panel-body">
+						<table id="myTable" class="tablesorter">
+							<thead>
+								<tr>
+									<th>Desarrollador</th>
+									<th id="met">Metrica</th>
+									<th>#Tareas similares</th>
+									<th>#Similitudes</th>
+								</tr>
+							</thead>
+							<tbody>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+			<!-- FIN TABLA RECOMENDACION-->
+    </div>
 
-							<div class="panel panel-default">
-								<div class="panel-heading">
-									<table>
-										<tr>
-											<th>Tarea del JIRA</th>
-											<th><input type="text" id="issue" /></th>
-											<th>Metrica</th>
-											<th><input type="text" id="metric" /></th>
-											<th><form action="">
-													<input type="submit" id="ajax-append" size="100"
-														value="Recomendar">
-												</form></th>
-										</tr>
-									</table>
-								</div>
-								<div class="panel-body">
-									<table id="myTable" class="tablesorter">
-										<thead>
-											<tr>
-												<th>Desarrollador</th>
-												<th id="met">Metrica</th>
-												<th>#Tareas similares</th>
-												<th>#Similitudes</th>
-											</tr>
-										</thead>
-										<tbody>
-										</tbody>
-									</table>
-								</div>
-							</div>
-						</div>
-						<!-- FIN TABLA RECOMENDACION-->
+    <br>
+    <hr class="">
+    <br>
 
     <!--TODO Submit forms-->
     <div class="container">
@@ -224,11 +231,9 @@
       </div>
     </div>
 
-
     <br>
     <hr class="">
     <br>
-
 
     <div class="container">
       <div class="col-md-6 col-md-offset-3">
