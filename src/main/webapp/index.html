@@ -1,22 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-    <meta charset="utf-8">
-    <title>Telemetrical System</title>
-    <meta name="generator" content="Bootply" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <link href="css/bootstrap.min.css" rel="stylesheet">
-    <!--[if lt IE 9]>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<title>Telemetrical System</title>
+<meta name="generator" content="Bootply" />
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1">
+<link href="css/bootstrap.min.css" rel="stylesheet">
+<!--[if lt IE 9]>
       <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
-    <link href="css/styles.css" rel="stylesheet">
-  </head>
-  <body id="body">
-    <script data-main="js/boot-index.js" src="js/libs/require.js"></script>
-   	<script type="text/javascript" src="js/libs/jquery-1.11.2.min.js"></script>
-   	<script type="text/javascript" src="js/libs/tablesorter/jquery.tablesorter.js"></script>
-    <script>
+<link href="css/styles.css" rel="stylesheet">
+</head>
+<body id="body">
+	<script data-main="js/boot-index.js" src="js/libs/require.js"></script>
+	<script type="text/javascript" src="js/libs/jquery-1.11.2.min.js"></script>
+	<script type="text/javascript"
+		src="js/libs/tablesorter/jquery.tablesorter.js"></script>
+
+
+	<script>
 		$(document).ready(function() {
 
 			//ordena
@@ -56,304 +60,352 @@
 		});
     </script>
 
-    <!-- Header -->
-    <div id="top-nav" class="navbar navbar-inverse navbar-static-top">
-      <div class="container">
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-              <span class="icon-toggle"></span>
-          </button>
-          <a class="navbar-brand" >Control Panel</a>
-        </div>
-      </div><!-- /container -->
-    </div>
-    <!-- /Header -->
+	<div id="top-nav" class="navbar navbar-inverse navbar-static-top">
+		<div class="container">
+			<ul id="tabs" class="nav nav-pills nav-justified" data-tabs="tabs">
+				<li class="active"><a class="navbar-brand" href="#secgraph"
+					data-toggle="tab"> <span class="glyphicon glyphicon-stats"></span> Analytics
+				</a></li>
+				<li><a class="navbar-brand" href="#secrecom" data-toggle="tab">
+						<span class="glyphicon glyphicon-signal"></span> Recomendations
+				</a></li>
+				<li><a class="navbar-brand" href="#secpunt" data-toggle="tab">
+						<span class="glyphicon glyphicon-thumbs-up"></span> Rank Users
+				</a></li>
+				<li><a class="navbar-brand" href="#seccommet" data-toggle="tab">
+						<span class="glyphicon glyphicon-list-alt"></span> Complex Metrics
+				</a></li>
+				<li><a class="navbar-brand" href="#secsonar" data-toggle="tab">
+						<span class="glyphicon glyphicon-pencil"></span> Software Metrics
+				</a></li>
+			</ul>
+		</div>
+		<!-- /container -->
+	</div>
 
-    <!-- Main -->
-    <div class="container">
-      <div class="row">
-      <!--Developers list -->
-        <div id="MainMenu" class="col-md-3">
-          <div class="list-group panel panel-default">
-            <div class="panel-heading"><h4><i class="glyphicon glyphicon-user"></i> Developers</h4></div>
-            <div class="panel-body" style="overflow-y: auto; height:400px;" id="developers-issues"></div>
-          </div>
-        </div>
-      <!--/Developers list-->
 
-        <!--tabs-->
-        <div class="col-md-8">
-          <ul class="nav nav-tabs" id="myTab">
-            <li class="active"><a href="#metricPane" data-toggle="tab">Metrics</a></li>
-            <li><a href="#skillPane" data-toggle="tab">Skills</a></li>
-          </ul>
-          
-          <div class="tab-content">
-            <!--TODO meter mas distancia aca-->
-            <div class="tab-pane active panel-body" id="metricPane">
-              <!--contenido de un panel-->
-              <div class="col-md-4" style="overflow-y: auto; height:400px;">
-                <ul class="nav nav-stacked" id="metrics">
-                  <!--li><a> Metric 1 </a></li-->
-                </ul>
-              </div>
-              <div id="metricChart" style="height: 400px;"></div>
-            </div>
-            <!--/contenido de un panel-->
-            <div class="tab-pane panel-body" id="skillPane">
-              <div class="col-md-4" style="overflow-y: auto; height:400px;">
-                <ul class="nav nav-stacked" id="skills">
-                  <!--li><a> skill 1 </a></li-->
-                </ul>
-              </div>
-              <div id="skillChart" style="height: 400px;"></div>
-            </div>
-          </div>
-        </div>
-        <!--/tabs-->
-      </div>
-    </div>
-    <!-- Charts -->
+	<div id="my-tab-content" class="tab-content">
 
-    <br>
-    <hr class="">
-    <br>
-
-	<!-- TABLA RECOMENDACION-->
-    <div class="container">
-			<div class="col-md-12" id="div-table" >
-				<div class="well"><h4>Recomendations</h4></div>
-				<div class="panel panel-default">
-					<div class="panel-heading">
-						<table>
-							<tr>
-								<th>Issue Identifier</th>
-								<th><input type="text" id="issue" /></th>
-								<th>Metric</th>
-								<th><input type="text" id="metric" /></th>
-								<th><button type="button" class="btn btn-primary" id="ajax-append">Recommend</button></th>
-							</tr>
-						</table>
+		<!-- GRAFICOS -->
+		<div class="tab-pane active" id="secgraph">
+			<p>
+				<!-- Main -->
+			<div class="container">
+				<div class="row">
+					<!--Developers list -->
+					<div id="MainMenu" class="col-md-3">
+						<div class="list-group panel panel-default">
+							<div class="panel-heading">
+								<h4>
+									<i class="glyphicon glyphicon-user"></i> Developers
+								</h4>
+							</div>
+							<div class="panel-body" style="overflow-y: auto; height: 400px;"
+								id="developers-issues"></div>
+						</div>
 					</div>
-					<div class="panel-body">
-						<table id="myTable" class="tablesorter">
-							<thead>
+					<!--/Developers list-->
+
+					<!--tabs-->
+					<div class="col-md-8">
+						<ul class="nav nav-tabs" id="myTab">
+							<li class="active"><a href="#metricPane" data-toggle="tab">Metrics</a></li>
+							<li><a href="#skillPane" data-toggle="tab">Skills</a></li>
+						</ul>
+
+						<div class="tab-content">
+							<!--TODO meter mas distancia aca-->
+							<div class="tab-pane active panel-body" id="metricPane">
+								<!--contenido de un panel-->
+								<div class="col-md-4" style="overflow-y: auto; height: 400px;">
+									<ul class="nav nav-stacked" id="metrics">
+										<!--li><a> Metric 1 </a></li-->
+									</ul>
+								</div>
+								<div id="metricChart" style="height: 400px;"></div>
+							</div>
+							<!--/contenido de un panel-->
+							<div class="tab-pane panel-body" id="skillPane">
+								<div class="col-md-4" style="overflow-y: auto; height: 400px;">
+									<ul class="nav nav-stacked" id="skills">
+										<!--li><a> skill 1 </a></li-->
+									</ul>
+								</div>
+								<div id="skillChart" style="height: 400px;"></div>
+							</div>
+						</div>
+					</div>
+					<!--/tabs-->
+				</div>
+			</div>
+			<!-- Charts -->
+		</div>
+		<!-- FIN GRAFICOS-->
+
+		<!-- RECOMENDACION-->
+		<div class="tab-pane" id="secrecom">
+			<p>
+			<div class="container">
+				<div class="col-md-12" id="div-table">
+					<div class="well">
+						<h4>Recomendations</h4>
+					</div>
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<table>
 								<tr>
-									<th>Developer</th>
-									<th id="met">Metric</th>
-									<th>Similar issues</th>
-									<th>Number of similarities</th>
+									<th>Issue Identifier</th>
+									<th><input type="text" id="issue" /></th>
+									<th>Metric</th>
+									<th><input type="text" id="metric" /></th>
+									<th><button type="button" class="btn btn-primary"
+											id="ajax-append">Recommend</button></th>
 								</tr>
-							</thead>
-							<tbody>
-							</tbody>
-						</table>
+							</table>
+						</div>
+						<div class="panel-body">
+							<table id="myTable" class="tablesorter">
+								<thead>
+									<tr>
+										<th>Developer</th>
+										<th id="met">Metric</th>
+										<th>Similar issues</th>
+										<th>Number of similarities</th>
+									</tr>
+								</thead>
+								<tbody>
+								</tbody>
+							</table>
+						</div>
 					</div>
 				</div>
 			</div>
-    </div>
-    <!-- FIN TABLA RECOMENDACION-->
+		</div>
+		<!-- FIN RECOMENDACION-->
 
-    <br>
-    <hr class="">
-    <br>
+		<!-- PUNTUACION-->
+		<div class="tab-pane" id="secpunt">
+			<p>
+				<!--TODO Submit forms-->
+			<div class="container">
+				<div class="col-md-6 col-md-offset-3">
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<div class="panel-title">
+								<i class="glyphicon glyphicon-wrench pull-right"></i>
+								<h4 class="">Submit Puntuation</h4>
+							</div>
+						</div>
+						<div class="panel-body">
+							<div class="control-group">
+								<label class="">From</label>
+								<div class="controls">
+									<input class="form-control" placeholder="Enter Username"
+										type="text" id="puntuador" /> <input class="form-control"
+										placeholder="Enter Password" type="password" />
+								</div>
+							</div>
 
-    <!--TODO Submit forms-->
-    <div class="container">
-      <div class="col-md-6 col-md-offset-3">
-        <div class="panel panel-default" >
-          <div class="panel-heading">
-            <div class="panel-title"> <i class="glyphicon glyphicon-wrench pull-right"></i>
-             <h4 class="">Submit Puntuation</h4>
-            </div>
-          </div>
-          <div class="panel-body">
-              <div class="control-group">
-                <label class="">From</label>
-                <div class="controls">
-                  <input class="form-control" placeholder="Enter Username" type="text" id="puntuador"/>
-                  <input class="form-control" placeholder="Enter Password" type="password"/> 
-                </div>
-              </div>
+							<div class="control-group">
+								<label class="">To</label>
+								<div class="controls">
+									<select class="form-control" id="puntuado"></select>
+								</div>
+							</div>
 
-              <div class="control-group">
-                <label class="">To</label>
-                <div class="controls">
-                  <select class="form-control" id="puntuado"></select>
-                </div>
-              </div>
+							<div class="control-group">
+								<label class="">On</label>
+								<div class="controls">
+									<select class="form-control" id="issues"></select>
+								</div>
+							</div>
+							<div class="control-group">
+								<label class="">Points</label>
+								<div class="controls">
+									<select class="form-control" id="puntuacion">
+										<option class="">1</option>
+										<option class="">2</option>
+										<option class="">3</option>
+										<option class="">4</option>
+										<option class="">5</option>
+										<option class="">6</option>
+										<option class="">7</option>
+										<option class="">8</option>
+										<option class="">9</option>
+										<option class="">10</option>
+									</select>
+								</div>
+							</div>
+							<div class="control-group">
+								<label class=""></label>
+								<div class="controls">
+									<button class="btn btn-primary" type="submit"
+										id="submitPunctuation">Grade</button>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- FIN PUNTUACION-->
 
-              <div class="control-group">
-                <label class="">On</label>
-                <div class="controls">
-                  <select class="form-control" id="issues"></select> 
-                </div>
-              </div>
-              <div class="control-group">
-                <label class="">Points</label>
-                <div class="controls">
-                  <select class="form-control" id="puntuacion">
-                    <option class="">1</option>
-                    <option class="">2</option>
-                    <option class="">3</option>
-                    <option class="">4</option>
-                    <option class="">5</option>
-                    <option class="">6</option>
-                    <option class="">7</option>
-                    <option class="">8</option>
-                    <option class="">9</option>
-                    <option class="">10</option>
-                  </select>
-                </div>
-              </div>    
-              <div class="control-group">
-                <label class=""></label>
-                <div class="controls">
-                  <button class="btn btn-primary" type="submit" id="submitPunctuation">Grade</button>
-                </div> 
-              </div>         
-          </div>
-        </div>
-      </div>
-    </div>
+		<!-- METRICAS COMPLEJAS-->
+		<div class="tab-pane" id="seccommet">
+			<p>
+			<div class="container">
+				<div class="col-md-6 col-md-offset-3">
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<div class="panel-title">
+								<i class="glyphicon glyphicon-wrench pull-right"></i>
+								<h4 class="">Submit Complex Metric</h4>
+							</div>
+						</div>
+						<div class="panel-body">
+							<div class="control-group">
+								<label class="">Identifier</label>
+								<div class="controls">
+									<input class="form-control" placeholder="Metric identifier"
+										type="text" id="submitMetricId" />
+								</div>
+							</div>
 
-    <br>
-    <hr class="">
-    <br>
+							<div class="control-group">
+								<label class="">Name</label>
+								<div class="controls">
+									<input class="form-control" placeholder="Metric name"
+										type="text" id="submitMetricName" />
+								</div>
+							</div>
 
-    <div class="container">
-      <div class="col-md-6 col-md-offset-3">
-        <div class="panel panel-default" >
-          <div class="panel-heading">
-            <div class="panel-title"> <i class="glyphicon glyphicon-wrench pull-right"></i>
-             <h4 class="">Submit Complex Metric</h4>
-            </div>
-          </div>
-          <div class="panel-body">
-              <div class="control-group">
-                <label class="">Identifier</label>
-                <div class="controls">
-                  <input class="form-control" placeholder="Metric identifier" type="text" id="submitMetricId"/>
-                </div>
-              </div>
+							<div class="control-group">
+								<label class="">Description</label>
+								<div class="controls">
+									<input class="form-control" placeholder="Metric description"
+										type="text" id="submitMetricDescription" />
+								</div>
+							</div>
+							<div class="control-group">
+								<label class="">Procedence</label>
+								<div class="controls">
+									<input class="form-control" placeholder="Metric procedence"
+										type="text" id="submitMetricProcedence" />
+								</div>
+							</div>
+							<div class="control-group">
+								<label class="">Select metric</label>
+								<div class="controls">
+									<select class="form-control" id="submitMetricSelect"></select>
+									<button type="button" class="btn btn-primary"
+										id="submitMetricBtnAddMetric">Add</button>
+								</div>
+							</div>
+							<div class="control-group">
+								<label class="">Function</label>
+								<div class="controls">
+									<input class="form-control" type="text"
+										id="submitMetricFunction" /> <span id="submitMetricSpan"></span>
+								</div>
+							</div>
+							<div class="control-group">
+								<label class=""></label>
+								<div class="controls">
+									<button type="button" class="btn btn-primary"
+										id="submitMetricBtnSend">Send</button>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- FIN METRICAS COMPLEJAS-->
 
-              <div class="control-group">
-                <label class="">Name</label>
-                <div class="controls">
-                  <input class="form-control" placeholder="Metric name" type="text" id="submitMetricName"/>
-                </div>
-              </div>
+		<!-- SONAR-->
+		<div class="tab-pane" id="secsonar">
+			<p>
+			<div class="container">
+				<div class="col-md-6 col-md-offset-3">
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<div class="panel-title">
+								<i class="glyphicon glyphicon-wrench pull-right"></i>
+								<h4 class="">Submit SonarQube Analysis</h4>
+							</div>
+						</div>
+						<div class="panel-body">
+							<form class="form form-vertical">
+								<div class="control-group">
+									<label class="">Proyect Source:</label>
+									<hr class="">
+								</div>
+								<div class="control-group">
+									<label class="">Repository</label>
+									<div class="controls">
+										<input class="form-control"
+											placeholder="Enter Repository Name" type="text"
+											id="submitAnalysisRepo">
+									</div>
+								</div>
+								<div class="control-group">
+									<label class="">Revision</label>
+									<div class="controls">
+										<input class="form-control" placeholder="Enter Revision"
+											type="text" id="submitAnalysisRev">
+									</div>
+								</div>
+								<div class="control-group">
+									<br>
+									<hr class="">
+									<label class="">Sonar Source:</label>
+									<hr class="">
+								</div>
+								<div class="control-group">
+									<label class="">URL</label>
+									<div class="controls">
+										<input class="form-control" placeholder="Enter Sonar URL"
+											type="text" id="submitAnalysisUrl">
+									</div>
+								</div>
+								<div class="control-group">
+									<label class="">Key</label>
+									<div class="controls">
+										<input class="form-control"
+											placeholder="Enter Sonar Projet Key" type="text"
+											id="submitAnalysisKey">
+									</div>
+								</div>
+								<div class="control-group">
+									<label class="">User</label>
+									<div class="controls">
+										<input class="form-control" placeholder="Enter Sonar Username"
+											type="text" id="submitAnalysisUser">
+									</div>
+								</div>
+								<div class="control-group">
+									<label class="">Pass</label>
+									<div class="controls">
+										<input class="form-control" placeholder="Enter Sonar Password"
+											type="password" id="submitAnalysisPass">
+									</div>
+								</div>
+								<div class="control-group">
+									<br>
+									<div class="controls">
+										<button type="button" class="btn btn-primary"
+											id="submitAnalysisBtnSend">Submit</button>
+									</div>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!--/panel -->
+		</div>
+		<!-- FIN SONAR-->
+	</div>
 
-              <div class="control-group">
-                <label class="">Description</label>
-                <div class="controls">
-                  <input class="form-control" placeholder="Metric description" type="text" id="submitMetricDescription"/>
-                </div>
-              </div>
-              <div class="control-group">
-                <label class="">Procedence</label>
-                <div class="controls">
-                  <input class="form-control" placeholder="Metric procedence" type="text" id="submitMetricProcedence"/>
-                </div>
-              </div>    
-              <div class="control-group">
-                <label class="">Select metric</label>
-                <div class="controls">
-                  <select class="form-control" id="submitMetricSelect"></select>
-                  <button type="button" class="btn btn-primary" id="submitMetricBtnAddMetric">Add</button>
-                </div>
-              </div>
-              <div class="control-group">
-                <label class="">Function</label>
-                <div class="controls">
-                  <input class="form-control" type="text" id="submitMetricFunction"/>
-                  <span id="submitMetricSpan"></span>
-                </div> 
-              </div>
-              <div class="control-group">
-                <label class=""></label>
-                <div class="controls">
-                  <button type="button" class="btn btn-primary" id="submitMetricBtnSend">Send</button>
-                </div>
-              </div>         
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <br>
-    <hr class="">
-    <br>
-
-    
-    <div class="container">
-      <div class="col-md-6 col-md-offset-3">
-        <div class="panel panel-default" >
-          <div class="panel-heading">
-            <div class="panel-title"> <i class="glyphicon glyphicon-wrench pull-right"></i>
-             <h4 class="">Submit SonarQube Analysis</h4>
-            </div>
-          </div>
-          <div class="panel-body">
-            <form class="form form-vertical">
-              <div class="control-group">
-                <label class="">Proyect Source:</label>
-                <hr class="">
-              </div>            
-              <div class="control-group">
-                <label class="">Repository</label>
-                <div class="controls">
-                  <input class="form-control" placeholder="Enter Repository Name" type="text" id="submitAnalysisRepo">
-                </div>
-              </div>
-              <div class="control-group">
-                <label class="">Revision</label>
-                <div class="controls">
-                  <input class="form-control" placeholder="Enter Revision" type="text" id="submitAnalysisRev">
-                </div>
-              </div>
-              <div class="control-group">
-                <br>
-                <hr class="">
-                <label class="">Sonar Source:</label>
-                <hr class="">
-              </div>   
-              <div class="control-group">
-                <label class="">URL</label>
-                <div class="controls">
-                  <input class="form-control" placeholder="Enter Sonar URL" type="text" id="submitAnalysisUrl">
-                </div>
-              </div>
-              <div class="control-group">
-                <label class="">Key</label>
-                <div class="controls">
-                  <input class="form-control" placeholder="Enter Sonar Projet Key" type="text" id="submitAnalysisKey">
-                </div>
-              </div>              
-              <div class="control-group">
-                <label class="">User</label>
-                <div class="controls">
-                  <input class="form-control" placeholder="Enter Sonar Username" type="text" id="submitAnalysisUser">
-                </div>
-              </div>
-              <div class="control-group">
-                <label class="">Pass</label>
-                <div class="controls">
-                  <input class="form-control" placeholder="Enter Sonar Password" type="password" id="submitAnalysisPass">
-                </div>
-              </div>
-              <div class="control-group">
-                <br>
-                <div class="controls">
-                  <button type="button" class="btn btn-primary" id="submitAnalysisBtnSend">Submit</button>
-                </div>
-              </div>   
-            </form>
-          </div>
-        </div>
-      </div>
-    </div>
-    <!--/panel -->
-
-  </body>
+</body>
 </html>

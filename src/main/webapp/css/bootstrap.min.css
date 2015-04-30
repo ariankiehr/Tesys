@@ -3890,8 +3890,8 @@ textarea.input-group-sm>.form-control,textarea.input-group-sm>.input-group-addon
 	float: left
 }
 
-.nav-pills>li>a {
-	border-radius: 4px
+.nav-pills>li {
+	float: left
 }
 
 .nav-pills>li+li {
@@ -3901,7 +3901,7 @@ textarea.input-group-sm>.form-control,textarea.input-group-sm>.input-group-addon
 .nav-pills>li.active>a,.nav-pills>li.active>a:hover,.nav-pills>li.active>a:focus
 	{
 	color: #fff;
-	background-color: #428bca
+	background-color: #222
 }
 
 .nav-stacked>li {

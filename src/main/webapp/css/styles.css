@@ -1,5 +1,14 @@
+
 .navbar-static-top {
   margin-bottom:20px;
+}
+
+.nav-pills>li>a:hover {
+	background-color: #222
+}
+
+.nav-pills>li>a:active {
+	background-color: #fff
 }
 
 i {
@@ -68,3 +77,6 @@ table.tablesorter thead tr .headerSortDown {
 table.tablesorter thead tr .headerSortDown, table.tablesorter thead tr .headerSortUp {
 background-color: #8dbdd8;
 }
+
+
+
