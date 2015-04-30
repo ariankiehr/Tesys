@@ -59,6 +59,20 @@
 
 		});
     </script>
+    
+    
+    <script>
+		$(function(){
+		    $('#metricfilter').keyup(function(){
+		        var searchText = $(this).val().toUpperCase();
+		        $('#metrics > li').each(function(){
+		            var currentLiText = $(this).text().toUpperCase(),
+		                showCurrentLi = currentLiText.indexOf(searchText) !== -1;
+		            $(this).toggle(showCurrentLi);
+		        });     
+		    });
+		});
+    </script>
 
 	<div id="top-nav" class="navbar navbar-inverse navbar-static-top">
 		<div class="container">
@@ -117,7 +131,11 @@
 							<!--TODO meter mas distancia aca-->
 							<div class="tab-pane active panel-body" id="metricPane">
 								<!--contenido de un panel-->
+
 								<div class="col-md-4" style="overflow-y: auto; height: 400px;">
+									<input class="col-md-4 form-control"
+										placeholder="Filter metric" type="text" id="metricfilter" />
+									<br><br>
 									<ul class="nav nav-stacked" id="metrics">
 										<!--li><a> Metric 1 </a></li-->
 									</ul>
