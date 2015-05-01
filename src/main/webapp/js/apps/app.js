@@ -35,7 +35,7 @@ define(
     var skills = new model.MetricCollection() ;
 
     // Definicion de Vistas.
-        var devListView = new view.DeveloperCollectionView(
+    var devListView = new view.DeveloperCollectionView(
         { collection: developers, 
           plotter: [metricsPlotter, skillPlotter],
           attrToPlot: ['metrics', 'skills']
@@ -61,6 +61,12 @@ define(
             plotter: skillPlotter,
             type: 'skills'
     });
+    var developersSelectView = new view.DeveloperSelectView(
+          { collection: developers,
+            el: $('#puntuado'),
+            elIssues: $('#issues')
+          }
+    );
 
     // Extraccion de los datos desde Tesys al modelo de la UI
     tesys.getAnalysis(function(data){
@@ -80,22 +86,7 @@ define(
     });
     
     // Punctuation Form
-
-    extractor.getUsers('#puntuador');
-    extractor.getUsers('#puntuado');
-    first = true ;
-    $('#puntuado').on('DOMNodeInserted', function() { 
-      if ( first  ){ 
-        // esto se ejecuta se inserta el primer elemento de #puntuado
-        extractor.getIssuesByUser($('#puntuado').val(), '#issues') ;
-        first = false ;
-      }
-    });
-
-    // este evento queda para cambiar los issues cuando se cambia el puntuado
-    $('#puntuado').on('change', function() {
-        extractor.getIssuesByUser($('#puntuado').val(), '#issues') ;
-    });
+    // Hacer que '#puntuador' extraiga los users del Jira
 
     $('#submitPunctuation').click(function() {
       extractor.score(
@@ -107,10 +98,6 @@ define(
     });
 
     // Complex metrics form
-  
-
-
-
 
     //extractor.getMetrics('#submitMetricSelect') ;
   $('#submitMetricBtnAddMetric').click(function() {
