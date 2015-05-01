@@ -6,7 +6,6 @@ requirejs.config({
     'handlers': 'apps/handlers/hindex',
     'handlers.config': 'apps/handlers/hconfig',
     'app': 'apps/app',
-    'app.config': 'apps/app-config',
     'adaptor': 'charts/chartAdaptor',
     'bar': 'charts/barPlotter',
     'radar': 'charts/radarPlotter',
