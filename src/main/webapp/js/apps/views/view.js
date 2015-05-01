@@ -224,6 +224,9 @@ define(
 
       // every function that uses 'this' as the current object should be in here
       _.bindAll(this, 'render', 'appendItem');
+
+      this.collection.on({'reset': this.render});
+
       this.render();
     },
     render: function(){
@@ -301,6 +304,10 @@ define(
       this.options = options || {};
       // every function that uses 'this' as the current object should be in here
       _.bindAll(this, 'render', 'appendItem');
+
+      //Event subscription
+      this.collection.on({'reset': this.render});
+      
       this.render();
     },
     render: function(){
@@ -322,11 +329,36 @@ define(
     }
   });
 
+
+  var MetricSelectView = Backbone.View.extend({
+    tagName: 'select', // el attaches to existing element
+    initialize: function(options){
+      this.options = options || {};
+      _.bindAll(this, 'render');
+
+      //Event subscription
+      this.collection.on({'reset': this.render});
+
+      this.render();
+    },
+    render: function(){
+      var self = this;
+      _(this.collection.models).each(function(item){ // in case collection is not empty
+        self.$el.append( new Option(item.get('procedencia')+" - "+
+                                  item.get('nombre')+": "+
+                                  item.get('descripcion'), 
+                                  item.get('key')));        
+      });
+      return this;
+    }
+  });
+
   return {
     IssueView: IssueView,
     DeveloperView: DeveloperView,
     DeveloperCollectionView: DeveloperCollectionView,
     MetricCollectionView: MetricCollectionView,
-    MetricView: MetricView
+    MetricView: MetricView,
+    MetricSelectView: MetricSelectView
   };
 });
