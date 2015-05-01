@@ -3,8 +3,6 @@ requirejs.config({
   paths: {
     'extractor': 'elasticsearch/extractor',
     'tesys': 'tesys/connector',
-    'handlers': 'apps/handlers/hindex',
-    'handlers.config': 'apps/handlers/hconfig',
     'app': 'apps/app',
     'adaptor': 'charts/chartAdaptor',
     'bar': 'charts/barPlotter',

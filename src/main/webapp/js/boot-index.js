@@ -1,5 +1,5 @@
 requirejs(["common"], function (common) { 
-  requirejs(["app", "handlers"], function(App) {
+  requirejs(["app"], function(App) {
     App.start() ;
   });
 });
