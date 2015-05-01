@@ -25,43 +25,9 @@ define(
     var metricsToPlot = { array:[] };
     var skillsToPlot = { array:[] };
     
-    var metricsPlotter = new bar(
-      "metricChart", 
-      {    
-        "type": "serial",
-        "categoryField": "skill",
-        "gridAboveGraphs": true,
-        "valueAxes": [{
-            "gridColor":"#FFFFFF",
-            "gridAlpha": 0.2,
-            "dashLength": 0,
-            "tickPosition":"start",
-            "tickLength":20,
-            "axisTitleOffset": 20,
-            "min": 0,
-            "max": 1,
-            "minMaxMultiplier": 1,
-            "axisAlpha": 0.15 //hace mas clara u oscura la linea de los ejes
-        }]   
-      }, 
-      []
-    );
+    var metricsPlotter = new bar("metricChart");
 
-    var skillPlotter = new radar( 
-      "skillChart", 
-      {    
-        "type": "radar",
-        "categoryField": "skill",
-        "valueAxes": [{
-            "axisTitleOffset": 20,
-            "min": 0,
-            "max": 1,
-            "minMaxMultiplier": 1,
-            "axisAlpha": 0.15 //hace mas clara u oscura la linea de los ejes
-        }]   
-      },
-      []
-    );
+    var skillPlotter = new radar("skillChart");
 
     var developers = new model.DeveloperCollection();
     var devListView = new view.DeveloperCollectionView(
@@ -103,7 +69,7 @@ define(
     tesys.getMetrics(function(data){
       metrics.reset(data);
     });
-    
+
     tesys.getSkills(function(data){
 
       //adapt skills to metrics format
