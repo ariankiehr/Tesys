@@ -63,51 +63,55 @@ define(
       []
     );
 
-    var developers;
-    var devListView;
-    tesys.getAnalysis(function(data){
-      developers = new model.DeveloperCollection(data);
-      devListView = new view.DeveloperCollectionView(
+    var developers = new model.DeveloperCollection();
+    var devListView = new view.DeveloperCollectionView(
         { collection: developers, 
           plotter: [metricsPlotter, skillPlotter],
           attrToPlot: ['metrics', 'skills']
         }
-      );
-    });
+    );
 
-    var metrics ;
-    var metricsView ;
-    tesys.getMetrics(function(data){
-        metrics = new model.MetricCollection(data);
-        metricsView = new view.MetricCollectionView(
+    var metrics = new model.MetricCollection() ;
+    var metricsView = new view.MetricCollectionView(
           { collection: metrics, 
             el: $('#metrics'), 
             metricsToPlot: metricsToPlot,
             plotter: metricsPlotter,
             type: 'metrics'
           }
-        );
-    });
+    );
+    var mview = new view.MetricSelectView(
+          { collection: metrics,
+            el: $('#submitMetricSelect') 
+          }
+    );
 
-
-    var skills ;
-    var skillsView ;
-    tesys.getSkills(function(data){
-
-        //adapt skills to metrics format
-        var adaptedData = [];
-        $.each(data, function(index, el) {
-          adaptedData.push({'key': el.skillName, 'nombre': el.skillName});
-        });
-
-        skills = new model.MetricCollection(adaptedData);
-        skillsView = new view.MetricCollectionView(
+    var skills = new model.MetricCollection() ;
+    var skillsView = new view.MetricCollectionView(
           { collection: skills, 
             el: $('#skills'), 
             metricsToPlot: skillsToPlot,
             plotter: skillPlotter,
             type: 'skills'
-          });
+    });
+
+
+    tesys.getAnalysis(function(data){
+      developers.reset(data);
+    });
+
+    tesys.getMetrics(function(data){
+      metrics.reset(data);
+    });
+    
+    tesys.getSkills(function(data){
+
+      //adapt skills to metrics format
+      var adaptedData = [];
+      $.each(data, function(index, el) {
+        adaptedData.push({'key': el.skillName, 'nombre': el.skillName});
+      });
+      skills.reset(adaptedData);
     });
     
     // Punctuation Form
@@ -138,12 +142,16 @@ define(
     });
 
     // Complex metrics form
-    
-    extractor.getMetrics('#submitMetricSelect') ;
-    $('#submitMetricBtnAddMetric').click(function() {
-      // Appends metric into complex metric function
-      $('#submitMetricFunction').val($('#submitMetricFunction').val() + " " + $('#submitMetricSelect').find('option:selected').val()) ;
-    });
+  
+
+
+
+
+    //extractor.getMetrics('#submitMetricSelect') ;
+  $('#submitMetricBtnAddMetric').click(function() {
+    // Appends metric into complex metric function
+    $('#submitMetricFunction').val($('#submitMetricFunction').val() + " " + $('#submitMetricSelect').find('option:selected').val()) ;
+  });
 
   $('#submitMetricBtnSend').click(function () { 
     try {
