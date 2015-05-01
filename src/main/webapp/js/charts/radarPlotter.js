@@ -1,4 +1,18 @@
 define(['adaptor', 'amcharts.radar'], function (adaptor, AmCharts) {
+
+  //Constant definitions
+  var DEFAULT_PARAM = {    
+        "type": "radar",
+        "categoryField": "skill",
+        "valueAxes": [{
+            "axisTitleOffset": 20,
+            "min": 0,
+            "max": 1,
+            "minMaxMultiplier": 1,
+            "axisAlpha": 0.15 //hace mas clara u oscura la linea de los ejes
+        }]   
+  };
+
   /**
    * [RadarChartPlotter Muestra graficos en un AmChart con el tipo de grafico
    * radar, un grafico es un conjuntode vectores. En el radar cada grafico 
@@ -17,12 +31,12 @@ define(['adaptor', 'amcharts.radar'], function (adaptor, AmCharts) {
    * un addGraph(tag, values) el subconjunto de values que se graficaran son 
    * los que pertenezcan al conjunto de keys)]
    */
-	function RadarChartPlotter(amChartHTMLContainer, amChartParams, keys) {
-    this.chart = AmCharts.makeChart(amChartHTMLContainer, amChartParams) ;
-    this.amChartParams = amChartParams;
+	function RadarChartPlotter(amChartHTMLContainer, keys, amChartParams) {
+    this.amChartParams = amChartParams || DEFAULT_PARAM;
+    this.keys = keys || [] ;
     this.amChartHTMLContainer = amChartHTMLContainer;
+    this.chart = AmCharts.makeChart(this.amChartHTMLContainer, this.amChartParams) ;
 		this.adaptor = new adaptor() ;
-		this.keys = keys ;
 	  this.dataProvider = this.adaptor.generateDataProvider(this.keys);
 	}
 

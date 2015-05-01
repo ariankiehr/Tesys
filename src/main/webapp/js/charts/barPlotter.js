@@ -1,5 +1,24 @@
 define(['adaptor', 'amcharts.serial'], function (adaptor, AmCharts) {
 
+  //Constant definitions
+  var DEFAULT_PARAM = {    
+        "type": "serial",
+        "categoryField": "skill",
+        "gridAboveGraphs": true,
+        "valueAxes": [{
+            "gridColor":"#FFFFFF",
+            "gridAlpha": 0.2,
+            "dashLength": 0,
+            "tickPosition":"start",
+            "tickLength":20,
+            "axisTitleOffset": 20,
+            "min": 0,
+            "max": 1,
+            "minMaxMultiplier": 1,
+            "axisAlpha": 0.15 //hace mas clara u oscura la linea de los ejes
+        }]   
+  };
+
   /**
    * [BarChartPlotter Similar al RadarChartPlotter, solo que no normaliza los
    * datos, osea que los valores de los vectores en cada grafico son dibujados
@@ -11,12 +30,12 @@ define(['adaptor', 'amcharts.serial'], function (adaptor, AmCharts) {
    * @param {[type]} amChartParams        [description]
    * @param {[type]} keys                 [description]
    */
-  function BarChartPlotter(amChartHTMLContainer, amChartParams, keys) {
-    this.chart = AmCharts.makeChart(amChartHTMLContainer, amChartParams);
-    this.amChartParams = amChartParams;
+  function BarChartPlotter(amChartHTMLContainer, keys, amChartParams) {
+    this.amChartParams = amChartParams || DEFAULT_PARAM;
+    this.keys = keys || [] ;
     this.amChartHTMLContainer = amChartHTMLContainer;
+    this.chart = AmCharts.makeChart(this.amChartHTMLContainer, this.amChartParams);
     this.adaptor = new adaptor() ;
-    this.keys = keys ;
     this.dataProvider = this.adaptor.generateDataProvider(this.keys);
   }
 
