@@ -353,12 +353,61 @@ define(
     }
   });
 
+  var DeveloperSelectView = Backbone.View.extend({
+    tagName: 'select',
+    events: {
+      'change': 'renderIssues'
+    },
+    /**
+     * [initialize inicializa la vista para la seleccion de issues por 
+     * developer, consta de dos elementos select de html. El elemento 'el'
+     * que sera el que contendra todos los nombres de los developers del modelo
+     * y el elemento elIssue que contendra los issues del developer que esta
+     * seleccionado.]
+     * 
+     * @param  {[type]} options 
+     * [options.elIssue El cual sera el elemento 'select' que sera el 
+     * contenedor de los issues, el mismo sera definido como un objeto jQuery]
+     * 
+     * @return {[type]}         [description]
+     */
+    initialize: function(options){
+      this.options = options || {};
+      // every function that uses 'this' as the current object should be in here
+      _.bindAll(this, 'render');
+
+      this.collection.on({'reset': this.render});
+      this.render();
+    },
+    render: function(){
+      var self = this;
+      _(this.collection.models).each(function(dev){ // in case collection is not empty
+        self.$el.append(new Option(dev.get('displayName'), dev.get('name')));
+      });
+      this.renderIssues();
+      return this;
+    },
+    renderIssues: function(){
+      var currentDeveloper = this.$el.val();
+      this.options.elIssues.empty();
+      var self = this;
+      _(this.collection.models).each(function(dev){ // in case collection is not empty
+        if (dev.get('name') == currentDeveloper){
+          _(dev.get('issues').models).each(function(issue){
+            self.options.elIssues.append(new Option(issue.get('issueId'), issue.get('issueId')));
+          });
+        }
+      });
+    }
+  });
+
   return {
     IssueView: IssueView,
     DeveloperView: DeveloperView,
     DeveloperCollectionView: DeveloperCollectionView,
     MetricCollectionView: MetricCollectionView,
     MetricView: MetricView,
-    MetricSelectView: MetricSelectView
+    MetricSelectView: MetricSelectView,
+    DeveloperSelectView: DeveloperSelectView
   };
 });
