@@ -25,19 +25,22 @@ define(
     var metricsToPlot = { array:[] };
     var skillsToPlot = { array:[] };
     
+    // Definicion de objetos encargados de graficar sobre la UI (plotters)
     var metricsPlotter = new bar("metricChart");
-
     var skillPlotter = new radar("skillChart");
 
+    // Definicion de Modelos.
     var developers = new model.DeveloperCollection();
-    var devListView = new view.DeveloperCollectionView(
+    var metrics = new model.MetricCollection() ;
+    var skills = new model.MetricCollection() ;
+
+    // Definicion de Vistas.
+        var devListView = new view.DeveloperCollectionView(
         { collection: developers, 
           plotter: [metricsPlotter, skillPlotter],
           attrToPlot: ['metrics', 'skills']
         }
     );
-
-    var metrics = new model.MetricCollection() ;
     var metricsView = new view.MetricCollectionView(
           { collection: metrics, 
             el: $('#metrics'), 
@@ -51,8 +54,6 @@ define(
             el: $('#submitMetricSelect') 
           }
     );
-
-    var skills = new model.MetricCollection() ;
     var skillsView = new view.MetricCollectionView(
           { collection: skills, 
             el: $('#skills'), 
@@ -61,15 +62,13 @@ define(
             type: 'skills'
     });
 
-
+    // Extraccion de los datos desde Tesys al modelo de la UI
     tesys.getAnalysis(function(data){
       developers.reset(data);
     });
-
     tesys.getMetrics(function(data){
       metrics.reset(data);
     });
-
     tesys.getSkills(function(data){
 
       //adapt skills to metrics format
