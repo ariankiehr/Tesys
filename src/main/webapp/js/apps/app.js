@@ -5,7 +5,6 @@ define(
     'view', 
     'bar',
     'radar',
-    'extractor',
     'parser'
   ], 
   function($, 
@@ -13,8 +12,7 @@ define(
     model, 
     view,
     bar,
-    radar,
-    extractor
+    radar
   ) {
 	
 	/* Main function */
@@ -89,7 +87,7 @@ define(
     // Hacer que '#puntuador' extraiga los users del Jira
 
     $('#submitPunctuation').click(function() {
-      extractor.score(
+      tesys.score(
         $('#puntuador').val(), 
         $('#puntuado').val(),
         $('#issues').val(),
@@ -99,7 +97,6 @@ define(
 
     // Complex metrics form
 
-    //extractor.getMetrics('#submitMetricSelect') ;
   $('#submitMetricBtnAddMetric').click(function() {
     // Appends metric into complex metric function
     $('#submitMetricFunction').val($('#submitMetricFunction').val() + " " + $('#submitMetricSelect').find('option:selected').val()) ;
@@ -133,7 +130,7 @@ define(
 
   //Sonar Analysis Submit
     $('#submitAnalysisBtnSend').click(function(event) {
-      extractor.storeAnalysis(
+      tesys.storeAnalysis(
         $('#submitAnalysisUrl').val(), 
         $('#submitAnalysisUser').val(),
         $('#submitAnalysisPass').val(),
