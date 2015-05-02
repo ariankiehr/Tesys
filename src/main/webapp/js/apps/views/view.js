@@ -86,7 +86,6 @@ define(
       } else {
         issuesViewsToPlot = _.without(issuesViewsToPlot, this);
         this.el.style.backgroundColor = this.UNSELECTED_COLOR ;
-        console.log("remove: \n"+ this.tag());
         var self = this;
         _(this.options.plotter).each(function(p){
           p.removeGraph(self.tag());
@@ -123,15 +122,12 @@ define(
      */
     plot: function(){
       //Ploting metrics
-      console.log(this.tag());
       var self = this;
       $(this.options.attrToPlot).each(function(i, attr){
         if (self.options.plotter[i]){
           var toPlot = self.adapt(attr) ;
           if (!_.isEmpty(toPlot)){
-            console.log("plotting " + attr);
             self.options.plotter[i].addGraph(self.tag(), toPlot);
-            console.log(self.options.plotter[i].chart);
           }
         }
       });
@@ -141,9 +137,7 @@ define(
       if (plotter) {
         var toPlot = this.adapt(attr) ;
         if (!_.isEmpty(toPlot)){
-          console.log("plotting " + attr);
           plotter.addGraph(this.tag(), toPlot);
-          console.log(plotter.chart);
         }
       }
     } 
