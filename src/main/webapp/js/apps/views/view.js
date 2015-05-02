@@ -174,7 +174,7 @@ define(
         devNameContainer.style.textDecoration = this.DECORATION_HASNOT_ISSUES;
       } else {
         devNameContainer.style.textDecoration = this.DECORATION_HAS_ISSUES;
-        if(this.model.get('displayName') != null ) {
+        if(this.model.get('displayName')) {
             this.el.appendChild(devNameContainer);
             self.listIssues();
         }
