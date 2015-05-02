@@ -2,7 +2,6 @@ define(
   [ 'jquery', 
     'underscore', 
     'backbone',
-    'extractor',
     'tesys',
     'bar',
     'radar',
@@ -11,7 +10,6 @@ define(
   ], 
   function($, _, 
     Backbone, 
-    extractor, 
     tesys,
     bar,
     radar

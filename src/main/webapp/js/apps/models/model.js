@@ -2,14 +2,12 @@ define(
   [ 'jquery',
     'underscore',
     'backbone',
-    'extractor', 
     'tesys',
     'backbone-relational',
     'bootstrap'
   ], 
   function($, _, 
     Backbone, 
-    extractor, 
     tesys
   ) {
 
