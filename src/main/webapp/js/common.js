@@ -1,10 +1,10 @@
 requirejs.config({
   baseUrl: 'js',
   paths: {
-    'extractor': 'elasticsearch/extractor',
     'tesys': 'tesys/connector',
     'app': 'apps/app',
     'adaptor': 'charts/chartAdaptor',
+    'plotter': 'charts/plotter',
     'bar': 'charts/barPlotter',
     'radar': 'charts/radarPlotter',
     'jquery': 'libs/jquery-1.11.2.min',
@@ -56,11 +56,11 @@ requirejs.config({
       }
     },
     'radar': {
-      deps: ['adaptor'],
+      deps: ['adaptor', 'plotter'],
       exports: 'radar'
     },
     'bar': {
-      deps: ['adaptor'],
+      deps: ['adaptor', 'plotter'],
       exports: 'bar'
     }
   }
