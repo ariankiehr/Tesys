@@ -1,4 +1,4 @@
-define(['adaptor', 'amcharts.serial'], function (adaptor, AmCharts) {
+define(['adaptor', 'amcharts.serial', 'plotter'], function (adaptor, AmCharts, Plotter) {
 
   //Constant definitions
   var DEFAULT_PARAM = {    
@@ -31,13 +31,16 @@ define(['adaptor', 'amcharts.serial'], function (adaptor, AmCharts) {
    * @param {[type]} keys                 [description]
    */
   function BarChartPlotter(amChartHTMLContainer, keys, amChartParams) {
-    this.amChartParams = amChartParams || DEFAULT_PARAM;
-    this.keys = keys || [] ;
-    this.amChartHTMLContainer = amChartHTMLContainer;
-    this.chart = AmCharts.makeChart(this.amChartHTMLContainer, this.amChartParams);
-    this.adaptor = new adaptor() ;
-    this.dataProvider = this.adaptor.generateDataProvider(this.keys);
+    Plotter.call(
+      this, 
+      amChartHTMLContainer, 
+      keys || [],
+      amChartParams || DEFAULT_PARAM
+    );
+    this.build(this.keys);
   }
+
+  BarChartPlotter.prototype = new Plotter() ;
 
   //tag: string
   //values: json
@@ -53,23 +56,6 @@ define(['adaptor', 'amcharts.serial'], function (adaptor, AmCharts) {
     this.chart.dataProvider = this.dataProvider ;
     this.chart.validateData();
     this.chart.animateAgain();
-  };
-
-  BarChartPlotter.prototype.removeGraph = function (tag) {
-    for (var i = 0; i<this.chart.graphs.length; i++){
-      if (this.chart.graphs[i].valueField==tag){
-        this.chart.removeGraph(this.chart.graphs[i]);
-      }
-    }
-  };
-
-  BarChartPlotter.prototype.build = function (keys) {
-    this.chart = AmCharts.makeChart(
-      this.amChartHTMLContainer, 
-      this.amChartParams
-    );
-    this.keys = keys ;
-    this.dataProvider = this.adaptor.generateDataProvider(this.keys);    
   };
   
   return BarChartPlotter  ;

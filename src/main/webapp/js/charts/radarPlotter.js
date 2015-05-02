@@ -1,4 +1,4 @@
-define(['adaptor', 'amcharts.radar'], function (adaptor, AmCharts) {
+define(['adaptor', 'amcharts.radar', 'plotter'], function (adaptor, AmCharts, Plotter) {
 
   //Constant definitions
   var DEFAULT_PARAM = {    
@@ -32,13 +32,16 @@ define(['adaptor', 'amcharts.radar'], function (adaptor, AmCharts) {
    * los que pertenezcan al conjunto de keys)]
    */
 	function RadarChartPlotter(amChartHTMLContainer, keys, amChartParams) {
-    this.amChartParams = amChartParams || DEFAULT_PARAM;
-    this.keys = keys || [] ;
-    this.amChartHTMLContainer = amChartHTMLContainer;
-    this.chart = AmCharts.makeChart(this.amChartHTMLContainer, this.amChartParams) ;
-		this.adaptor = new adaptor() ;
-	  this.dataProvider = this.adaptor.generateDataProvider(this.keys);
+    Plotter.call(
+      this, 
+      amChartHTMLContainer, 
+      keys || [],
+      amChartParams || DEFAULT_PARAM
+    );
+    this.build(this.keys);
 	}
+
+  RadarChartPlotter.prototype = new Plotter() ;
 
   /**
    * [addGraph Agrega un nuevo grafico al Chart]
@@ -60,32 +63,6 @@ define(['adaptor', 'amcharts.radar'], function (adaptor, AmCharts) {
 		this.chart.validateData();
 		this.chart.animateAgain();
 	};
-
-  /**
-   * [removeGraph elimina un grafico del chart]
-   * @param  {[string]} tag [id del grafico a eliminar]
-   */
-  RadarChartPlotter.prototype.removeGraph = function (tag) {
-    for (var i = 0; i<this.chart.graphs.length; i++){
-      if (this.chart.graphs[i].valueField==tag){
-        this.chart.removeGraph(this.chart.graphs[i]);
-      }
-    }
-  };
-
-  /**
-   * [build Vuelve a crear el chart cambiando el conjunto de keys]
-   * @param  {[jsonArray of key:value]} keys [ver el parametro keys en el 
-   * constructor de la clase]
-   */
-	RadarChartPlotter.prototype.build = function (keys) {
-    this.chart = AmCharts.makeChart(
-      this.amChartHTMLContainer, 
-      this.amChartParams
-    );    
-		this.keys = keys ;
-	  this.dataProvider = this.adaptor.generateDataProvider(this.keys); 
-  };
   
 	return RadarChartPlotter ;
 
