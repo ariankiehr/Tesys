@@ -51,7 +51,7 @@ define(
       //ya que podria quedar basura en los atributos
       this.el.id = issueId; 
       this.el.setAttribute('class', 'list-group-item');
-      this.el.text = "" ;
+      this.el.textContent = "" ;
 
       if (this.model.get('metrics').ncloc) {
         //Si el Issue tiene codigo (suponesmos que hay codigo si existe la metrica 'nlocs')
@@ -163,13 +163,13 @@ define(
       var self = this ;
       // Creating Developer name container
       var devNameContainer = document.createElement("a");
-      devNameContainer.text = this.model.get('displayName');
+      devNameContainer.textContent = this.model.get('displayName');
       devNameContainer.setAttribute('class', 'list-group-item list-group-item-success');
       devNameContainer.setAttribute('data-parent', '#MainMenu');
       devNameContainer.setAttribute('data-toggle', 'collapse');
       devNameContainer.setAttribute('href','#'+this.model.get('name'));
 
-      // If developer has not issues --> line-throught on devNameContainer.text
+      // If developer has not issues --> line-throught on devNameContainer.textContent
       if (_.isEmpty(this.model.get('issues').models)) {
         devNameContainer.style.textDecoration = this.DECORATION_HASNOT_ISSUES;
       } else {
@@ -178,8 +178,7 @@ define(
             this.el.appendChild(devNameContainer);
             self.listIssues();
         }
-      }
-      
+      }      
       return this; // for chainable calls, like .render().el
     },
     listIssues: function(){ 
@@ -261,7 +260,7 @@ define(
       this.el.id = this.model.get('key') ;
       this.el.innerHTML = '' ;
       var textContainer = document.createElement('a');
-      textContainer.text = this.model.get('nombre');
+      textContainer.textContent = this.model.get('nombre');
       this.el.appendChild(textContainer) ;
       return this ;
     },
