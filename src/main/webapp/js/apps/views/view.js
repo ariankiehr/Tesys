@@ -400,6 +400,7 @@ define(
     MetricCollectionView: MetricCollectionView,
     MetricView: MetricView,
     MetricSelectView: MetricSelectView,
-    DeveloperSelectView: DeveloperSelectView
+    DeveloperSelectView: DeveloperSelectView,
+    issuesViewsToPlot: issuesViewsToPlot
   };
 });

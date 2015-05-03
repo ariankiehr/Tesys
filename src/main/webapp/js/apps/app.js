@@ -83,6 +83,23 @@ define(
       skills.reset(adaptedData);
     });
     
+
+    // On click tab for metrics then replot chart
+    $('#myTab a[href="#metricPane"]').on('shown.bs.tab', function (e) {
+      metricsPlotter.build(metricsToPlot.array);
+      $.each(view.issuesViewsToPlot, function(i, item){
+        item.plot();
+      });
+    });
+
+    $('#myTab a[href="#skillPane"]').on('shown.bs.tab', function (e) {
+      skillPlotter.build(skillsToPlot.array);
+      $.each(view.issuesViewsToPlot, function(i, item){
+        item.plot();
+      });
+    });
+
+
     // Punctuation Form
     // Hacer que '#puntuador' extraiga los users del Jira
 
