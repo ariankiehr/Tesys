@@ -21,7 +21,7 @@ define(
    * @type {Array}
    */
   var issueTrackerMetrics = ['progress', 'quacode', 'estimated', 'prec'] ;
-  var issuesViewsToPlot = [] ;
+  var issuesViewsToPlot = { array: [] } ;
 
   var metricTypes = ['metrics', 'skills'];
 
@@ -81,10 +81,10 @@ define(
       this.isSelected = !this.isSelected;
       if(this.isSelected) {
         this.el.style.backgroundColor = this.SELECTED_COLOR ;
-        issuesViewsToPlot.push(this);
+        issuesViewsToPlot.array.push(this);
         this.plot(); 
       } else {
-        issuesViewsToPlot = _.without(issuesViewsToPlot, this);
+        issuesViewsToPlot.array = _.without(issuesViewsToPlot.array, this);
         this.el.style.backgroundColor = this.UNSELECTED_COLOR ;
         var self = this;
         _(this.options.plotter).each(function(p){
@@ -277,10 +277,10 @@ define(
         );
       }
 
-      if (issuesViewsToPlot.length>=0){
+      if (issuesViewsToPlot.array.length>=0){
         this.options.plotter.build(this.options.metricsToPlot.array);
         var self = this;
-        _(issuesViewsToPlot).each(function(issueView){
+        _(issuesViewsToPlot.array).each(function(issueView){
           issueView.plotSingle(self.options.plotter, self.options.type);
         });
       } 

@@ -87,14 +87,14 @@ define(
     // On click tab for metrics then replot chart
     $('#myTab a[href="#metricPane"]').on('shown.bs.tab', function (e) {
       metricsPlotter.build(metricsToPlot.array);
-      $.each(view.issuesViewsToPlot, function(i, item){
+      $.each(view.issuesViewsToPlot.array, function(i, item){
         item.plot();
       });
     });
 
     $('#myTab a[href="#skillPane"]').on('shown.bs.tab', function (e) {
       skillPlotter.build(skillsToPlot.array);
-      $.each(view.issuesViewsToPlot, function(i, item){
+      $.each(view.issuesViewsToPlot.array, function(i, item){
         item.plot();
       });
     });
