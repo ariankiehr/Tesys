@@ -13,7 +13,7 @@
     <![endif]-->
 <link href="css/styles.css" rel="stylesheet">
 </head>
-<body id="body">
+<body id="body"> 
 	<script data-main="js/boot-index.js" src="js/libs/require.js"></script>
 	<script type="text/javascript" src="js/libs/jquery-1.11.2.min.js"></script>
 	<script type="text/javascript"
@@ -122,34 +122,36 @@
 
 					<!--tabs-->
 					<div class="col-md-8">
-						<ul class="nav nav-tabs" id="myTab" >
-							<li class="active"><a href="#metricPane" data-toggle="tab">Metrics</a></li>
-							<li><a href="#skillPane" data-toggle="tab">Skills</a></li>
-						</ul>
 
-						<div class="tab-content">
-							<!--TODO meter mas distancia aca-->
-							<div class="tab-pane active panel-body" id="metricPane" style="border-bottom: 1px solid #ddd;">
-								<!--contenido de un panel-->
-
-								<div class="col-md-4" style="overflow-y: auto; height: 400px;">
-									<input class="col-md-4 form-control"
-										placeholder="Filter metric" type="text" id="metricfilter" />
-									<br><br>
-									<ul class="nav nav-stacked" id="metrics">
-										<!--li><a> Metric 1 </a></li-->
-									</ul>
-								</div>
-								<div id="metricChart" style="height: 400px;"></div>
+						<div class="panel">
+							<div class="panel-heading">	
+								<ul class="nav nav-tabs" id="myTab">
+									<li class="active"><a href="#metricPane" data-toggle="tab">Metrics</a></li>
+									<li><a href="#skillPane" data-toggle="tab">Skills</a></li>
+								</ul>
 							</div>
-							<!--/contenido de un panel-->
-							<div class="tab-pane panel-body" id="skillPane">
-								<div class="col-md-4" style="overflow-y: auto; height: 400px;">
-									<ul class="nav nav-stacked" id="skills">
-										<!--li><a> skill 1 </a></li-->
-									</ul>
+							<div class="panel-body">
+								<div class="tab-content">
+									<!--TODO meter mas distancia aca-->
+									<div class="tab-pane active panel-body" id="metricPane">
+										<!--contenido de un panel-->
+										<div class="col-md-4 list-group panel panel-default" style="overflow-y: auto; height: 400px;">
+											<ul class="nav nav-stacked" id="metrics">
+												<!--li><a> Metric 1 </a></li-->
+											</ul>
+										</div>
+										<div id="metricChart" class="panel panel-default" style="height: 400px;"></div>
+									</div>
+									<!--/contenido de un panel-->
+									<div class="tab-pane panel-body" id="skillPane">
+										<div class="col-md-4 list-group panel panel-default" style="overflow-y: auto; height: 400px;">
+											<ul class="nav nav-stacked" id="skills">
+												<!--li><a> skill 1 </a></li-->
+											</ul>
+										</div>
+										<div id="skillChart" class="panel panel-default" style="height: 400px;"></div>
+									</div>
 								</div>
-								<div id="skillChart" style="height: 400px;"></div>
 							</div>
 						</div>
 					</div>
