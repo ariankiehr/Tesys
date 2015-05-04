@@ -85,6 +85,34 @@ define(["jquery"], function($) {
       });
   }
 
+  /**
+   * Almacena una metrica en el servidor, la misma es definida en la interface
+   * web.
+   * @param {string} metricName Nombre de la metrica.
+   * @param {string} metricDescription Una breve descripcion de la metrica.
+   * @param {JSON} metricFunction Formula que define la metrica    
+   * @param {Function} callback Funcion que se llamara luego de que se envie la
+   *     metrica al servidor la misma podra ser usada para mostrar en la UI la respuesta del servidor.
+   */
+  function storeMetric(metricName, metricDescription, metricFunction, callback){
+      //TODO hacer un md5 a metricName para obtener metricId
+      var tosend = "{\"key\": \"" + metricName + "\"," +
+              "\"nombre\": \"" + metricName + "\"," +
+              "\"descripcion\": \"" + metricDescription + "\"," +
+              "\"procedencia\": \"" + "tesys" + "\"," +
+               metricFunction + "}";  
+      $.ajax({
+          url: location+'rest/controller/newmetric',
+          type: 'POST',
+          dataType: 'json',
+          contentType: "application/json; charset=utf-8",
+          success: function (data) {
+            callback(data);
+          },
+          data: tosend
+        });          
+  }
+
 
   return {    
     'getAnalysis': getAnalysis,
@@ -92,6 +120,7 @@ define(["jquery"], function($) {
     'getSkills': getSkills,
     'score': score,
     'joinMetrics': joinMetrics,
-    'storeAnalysis': storeAnalysis
+    'storeAnalysis': storeAnalysis,
+    'storeMetric': storeMetric
   };
 });
