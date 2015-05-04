@@ -120,26 +120,18 @@ define(
   });
 
   $('#submitMetricBtnSend').click(function () { 
+    $("#submitMetricSpan").empty();
     try {
-      var result = parser.parse($("#submitMetricFunction").val());
-      
-      var tosend = "{\"key\": \"" + $("#submitMetricId").val() + "\"," +
-              "\"nombre\": \"" + $("#submitMetricName").val() + "\"," +
-              "\"descripcion\": \"" + $("#submitMetricDescription").val() + "\"," +
-              "\"procedencia\": \"" + $("#submitMetricProcedence").val() + "\"," +
-               result + "}";  
-
-      $.ajax({
-          url: location+'/rest/controller/newmetric',
-          type: 'post',
-          dataType: 'json',
-          contentType: "application/json; charset=utf-8",
-          success: function (data) {
+      //TODO el parser no acepta asociatividad con parentesis
+      var metricFormula = parser.parse($("#submitMetricFunction").val());
+      tesys.storeMetric(
+        $("#submitMetricName").val(), 
+        $("#submitMetricDescription").val(),
+        metricFormula,
+        function (data) {
             markers = JSON.stringify(data);
             $("#submitMetricSpan").html(markers);
-          },
-          data: tosend
-        });          
+        });       
     } catch (e) {
       $("#submitMetricSpan").html(String(e));
     }
