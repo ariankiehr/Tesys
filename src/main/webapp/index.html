@@ -41,7 +41,7 @@
 							// $("#table_of_items tr").remove(); 
 							$.each(response, function(i, item) {
 								$('<tr>').append(
-										$('<td>').text(item.developerName+" ("+item.developer+")"),
+										$('<td>').text(item.developerName),
 										$('<td>').text(item.metric),
 										$('<td>').text(item.trust),
 										$('<td>').text(item.similarity))
