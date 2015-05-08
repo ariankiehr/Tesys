@@ -133,9 +133,11 @@
 							<div class="panel-body">
 								<div class="tab-content">
 									<!--TODO meter mas distancia aca-->
-									<div class="tab-pane active panel-body" id="metricPane">
+									<div class="tab-pane active panel-body" id="metricPane" style="border-bottom: 1px solid #ddd;">
 										<!--contenido de un panel-->
 										<div class="col-md-4 list-group panel panel-default" style="overflow-y: auto; height: 400px;">
+											<input class="col-md-4 form-control"
+												placeholder="Filter metric" type="text" id="metricfilter" /> <br> <br>
 											<ul class="nav nav-stacked" id="metrics">
 												<!--li><a> Metric 1 </a></li-->
 											</ul>
@@ -143,7 +145,7 @@
 										<div id="metricChart" class="panel panel-default" style="height: 400px;"></div>
 									</div>
 									<!--/contenido de un panel-->
-									<div class="tab-pane panel-body" id="skillPane">
+									<div class="tab-pane panel-body" id="skillPane" style="border-bottom: 1px solid #ddd;">
 										<div class="col-md-4 list-group panel panel-default" style="overflow-y: auto; height: 400px;">
 											<ul class="nav nav-stacked" id="skills">
 												<!--li><a> skill 1 </a></li-->
@@ -426,6 +428,7 @@
 		</div>
 		<!-- FIN SONAR-->
 	</div>
+
 
 </body>
 </html>

@@ -4,15 +4,19 @@
 }
 
 .tab-pane {
-
     border-left: 1px solid #ddd;
     border-right: 1px solid #ddd;
+   /* border-bottom: 1px solid #ddd;*/
     border-radius: 0px 0px 5px 5px;
     padding: 10px;
 }
 
+.nav-tabs>li>a:focus {
+	 outline: none;
+}
+
 .nav-tabs {
-    margin-bottom: 0;
+    margin-bottom: -26px;
 }
 .nav-pills>li>a:hover {
 	background-color: #222
@@ -30,11 +34,12 @@ i {
   font-size:18px;
 }
 
+
 footer {
-  margin-top:20px;
-  padding-top:20px;
+  margin-top:10px;
+  padding-top:0px;
   padding-bottom:20px;
-  background-color:#efefef;
+  background-color:#333;
 }
 
 .nav>li .count {
