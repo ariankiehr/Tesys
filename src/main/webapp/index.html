@@ -28,8 +28,8 @@
 			//cuando se pide la recomendacion
 			$("#ajax-append").click(
 					function() {
-						var metric = $('#recomendationMetric').find('option:selected').html();
-						document.getElementById("met").textContent=metric;
+						var metric = $('#recomendationMetric').val();
+						document.getElementById("met").textContent=$('#recomendationMetric').find('option:selected').html();
 						
 						$("#myTable tbody tr").remove();
 						$("#myTable").trigger("update");
