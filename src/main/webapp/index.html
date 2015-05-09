@@ -28,7 +28,7 @@
 			//cuando se pide la recomendacion
 			$("#ajax-append").click(
 					function() {
-						var metric = $('#recomendationMetric').val();
+						var metric = $('#recomendationMetric').find('option:selected').html();
 						document.getElementById("met").textContent=metric;
 						
 						$("#myTable tbody tr").remove();
