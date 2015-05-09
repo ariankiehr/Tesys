@@ -66,6 +66,13 @@ define(
           }
     );
 
+    // Selects para las recomendaciones
+    var recomendationMetricsView = new view.MetricSelectView(
+      { collection: metrics,
+        el: $('#recomendationMetric') 
+      }
+    );
+
     // Extraccion de los datos desde Tesys al modelo de la UI
     tesys.getAnalysis(function(data){
       developers.reset(data);
