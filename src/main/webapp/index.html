@@ -28,14 +28,15 @@
 			//cuando se pide la recomendacion
 			$("#ajax-append").click(
 					function() {
-						document.getElementById("met").textContent=document.getElementById("metric").value;
+						var metric = $('#recomendationMetric').val();
+						document.getElementById("met").textContent=metric;
 						
 						$("#myTable tbody tr").remove();
 						$("#myTable").trigger("update");
 						$.get("rest/controller/getdevtask/" +
-								document.getElementById("issue").value +
+								document.getElementById("recomendationIssue").value +
 								"/" +
-								document.getElementById("metric").value, function(
+								metric, function(
 								response) {
 							
 							// $("#table_of_items tr").remove(); 
@@ -174,16 +175,18 @@
 					</div>
 					<div class="panel panel-default">
 						<div class="panel-heading">
-							<table>
-								<tr>
-									<th>Issue Identifier</th>
-									<th><input type="text" id="issue" /></th>
-									<th>Metric</th>
-									<th><input type="text" id="metric" /></th>
-									<th><button type="button" class="btn btn-primary"
-											id="ajax-append">Recommend</button></th>
-								</tr>
-							</table>
+							<div class="control-group">
+								<label class="">Issue Identifier</label>
+								<div class="controls">
+									<input class="form-control" type="text" id="recomendationIssue" />
+								</div>
+							</div>
+							<div class="control-group">
+								<label class="">Metric</label>
+								<div class="controls">
+									<select class="form-control" type="text" id="recomendationMetric"></select>
+								</div>
+							</div>
 						</div>
 						<div class="panel-body">
 							<table id="myTable" class="tablesorter">

@@ -77,6 +77,7 @@ table.tablesorter th  {
   border: 1px solid #38678f;
   box-shadow: inset 0px 1px 2px #568ebd;
   transition: all 0.2s;
+  padding: 10px;
 }
 table.tablesorter tr  {
   border-bottom: 1px solid #cccccc;
@@ -112,7 +113,7 @@ table.tablesorter td input:focus {
 
 table {
 	font-family:sans-serif;
-	background-color: #FFF;
+	background-color: whitesmoke;
 	margin:5px 0pt 10px;
 	font-size: 10pt;
 	width: 100%;
