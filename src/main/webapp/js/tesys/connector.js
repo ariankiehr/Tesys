@@ -2,7 +2,7 @@ define(["jquery"], function($) {
   function getAnalysis(callback) {
     $.ajax({
       type: 'GET',
-      url: location+'developers-issues.json',
+      url: location+'rest/controller/developers/0',
       dataType: 'json', // data type of response
       success: function(data) {
         callback(data) ;
@@ -13,7 +13,7 @@ define(["jquery"], function($) {
   function getMetrics(callback) {
     $.ajax({
         type: 'GET',
-        url: location+'metrics.json',
+        url: location+'rest/controller/metrics',
         dataType: "json", // data type of response
         success: function (data) {
           callback(data) ;
@@ -24,7 +24,7 @@ define(["jquery"], function($) {
   function getSkills(callback) {
     $.ajax({
       type: 'GET',
-      url: location+'skills.json',
+      url: location+'rest/controller/skills',
       dataType: "json", 
       success: function (data) {
         callback(data);
