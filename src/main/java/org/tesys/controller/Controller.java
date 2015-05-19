@@ -37,6 +37,7 @@ import org.tesys.core.project.scm.SCMManager;
 import org.tesys.core.project.scm.ScmPostCommitDataPOJO;
 import org.tesys.core.project.scm.ScmPreCommitDataPOJO;
 import org.tesys.core.project.tracking.IssueTypePOJO;
+import org.tesys.correlations.Predictions;
 import org.tesys.recomendations.DevelopersCriteriaIssues;
 import org.tesys.recomendations.DevelopersShortedByMetric;
 import org.tesys.recomendations.DevelopersShortedBySkills;
@@ -561,6 +562,22 @@ public class Controller {
 	}
 	
 	
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/getpredic/{user}/{metricKey}/{value}/{variation}")
+	public Response getPrediction(@PathParam("user") String userKey,
+								  @PathParam("metricKey") String metricKey,
+								  @PathParam("value") Double value,
+								  @PathParam("variation") Double correlationVariation) {
+		
+		ResponseBuilder response;
+		
+		response = Response.ok(
+				Predictions.getPredictions(userKey, metricKey, value, correlationVariation)
+		);
+
+		return response.build();
+	}
 
 
 }
