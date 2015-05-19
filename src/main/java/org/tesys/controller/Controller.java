@@ -568,13 +568,15 @@ public class Controller {
 	public Response getPrediction(@PathParam("user") String userKey,
 								  @PathParam("metricKey") String metricKey,
 								  @PathParam("value") Double value,
-								  @PathParam("variation") Double correlationVariation) {
+								  @PathParam("variation") Double correlationVariation,
+								  @QueryParam("s") List<String> skills) {
 		
 		ResponseBuilder response;
 		
 		response = Response.ok(
-				Predictions.getPredictions(userKey, metricKey, value, correlationVariation)
+				Predictions.getPredictions(userKey, metricKey, value, correlationVariation, skills)
 		);
+		
 
 		return response.build();
 	}

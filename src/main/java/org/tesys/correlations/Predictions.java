@@ -1,19 +1,21 @@
 package org.tesys.correlations;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 
+
+
+import org.tesys.core.analysis.skilltraceability.Skill;
 import org.tesys.core.db.IssuesWithMetrics;
 import org.tesys.core.estructures.Issue;
 
 public class Predictions {
 	
-	/*public static void main(String[] args) {
-		List<MetricPrediction> metricPrediction = getPredictions("etrapani", "lines", 600.0, 0.6);
-	}*/
 
-	public static List<MetricPrediction> getPredictions( String userKey, String metricKey, Double value, Double correlationVariation) {
+	public static List<MetricPrediction> getPredictions( String userKey, String metricKey, 
+			Double value, Double correlationVariation, List<String> skills) {
 		
 		List<MetricPrediction> metricPrediction = new ArrayList<MetricPrediction>();
 		
@@ -29,15 +31,22 @@ public class Predictions {
 		metrics.remove("quacode");
 		metrics.remove("prec");
 		
-		
 		for (int i = 0; i < metrics.size(); i++) {
 			for (int j = 0; j < metrics.size(); j++) {
 				if( i != j ) {
 					
 					for (Issue issue : l) {
-						if( issue.getUser().equals(userKey) && metrics.get(i).equals(metricKey) ) {
-							pearson1.add(issue.getMetrics().get(metrics.get(i)));
-							pearson2.add(issue.getMetrics().get(metrics.get(j)));
+						if( issue.getUser().equals(userKey) && metrics.get(i).equals(metricKey) ) { 
+							List<String> isk = new LinkedList<String>();
+							for (Skill sk : issue.getSkills()) {
+								isk.add(sk.skillName);
+							}
+							
+							if( isk.containsAll(skills) ) {
+								pearson1.add(issue.getMetrics().get(metrics.get(i)));
+								pearson2.add(issue.getMetrics().get(metrics.get(j)));
+							}
+
 						}
 
 					}
