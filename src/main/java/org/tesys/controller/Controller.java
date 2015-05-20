@@ -610,9 +610,8 @@ public class Controller {
 	
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	@Path("/getpredic/{user}/{metricKey}/{value}/{variation}")
-	public Response getPrediction(@PathParam("user") String userKey,
-								  @PathParam("metricKey") String metricKey,
+	@Path("/getpredic/{metricKey}/{value}/{variation}")
+	public Response getPrediction(@PathParam("metricKey") String metricKey,
 								  @PathParam("value") Double value,
 								  @PathParam("variation") Double correlationVariation,
 								  @QueryParam("s") List<String> skills) {
@@ -620,7 +619,7 @@ public class Controller {
 		ResponseBuilder response;
 		
 		response = Response.ok(
-				Predictions.getPredictions(userKey, metricKey, value, correlationVariation, skills)
+				Predictions.getPredictions(metricKey, value, correlationVariation, skills)
 		);
 		
 
