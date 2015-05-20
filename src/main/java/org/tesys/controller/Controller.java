@@ -1,6 +1,7 @@
 package org.tesys.controller;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -27,6 +28,7 @@ import org.tesys.core.analysis.sonar.SonarAnalizer;
 import org.tesys.core.analysis.sonar.SonarAnalysisRequest;
 import org.tesys.core.db.AnalysisVersionsQuery;
 import org.tesys.core.db.ElasticsearchDao;
+import org.tesys.core.db.IssuesWithMetrics;
 import org.tesys.core.db.MetricDao;
 import org.tesys.core.estructures.Developer;
 import org.tesys.core.estructures.Issue;
@@ -295,9 +297,53 @@ public class Controller {
 		response.entity(entity);
 
 		return response.build();
-
+		
 	}
 	
+	
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/metricsAvailable")
+	public Response getMetricsAvailable() {
+		IssuesWithMetrics is = new IssuesWithMetrics();
+		List<Issue> l = is.execute();
+
+		List<String> metrics = new ArrayList<String>();
+
+		metrics.addAll(l.get(0).getMetrics().keySet());
+		metrics.remove("quacode");
+		metrics.remove("prec");
+		
+		MetricDao dao = new MetricDao();
+		List<Metric> metrics2 = new LinkedList<Metric>();
+		
+		for (String metric : metrics) {
+			metrics2.add(dao.read(metric));
+		}
+		
+		List<ObjectNode> metricsJson = new LinkedList<ObjectNode>();
+
+		for (Metric m : metrics2) {
+			ObjectMapper mapper = new ObjectMapper();
+			JsonNode jsonNode = null;
+			try {
+				jsonNode = mapper.readTree(m.toString());
+			} catch (IOException e) {
+			}
+			metricsJson.add((ObjectNode) jsonNode);
+		}
+
+		GenericEntity<List<ObjectNode>> entity = new GenericEntity<List<ObjectNode>>(
+				metricsJson) {
+		};
+		ResponseBuilder response = Response.ok();
+		response.entity(entity);
+
+		return response.build();
+		
+	}
+	
+
 
 	/**
 	 * Devuleve los tipos de issues que existen en el project tracking, de esta
