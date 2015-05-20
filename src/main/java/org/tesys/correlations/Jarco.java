@@ -2,10 +2,12 @@ package org.tesys.correlations;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 import java.util.UUID;
 
 import org.tesys.core.analysis.skilltraceability.Skill;
@@ -86,25 +88,30 @@ public class Jarco {
 		List<Issue> l = is.execute();
 		
 		List<Issue> iss = new LinkedList<Issue>();
-		String [] users = {"etrapani", "mantunez", "gsanmartin", "smarquez", "rpastore"};
 		
-		int nissues = 25;
+		Set<String> users = new HashSet<String>();
+		
+		for (Issue issue : l) {
+			users.add(issue.getUser());
+		}
+		
+		int issuesPorUser = 5;
 		
 		List<String> metrics = new ArrayList<String>();
 		metrics.addAll(mapa.keySet());
 		metrics.remove("quacode");
 		metrics.remove("prec");
 		
-		for (int i = 0; i < users.length; i++) {
-			for (int j = 0; j < nissues/users.length; j++) {
+		for (String user : users) {
+			for (int j = 0; j < issuesPorUser; j++) {
 				Issue ni = new Issue(UUID.randomUUID().toString()); //random string de id
-				ni.setUser(users[i]);
+				ni.setUser(user);
 				ni.setIssueType("3");
 				
 				List<Skill> listskill = new LinkedList<Skill>();
 				
 				for (Issue isl : l) {
-					if(isl.getUser().equals(users[i])) {
+					if(isl.getUser().equals(user)) {
 						listskill.addAll(isl.getSkills());
 					}
 				}
