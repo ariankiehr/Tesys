@@ -335,7 +335,7 @@ define(
     render: function(){
       var self = this;
       _(this.collection.models).each(function(item){ // in case collection is not empty
-        self.$el.append( new Option(item.get('procedencia')+" - "+
+        self.$el.append( new Option(
                                   item.get('nombre')+": "+
                                   item.get('descripcion'), 
                                   item.get('key')));        
