@@ -80,6 +80,11 @@ public class Jarco {
 		
 	}
 	
+	public static Double mean(Double d1, Double d2) {
+		if(d2==null) return d1;
+		return (d1+d2)/2;
+	}
+	
 	public static List<Issue> getIssues() {
 		Map<String, Dos> mapa = generarMapa();
 		
@@ -103,6 +108,9 @@ public class Jarco {
 		metrics.remove("prec");
 		
 		for (String user : users) {
+			
+			Map<String, Double> hisMetrics = null;
+			
 			for (int j = 0; j < issuesPorUser; j++) {
 				Issue ni = new Issue(UUID.randomUUID().toString()); //random string de id
 				ni.setUser(user);
@@ -110,9 +118,12 @@ public class Jarco {
 				
 				List<Skill> listskill = new LinkedList<Skill>();
 				
+				
+				
 				for (Issue isl : l) {
 					if(isl.getUser().equals(user)) {
 						listskill.addAll(isl.getSkills());
+						hisMetrics = isl.getMetrics();
 					}
 				}
 				
@@ -125,12 +136,13 @@ public class Jarco {
 					if(ni.getMetrics().get(m) == null) {
 						
 						Double ran = randomInRange(d.d1,d.d2);
-						ni.addMetric(m, ran);
+						ni.addMetric(m, mean(ran, hisMetrics.get(m)) );
 						List<MetricPrediction> lmp = Predictions.getPredictionsMean(m, ran, 0.5);
 						for (MetricPrediction mp : lmp) {
-							ni.addMetric(mp.getMetricKey(), randomInRange(
+							ni.addMetric(mp.getMetricKey(), mean(randomInRange(
 																		mp.getMetricValue()-mp.getMetricDeviation(),
-																		mp.getMetricValue()+mp.getMetricDeviation()));
+																		mp.getMetricValue()+mp.getMetricDeviation()),
+																		hisMetrics.get(m)));
 						}
 					}
 					
