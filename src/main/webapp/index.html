@@ -84,6 +84,9 @@
 				<li><a class="navbar-brand" href="#secrecom" data-toggle="tab">
 						<span class="glyphicon glyphicon-signal"></span> Recomendations
 				</a></li>
+				<li><a class="navbar-brand" href="#secestimation" data-toggle="tab">
+						<span class="glyphicon glyphicon-signal"></span> Estimation
+				</a></li>
 				<li><a class="navbar-brand" href="#secpunt" data-toggle="tab">
 						<span class="glyphicon glyphicon-thumbs-up"></span> Rank Developers
 				</a></li>
@@ -166,6 +169,41 @@
 		</div>
 		<!-- FIN GRAFICOS-->
 
+		<!-- ESTIMACION-->
+		<div class="tab-pane" id="secestimation">
+			<p>
+			<div class="container">
+				<div class="col-md-12" id="div-table">
+					<div class="well">
+						<h4>Estimation</h4>
+					</div>			
+					<div class="col-md-4 list-group panel panel-default" style="overflow-y: auto; height: 400px;">
+						<input class="col-md-4 form-control"
+							placeholder="Filter metric" type="text" id="metricfilter" /> <br> <br>
+						<ul class="nav nav-stacked" id="estimationsSkillSelector">
+							<!--li><a> Metric 1 </a></li-->
+						</ul>
+					</div>
+					<div class="col-md-4 list-group panel panel-default">
+				    <div>
+				    	<a href="#" class="btn btn-primary" role="button" id="estimationBtn">Estimate</a>
+				    </div>
+				    <div class="input-group">
+				      <input type="text" class="form-control" placeholder="Metric Value"  id="estimationMetricInput">
+				      <span class="input-group-btn">
+				        <button class="btn btn-default" type="button" id="estimationInsertBtn">Insert</button>
+				      </span>
+				    </div><!-- /input-group -->
+						<div>
+							<select class="form-control" id="recomendationMetricSelect"></select>
+						</div>
+						<ul class="list-group" id="metricList" style="overflow-y: auto; height: 300px;"></ul>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- FIN ESTIMACION-->
+
 		<!-- RECOMENDACION-->
 		<div class="tab-pane" id="secrecom">
 			<p>
@@ -215,6 +253,7 @@
 			</div>
 		</div>
 		<!-- FIN RECOMENDACION-->
+
 
 		<!-- PUNTUACION-->
 		<div class="tab-pane" id="secpunt">

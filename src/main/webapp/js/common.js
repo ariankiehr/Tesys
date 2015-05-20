@@ -18,7 +18,8 @@ requirejs.config({
     'parser': 'parser',
     'tablesorter': 'libs/tablesorter/jquery.tablesorter.js',
     'model': 'apps/models/model',
-    'view': 'apps/views/view'
+    'view': 'apps/views/view',
+    'recomendationview': 'apps/views/recomendationview'
   },
 
   shim: {

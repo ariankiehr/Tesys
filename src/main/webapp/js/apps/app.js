@@ -3,6 +3,7 @@ define(
     'tesys',  
     'model', 
     'view', 
+    'recomendationview',
     'bar',
     'radar',
     'parser'
@@ -11,6 +12,7 @@ define(
     tesys, 
     model, 
     view,
+    recomendationView,
     bar,
     radar
   ) {
@@ -72,6 +74,66 @@ define(
         el: $('#recomendationMetric') 
       }
     );
+
+    /** Creacion de los elementos de la vista del Panel de recomendaciones */
+
+    //Boton para asignar nuevas metricas
+    
+    // array of {metricKey: floatValue}
+    var metricsValues = {};
+
+    $('#estimationInsertBtn').click(function(){
+      var metricValue = parseFloat($('#estimationMetricInput').val());
+      if (!isNaN(metricValue) && isFinite(metricValue)) {
+        var metricId = $('#recomendationMetricSelect').val() ;
+
+        //inserto o reemplazo la metrica en map metricValues
+        metricsValues[metricId] = metricValue;
+
+        //inserto o reemplazo la metrica en la vista
+        var metricList = $('#metricList') ;
+        var metricListElement = $('#'+metricId, metricList) ;
+        if (metricListElement) {
+          metricListElement.remove();
+        }
+        var li = $('<li class="list-group-item" id="'+metricId+'">').text(metricId+"= "+metricValue) ;
+        metricList.append(li);
+
+        //Event listener para eliminar metrica si le hago doble click
+        li.on('dblclick', function(){
+          delete metricsValues[this.id] ;
+          $(this).remove();
+        });
+        console.log(metricsValues) ;
+      } else {
+        alert("Invalid Input");
+      }
+    });
+
+
+    //Selector de las metricas
+    var metricRecomendationView = new view.MetricSelectView(
+      { collection: metrics,
+        el: $('#recomendationMetricSelect') 
+      }
+    );
+
+    var estimationSelectedSkills = { array: [] };
+    // Select de Skill para las estimaciones
+    var estimationSkillsSelectorView = new recomendationView.SkillCollectionView(
+      {
+        collection: skills,
+        el: $('#estimationsSkillSelector'),
+        selectedSkills: estimationSelectedSkills
+      }
+    );
+
+    $('#estimationBtn').click(function(){
+      // metricsValues
+      // estimationSelectedSkills.array 
+    });
+
+    /*** fin recomendaciones */
 
     // Extraccion de los datos desde Tesys al modelo de la UI
     tesys.getAnalysis(function(data){

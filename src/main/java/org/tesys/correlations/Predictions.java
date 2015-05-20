@@ -1,8 +1,11 @@
 package org.tesys.correlations;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+
+import java.util.Set;
 
 import org.tesys.core.analysis.skilltraceability.Skill;
 import org.tesys.core.db.IssuesWithMetrics;
@@ -13,20 +16,19 @@ import org.tesys.core.estructures.Issue;
 public class Predictions {
 	
 	public static void main(String[] args) {
+
+		List<DeveloperPrediction> sad = getPredictions("lines", 600.0, 0.5, new LinkedList<String>());
 		
-		List<String> skills =  new LinkedList<String>();
-		skills.add("Client side skills");
-		
-		List<MetricPrediction> m = getPredictions("etrapani", "lines", 600.0, 0.6, skills);
-		for (MetricPrediction metricPrediction : m) {
-			System.out.println(metricPrediction.getMetricKey() + " " + metricPrediction.getMetricValue());
+		for (DeveloperPrediction developerPrediction : sad) {
+			System.out.println(developerPrediction.getUser()+ " " + developerPrediction.getMetricPred().size());
 		}
 	}
+	
+	public static List<DeveloperPrediction> getPredictions( String metricKey, 
 
-	public static List<MetricPrediction> getPredictions( String userKey, String metricKey, 
 			Double value, Double correlationVariation, List<String> skills) {
 		
-		List<MetricPrediction> metricPrediction = new ArrayList<MetricPrediction>();
+		List<MetricPrediction> metricPrediction;
 		
 		/*IssuesWithMetrics is = new IssuesWithMetrics();
 		List<Issue> l = is.execute();*/
@@ -37,52 +39,66 @@ public class Predictions {
 		List<Double> pearson1 = new ArrayList<Double>();
 		List<Double> pearson2 = new ArrayList<Double>();
 		List<String> metrics = new ArrayList<String>();
+		List<DeveloperPrediction> developerPrediction = new LinkedList<DeveloperPrediction>();
 		
+		Set<String> users = new HashSet<String>();
 		
+		for (Issue issue : l) {
+			users.add(issue.getUser());
+		}
+
 		metrics.addAll(l.get(0).getMetrics().keySet());
 		metrics.remove("quacode");
 		metrics.remove("prec");
 		
-		for (int i = 0; i < metrics.size(); i++) {
-			for (int j = 0; j < metrics.size(); j++) {
-				if( i != j ) {
-					
-					for (Issue issue : l) {
-						if( issue.getUser().equals(userKey) && metrics.get(i).equals(metricKey) ) { 
-							List<String> isk = new LinkedList<String>();
-							for (Skill sk : issue.getSkills()) {
-								isk.add(sk.skillName);
-							}
-							
-							if( isk.containsAll(skills) ) {
-								
-								pearson1.add(issue.getMetrics().get(metrics.get(i)));
-								pearson2.add(issue.getMetrics().get(metrics.get(j)));
-							}
 
+		for (String userKey : users) {
+			
+			metricPrediction = new ArrayList<MetricPrediction>();
+
+			for (int i = 0; i < metrics.size(); i++) {
+				for (int j = 0; j < metrics.size(); j++) {
+					if( i != j ) {
+						
+						pearson1 = new ArrayList<Double>();
+						pearson2 = new ArrayList<Double>();
+						
+						for (Issue issue : l) {
+							if( issue.getUser().equals(userKey) && metrics.get(i).equals(metricKey) ) { 
+								List<String> isk = new LinkedList<String>();
+								for (Skill sk : issue.getSkills()) {
+									isk.add(sk.skillName);
+								}
+								
+								if( isk.containsAll(skills) ) {
+									pearson1.add(issue.getMetrics().get(metrics.get(i)));
+									pearson2.add(issue.getMetrics().get(metrics.get(j)));
+								}
+	
+							}
+	
 						}
 
+						
+						Double dou = Pearson.getCorrelation(pearson1, pearson2);
+						
+						if (dou>correlationVariation || dou < -correlationVariation) {
+							//System.out.println(dou +" " +metrics.get(i) +" "+ metrics.get(j));
+							List<Double> lr = LinearRegression.getRegression(pearson1, pearson2);
+						    //System.out.println("y   = " + lr.get(0) + " * x + " + lr.get(1) + " (+/-) " + lr.get(2));
+							MetricPrediction mp = new MetricPrediction( metrics.get(j), lr.get(0)*value+lr.get(1), lr.get(2));
+							metricPrediction.add(mp);
+						}
+						
 					}
-					
-					Double dou = Pearson.getCorrelation(pearson1, pearson2);
-					
-					if (dou>correlationVariation || dou < -correlationVariation) {
-						List<Double> lr = LinearRegression.getRegression(pearson1, pearson2);
-						MetricPrediction mp = new MetricPrediction(metrics.get(j), lr.get(0)*value+lr.get(1), lr.get(2));
-						metricPrediction.add(mp);
-					}
-					
-
-					pearson1.clear();
-					pearson2.clear();
-					
+	
 				}
-
 			}
+			
+			developerPrediction.add( new DeveloperPrediction(userKey, metricPrediction) );
+		
 		}
-		
-		
-		return metricPrediction;
+		return developerPrediction;
 		
 	}
 	

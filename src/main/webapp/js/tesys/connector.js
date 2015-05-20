@@ -13,7 +13,7 @@ define(["jquery"], function($) {
   function getMetrics(callback) {
     $.ajax({
         type: 'GET',
-        url: location+'rest/controller/metrics',
+        url: location+'rest/controller/metricsavailable',
         dataType: "json", // data type of response
         success: function (data) {
           callback(data) ;
