@@ -303,7 +303,7 @@ public class Controller {
 	
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	@Path("/metricsAvailable")
+	@Path("/metricsavailable")
 	public Response getMetricsAvailable() {
 		IssuesWithMetrics is = new IssuesWithMetrics();
 		List<Issue> l = is.execute();
