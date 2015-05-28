@@ -34,6 +34,17 @@ public class Issue {
 	measures = new HashMap<String, Double>();
 	puntuaciones = new LinkedList<Puntuacion>();
     }
+    
+    public Issue(String issueId, String user, String issueType, Map<String,Double> measures, List<Skill> skills) {
+    	this.issueId = issueId;
+    	this.user = user;
+    	this.issueType = issueType;
+    	this.measures = measures;
+    	this.skills = skills;
+    	this.puntuaciones = new LinkedList<Puntuacion>();
+    }
+    
+    
 
 	public List<Skill> getSkills() {
 		return skills;

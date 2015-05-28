@@ -91,6 +91,33 @@ public class Jarco {
 		
 		IssuesWithMetrics is = new IssuesWithMetrics();
 		List<Issue> l = is.execute();
+		Issue i1=null,i2=null,i3=null,i4=null,i5=null;
+
+		for (Issue issue : l) {
+			if( issue.getUser().equals("etrapani") ) {
+				i2 = new Issue(UUID.randomUUID().toString(), "ldominguez", "3", issue.getMetrics(), issue.getSkills());
+			}
+			if( issue.getUser().equals("emastrangelo") ) {
+				i3 = new Issue(UUID.randomUUID().toString(), "mlongo", "3", issue.getMetrics(), issue.getSkills());
+			}
+			if( issue.getUser().equals("smarquez") ) {
+				i4 = new Issue(UUID.randomUUID().toString(), "ecorvi", "3", issue.getMetrics(), issue.getSkills());
+			}
+			if( issue.getUser().equals("aespinosa") ) {
+				i1 = new Issue(UUID.randomUUID().toString(), "mcattafesta", "3", issue.getMetrics(), issue.getSkills());
+			}
+			
+			if( issue.getUser().equals("pgarcia") ) {
+				i5 = new Issue(UUID.randomUUID().toString(), "fandrade", "3", issue.getMetrics(), issue.getSkills());
+			}
+		}
+		
+		l.add(i1);
+		l.add(i2);
+		l.add(i3);
+		l.add(i4);
+		l.add(i5);
+		
 		
 		List<Issue> iss = new LinkedList<Issue>();
 		
