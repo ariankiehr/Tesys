@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-
 import java.util.Set;
 
 import org.tesys.core.analysis.skilltraceability.Skill;
+import org.tesys.core.db.ElasticsearchDao;
 import org.tesys.core.db.IssuesWithMetrics;
 import org.tesys.core.estructures.Issue;
 
@@ -16,24 +16,27 @@ import org.tesys.core.estructures.Issue;
 public class Predictions {
 	
 	public static void main(String[] args) {
-
-		List<DeveloperPrediction> sad = getPredictions("lines", 600.0, 0.5, new LinkedList<String>());
 		
-		for (DeveloperPrediction developerPrediction : sad) {
-			System.out.println(developerPrediction.getUser()+ " " + developerPrediction.getMetricPred().size());
-		}
-	}
-	
-	public static List<DeveloperPrediction> getPredictions( String metricKey, 
-
-			Double value, Double correlationVariation, List<String> skills) {
-		
-		List<MetricPrediction> metricPrediction;
-		
-		/*IssuesWithMetrics is = new IssuesWithMetrics();
-		List<Issue> l = is.execute();*/
+		ElasticsearchDao<Issue> dao1 = new ElasticsearchDao<Issue>(Issue.class, ElasticsearchDao.DEFAULT_RESOURCE_SPRINT1);
+		ElasticsearchDao<Issue> dao2 = new ElasticsearchDao<Issue>(Issue.class, ElasticsearchDao.DEFAULT_RESOURCE_SPRINT2);
 		
 		List<Issue> l = Jarco.getIssues();
+		
+		for (Issue issue : l) {
+			dao1.create(issue.getIssueId(), issue);
+			dao2.create(issue.getIssueId(), issue);
+		}
+		
+		
+	}
+
+	public static List<DeveloperPrediction> getPredictions(String metricKey,
+			Double value, Double correlationVariation, int sprint, List<String> skills) {
+
+		List<MetricPrediction> metricPrediction;
+		
+		IssuesWithMetrics is = new IssuesWithMetrics(sprint);
+		List<Issue> l = is.execute();
 
 		
 		List<Double> pearson1 = new ArrayList<Double>();
@@ -83,9 +86,8 @@ public class Predictions {
 						Double dou = Pearson.getCorrelation(pearson1, pearson2);
 						
 						if (dou>correlationVariation || dou < -correlationVariation) {
-							//System.out.println(dou +" " +metrics.get(i) +" "+ metrics.get(j));
+
 							List<Double> lr = LinearRegression.getRegression(pearson1, pearson2);
-						    //System.out.println("y   = " + lr.get(0) + " * x + " + lr.get(1) + " (+/-) " + lr.get(2));
 							MetricPrediction mp = new MetricPrediction( metrics.get(j), lr.get(0)*value+lr.get(1), lr.get(2));
 							metricPrediction.add(mp);
 						}
@@ -109,7 +111,7 @@ public class Predictions {
 		
 		List<MetricPrediction> metricPrediction = new ArrayList<MetricPrediction>();
 		
-		IssuesWithMetrics is = new IssuesWithMetrics();
+		IssuesWithMetrics is = new IssuesWithMetrics(0);
 		List<Issue> l = is.execute();
 
 		

@@ -32,7 +32,7 @@ public class Jarco {
 	public static Map<String, Dos> generarMapa() {
 
 
-		IssuesWithMetrics is = new IssuesWithMetrics();
+		IssuesWithMetrics is = new IssuesWithMetrics(0);
 		List<Issue> l = is.execute();
 
 		List<Double> nums = new ArrayList<Double>();
@@ -69,8 +69,8 @@ public class Jarco {
 			
 			double rango1, rango2;
 			
-			rango1 = mean - (desviacion);
-			rango2 = mean + (desviacion);
+			rango1 = mean - (desviacion/2);
+			rango2 = mean + (desviacion/2);
 
 			mapa.put(metric, new Dos(rango1,rango2));
 
@@ -82,15 +82,16 @@ public class Jarco {
 	
 	public static Double mean(Double d1, Double d2) {
 		if(d2==null) return d1;
-		return (d1+d2)/2;
+		return randomInRange(d1,d2);
 	}
 	
 	public static List<Issue> getIssues() {
 		Map<String, Dos> mapa = generarMapa();
 		
 		
-		IssuesWithMetrics is = new IssuesWithMetrics();
+		IssuesWithMetrics is = new IssuesWithMetrics(0);
 		List<Issue> l = is.execute();
+		/*
 		Issue i1=null,i2=null,i3=null,i4=null,i5=null;
 
 		for (Issue issue : l) {
@@ -117,7 +118,7 @@ public class Jarco {
 		l.add(i3);
 		l.add(i4);
 		l.add(i5);
-		
+		*/
 		
 		List<Issue> iss = new LinkedList<Issue>();
 		
@@ -127,7 +128,7 @@ public class Jarco {
 			users.add(issue.getUser());
 		}
 		
-		int issuesPorUser = 5;
+		int issuesPorUser = 3;
 		
 		List<String> metrics = new ArrayList<String>();
 		metrics.addAll(mapa.keySet());

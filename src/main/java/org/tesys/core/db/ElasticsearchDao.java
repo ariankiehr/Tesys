@@ -51,6 +51,9 @@ public class ElasticsearchDao<T extends Object> implements GenericDao<T> {
     public static final String DEFAULT_RESOURCE_PUNTUATION = "/userinput/puntuation";
     public static final String DEFAULT_RESOURCE_LAST_ANALYSIS = "/analyzer/lastanalysis";
     public static final String DEFAULT_RESOURCE_SKILL = "/analyzer/skills";
+    
+    public static final String DEFAULT_RESOURCE_SPRINT1 = "/analyzer/sprint1";
+    public static final String DEFAULT_RESOURCE_SPRINT2 = "/analyzer/sprint2";
 
 
     public static final String ES_URL = "http://localhost:9200/";
