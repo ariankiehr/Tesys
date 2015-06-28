@@ -1,5 +1,6 @@
 package org.tesys.correlations;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -13,36 +14,50 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class DeveloperPrediction {
 	
-	private String user;
-	private List<MetricPrediction> metricPred;
-	
+	private String name;
+	private String displayName;
+	private List<MetricPrediction> issues;
+
 	public DeveloperPrediction() {}
 
 
-	public DeveloperPrediction(String user, List<MetricPrediction> metricPred) {
+	public DeveloperPrediction(String user, String userDisplay, MetricPrediction metricPred) {
 		super();
-		this.user = user;
-		this.metricPred = metricPred;
+		this.name = user;
+		this.displayName = userDisplay;
+		this.issues = new LinkedList<MetricPrediction>();
+		this.issues.add(metricPred);
+	}
+	
+	
+	public String getUserDisplay() {
+		return displayName;
 	}
 
 
+	public void setUserDisplay(String userDisplay) {
+		this.displayName = userDisplay;
+	}
+
+
+
 	public String getUser() {
-		return user;
+		return name;
 	}
 
 
 	public void setUser(String user) {
-		this.user = user;
+		this.name = user;
 	}
 
 
 	public List<MetricPrediction> getMetricPred() {
-		return metricPred;
+		return issues;
 	}
 
 
 	public void setMetricPred(List<MetricPrediction> metricPred) {
-		this.metricPred = metricPred;
+		this.issues = metricPred;
 	}
 
 }

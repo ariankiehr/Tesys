@@ -7,8 +7,10 @@ import java.util.List;
 import java.util.Set;
 
 import org.tesys.core.analysis.skilltraceability.Skill;
+import org.tesys.core.db.AnalysisVersionsQuery;
 import org.tesys.core.db.ElasticsearchDao;
 import org.tesys.core.db.IssuesWithMetrics;
+import org.tesys.core.estructures.Developer;
 import org.tesys.core.estructures.Issue;
 
 
@@ -17,13 +19,13 @@ public class Predictions {
 	
 	public static void main(String[] args) {
 		
-		ElasticsearchDao<Issue> dao1 = new ElasticsearchDao<Issue>(Issue.class, ElasticsearchDao.DEFAULT_RESOURCE_SPRINT1);
+		//ElasticsearchDao<Issue> dao1 = new ElasticsearchDao<Issue>(Issue.class, ElasticsearchDao.DEFAULT_RESOURCE_SPRINT1);
 		ElasticsearchDao<Issue> dao2 = new ElasticsearchDao<Issue>(Issue.class, ElasticsearchDao.DEFAULT_RESOURCE_SPRINT2);
 		
 		List<Issue> l = Jarco.getIssues();
 		
 		for (Issue issue : l) {
-			dao1.create(issue.getIssueId(), issue);
+			//dao1.create(issue.getIssueId(), issue);
 			dao2.create(issue.getIssueId(), issue);
 		}
 		
@@ -33,7 +35,8 @@ public class Predictions {
 	public static List<DeveloperPrediction> getPredictions(String metricKey,
 			Double value, Double correlationVariation, int sprint, List<String> skills) {
 
-		List<MetricPrediction> metricPrediction;
+		
+		MetricPrediction metricPrediction;
 		
 		IssuesWithMetrics is = new IssuesWithMetrics(sprint);
 		List<Issue> l = is.execute();
@@ -57,7 +60,7 @@ public class Predictions {
 
 		for (String userKey : users) {
 			
-			metricPrediction = new ArrayList<MetricPrediction>();
+			metricPrediction = new MetricPrediction("nombre1", "nombre2");
 
 			for (int i = 0; i < metrics.size(); i++) {
 				for (int j = 0; j < metrics.size(); j++) {
@@ -88,8 +91,10 @@ public class Predictions {
 						if (dou>correlationVariation || dou < -correlationVariation) {
 
 							List<Double> lr = LinearRegression.getRegression(pearson1, pearson2);
-							MetricPrediction mp = new MetricPrediction( metrics.get(j), lr.get(0)*value+lr.get(1), lr.get(2));
-							metricPrediction.add(mp);
+							metricPrediction.putMetric(metrics.get(j), lr.get(0)*value+lr.get(1));
+							metricPrediction.putDeviation(metrics.get(j), lr.get(2));
+							//MetricPrediction mp = new MetricPrediction( metrics.get(j), lr.get(0)*value+lr.get(1), lr.get(2));
+							//metricPrediction.add(mp);
 						}
 						
 					}
@@ -97,7 +102,7 @@ public class Predictions {
 				}
 			}
 			
-			developerPrediction.add( new DeveloperPrediction(userKey, metricPrediction) );
+			developerPrediction.add( new DeveloperPrediction(userKey, userKey, metricPrediction) );
 		
 		}
 		return developerPrediction;
