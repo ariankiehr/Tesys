@@ -30,33 +30,33 @@ public class DeveloperPrediction {
 	}
 	
 	
-	public String getUserDisplay() {
+	public String getDisplayName() {
 		return displayName;
 	}
 
 
-	public void setUserDisplay(String userDisplay) {
+	public void setDisplayName(String userDisplay) {
 		this.displayName = userDisplay;
 	}
 
 
 
-	public String getUser() {
+	public String getName() {
 		return name;
 	}
 
 
-	public void setUser(String user) {
+	public void setName(String user) {
 		this.name = user;
 	}
 
 
-	public List<MetricPrediction> getMetricPred() {
+	public List<MetricPrediction> getIssues() {
 		return issues;
 	}
 
 
-	public void setMetricPred(List<MetricPrediction> metricPred) {
+	public void setIssues(List<MetricPrediction> metricPred) {
 		this.issues = metricPred;
 	}
 
