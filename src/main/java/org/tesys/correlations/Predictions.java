@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.tesys.core.analysis.skilltraceability.Skill;
+import org.tesys.core.db.DisplayNameQuery;
 import org.tesys.core.db.IssuesWithMetrics;
 import org.tesys.core.estructures.Issue;
 
@@ -42,7 +43,7 @@ public class Predictions {
 
 		for (String userKey : users) {
 			
-			metricPrediction = new MetricPrediction("nombre1", "nombre2");
+			metricPrediction = new MetricPrediction(userKey, userKey);
 
 			for (int i = 0; i < metrics.size(); i++) {
 				for (int j = 0; j < metrics.size(); j++) {
@@ -82,7 +83,9 @@ public class Predictions {
 				}
 			}
 			
-			developerPrediction.add( new DeveloperPrediction(userKey, userKey, metricPrediction) );
+			DisplayNameQuery dnq = new DisplayNameQuery(userKey);
+			
+			developerPrediction.add( new DeveloperPrediction(userKey, dnq.execute(), metricPrediction) );
 		
 		}
 		return developerPrediction;
