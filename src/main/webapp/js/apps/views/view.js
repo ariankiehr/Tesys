@@ -188,6 +188,7 @@ define(
       devIssuesContainer.setAttribute('class', 'panel-collapse collapse');
       devIssuesContainer.id = this.model.get('name') ;
       var self = this;
+      console.log("newCollection") ;
       _(this.model.get('issues').models).each(function(issue){
         //recorro todos los issues, por cada issue del modelo le asocio una vista.
         //la cual la agrego a devIssuesContainer
@@ -199,6 +200,7 @@ define(
         );
         devIssuesContainer.appendChild(issueView.render().el);
       });
+      console.log("endcollections") ;
 
       this.el.appendChild(devIssuesContainer);
       return this;
@@ -209,7 +211,6 @@ define(
   });
 
   var DeveloperCollectionView = Backbone.View.extend({
-    el: $('#developers-issues'), // el attaches to existing element
     initialize: function(options){
       this.options = options || {};
 
@@ -290,7 +291,6 @@ define(
   });
 
   var MetricCollectionView = Backbone.View.extend({
-  //  el: $('#metrics'), // el attaches to existing element
     initialize: function(options){
       this.options = options || {};
       // every function that uses 'this' as the current object should be in here
@@ -392,6 +392,7 @@ define(
     }
   });
 
+
   return {
     IssueView: IssueView,
     DeveloperView: DeveloperView,
@@ -400,6 +401,6 @@ define(
     MetricView: MetricView,
     MetricSelectView: MetricSelectView,
     DeveloperSelectView: DeveloperSelectView,
-    issuesViewsToPlot: issuesViewsToPlot
+    issuesViewsToPlot: issuesViewsToPlot,
   };
 });

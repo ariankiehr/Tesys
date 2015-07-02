@@ -60,6 +60,48 @@ define(
     model: Developer
   });
 
+
+  // *** PREDICTIONS*** 
+  
+
+  var MetricPrediction = Backbone.Model.extend({
+    idAttribute: 'key'
+  });
+  
+  var MetricPredictionsCollection = Backbone.Collection.extend({
+    model: MetricPrediction
+  });
+
+  // *** DEVELOPERS MODEL ***
+
+  var IssuePrediction = Backbone.RelationalModel.extend({
+    idAttribute: 'issueId'
+  });
+
+  var IssuePredictionCollection = Backbone.Collection.extend({
+    model: IssuePrediction
+  });
+
+
+  var DeveloperPrediction = Backbone.RelationalModel.extend({
+    idAttribute: 'name',
+    relations: [{
+      type: Backbone.HasMany, 
+      key: 'issues',
+      relatedModel: IssuePrediction,
+      collectionType: IssuePredictionCollection,
+      reverseRelation: {
+        key: 'name',
+        includeInJSON: 'id'
+        // 'relatedModel' is automatically set to 'Zoo'; the 'relationType' to 'HasOne'.
+      }
+    }] 
+  });
+
+  var DeveloperPredictionCollection = Backbone.Collection.extend({
+    model: DeveloperPrediction
+  });
+
   return {
     Issue: Issue,
     IssueCollection: IssueCollection,
@@ -68,7 +110,15 @@ define(
     Metric: Metric,
     MetricCollection: MetricCollection,
     Skill: Skill,
-    SkillCollection: SkillCollection
+    SkillCollection: SkillCollection,
+
+    DeveloperPredictionCollection: DeveloperPredictionCollection,
+    DeveloperPrediction: DeveloperPrediction,
+    IssuePredictionCollection: IssuePredictionCollection,
+    IssuePrediction: IssuePrediction,
+    MetricPredictionsCollection: MetricPredictionsCollection,
+    MetricPrediction:MetricPrediction
+
   };
 
 });

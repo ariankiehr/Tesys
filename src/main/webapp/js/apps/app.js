@@ -36,11 +36,13 @@ define(
 
     // Definicion de Vistas.
     var devListView = new view.DeveloperCollectionView(
-        { collection: developers, 
+        { el: $('#developers-issues'),
+          collection: developers, 
           plotter: [metricsPlotter, skillPlotter],
           attrToPlot: ['metrics', 'skills']
         }
     );
+   
     var metricsView = new view.MetricCollectionView(
           { collection: metrics, 
             el: $('#metrics'), 
@@ -87,7 +89,7 @@ define(
       if (!isNaN(metricValue) && isFinite(metricValue)) {
         var metricId = $('#recomendationMetricSelect').val() ;
 
-        //inserto o reemplazo la metrica en map metricValues
+        //inserto o reemplazo la metrica en map metricsValues
         metricsValues[metricId] = metricValue;
 
         //inserto o reemplazo la metrica en la vista
@@ -128,9 +130,70 @@ define(
       }
     );
 
+
+    /* Predictions */
+
+    var metricsPredToPlot = { array:[] };
+
+    var predPlotter = new bar("predBar") ;
+
+    var metricsPredView = new recomendationView.MetricPredictionCollectionView(
+          { collection: metrics, 
+            el: $('#metricsPred'), 
+            metricsToPlot: metricsPredToPlot,
+            plotter: predPlotter,
+            type: 'metrics'
+          }
+    );
+    var devPred = new model.DeveloperPredictionCollection();
+    var devPredListView = new recomendationView.DeveloperPredictionCollectionView(
+        { el: $('#developers-predictions'),
+          collection: devPred, 
+          plotter: [predPlotter, new radar("predRadar")],
+          attrToPlot: ['metrics', 'skills']
+        }
+    );
+
+    var predictions = []; //todos los developer con las predicciones¿
+    var addPredictions = function (data) {
+      if (predictions === undefined || predictions.length === 0) {
+        console.log("Sin predicciones anteriores");
+        predictions = data ;
+      } else {
+        for (i=0; i<data.length; i++) {
+          var j = 0;
+          //busco si el developer se encontraba en la prediccion
+          while (j<predictions.length && data[i].user!=predictions[j].user) {
+            j++;
+          }
+          if(j>=predictions.length) { // Si el developer no se encontro
+            console.log("Nuevo developer " + data[i].user);
+            //agrego nuevo developer a la predicicon
+            predictions.push(data[i]); 
+          } else { 
+            console.log("Developer modificado " + data[i].user);
+            //En caso de haber repetidos, piso las metricas y desviaciones viejas por las nuevas.
+            $.each(data[i].metricPred[0].metrics, function(index, value) {
+              predictions[j].metricPred[0].metrics[index] = value ;
+              predictions[j].metricPred[0].deviations[index] = data[i].metricPred[0].deviations[index] ;
+            });
+          }
+        }
+      }
+
+      devPred.reset();
+      devPred.reset(predictions);
+    };
+
     $('#estimationBtn').click(function(){
       // metricsValues
       // estimationSelectedSkills.array 
+      var minCorrelation = parseFloat($('#estimationCorrelation').val()) ;
+      if (minCorrelation <= 1.0) { 
+        for (var m in metricsValues) {
+          tesys.getPredictions(m, metricsValues[m], minCorrelation, estimationSelectedSkills.array, addPredictions); 
+        }
+      }
     });
 
     /*** fin recomendaciones */
@@ -139,9 +202,20 @@ define(
     tesys.getAnalysis(function(data){
       developers.reset(data);
     });
+
     tesys.getMetrics(function(data){
       metrics.reset(data);
+
+   //   var metricList = [] ;
+   //   $(data).each(function(i, attr) {
+    //    metricList.push(attr.key) ;
+    //  });
+    //  console.log(metricList);
+    //  predPlotter.build(metricList);
+
     });
+
+
     tesys.getSkills(function(data){
 
       //adapt skills to metrics format
@@ -152,10 +226,19 @@ define(
       skills.reset(adaptedData);
     });
     
-
+    //$('#myTab a[href="#metricPane"]').on('shown.bs.tab', function (e) {
+    //  predPlotter.build(metricsPredToPlot.array);
+    //  predPlotter.build();
+    //  $.each(recomendationView.issuesViewsToPlot.array, function(i, item){
+    //    item.plot();
+    //  });
+    //});
+    
     // On click tab for metrics then replot chart
     $('#myTab a[href="#metricPane"]').on('shown.bs.tab', function (e) {
+      console.log(metricsToPlot.array);
       metricsPlotter.build(metricsToPlot.array);
+      predPlotter.build();
       $.each(view.issuesViewsToPlot.array, function(i, item){
         item.plot();
       });
