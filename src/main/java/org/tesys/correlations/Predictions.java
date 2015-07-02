@@ -84,9 +84,9 @@ public class Predictions {
 			}
 			
 			DisplayNameQuery dnq = new DisplayNameQuery(userKey);
-			
-			developerPrediction.add( new DeveloperPrediction(userKey, dnq.execute(), metricPrediction) );
-		
+			if(!metricPrediction.getMetrics().isEmpty()) {
+				developerPrediction.add( new DeveloperPrediction(userKey, dnq.execute(), metricPrediction) );
+			}
 		}
 		return developerPrediction;
 		
