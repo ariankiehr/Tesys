@@ -69,6 +69,8 @@ public class Controller {
 		analizer = Analyzer.getInstance();
 	}
 
+	
+
 	/**
 	 * Metodo que dada la informacion sobre un commit devuelve Si el sistema
 	 * Tesys lo puede computar o no
@@ -305,7 +307,7 @@ public class Controller {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/metricsavailable")
 	public Response getMetricsAvailable() {
-		IssuesWithMetrics is = new IssuesWithMetrics();
+		IssuesWithMetrics is = new IssuesWithMetrics(0);
 		List<Issue> l = is.execute();
 
 		List<String> metrics = new ArrayList<String>();
@@ -608,24 +610,27 @@ public class Controller {
 	}
 	
 	
+
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	@Path("/getpredic/{user}/{metricKey}/{value}/{variation}")
-	public Response getPrediction(@PathParam("user") String userKey,
-								  @PathParam("metricKey") String metricKey,
-								  @PathParam("value") Double value,
-								  @PathParam("variation") Double correlationVariation,
-								  @QueryParam("s") List<String> skills) {
+	@Path("/getpredic/{metricKey}/{value}/{correlation}/{sprint}")
+	public Response getPrediction(@PathParam("metricKey") String metricKey,
+									@PathParam("value") Double value,
+									@PathParam("correlation") Double correlation,
+									@PathParam("sprint") Integer sprint,
+									@QueryParam("s") List<String> skills) {
 		
 		ResponseBuilder response;
-		
+
 		response = Response.ok(
-				Predictions.getPredictions(userKey, metricKey, value, correlationVariation, skills)
+				Predictions.getPredictions(metricKey, value, correlation, sprint, skills)
 		);
 		
 
 		return response.build();
 	}
+	
+
 
 
 }
