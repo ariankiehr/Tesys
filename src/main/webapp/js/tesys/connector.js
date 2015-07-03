@@ -56,7 +56,7 @@ define(["jquery"], function($) {
     });
     $.ajax({
       type: 'GET',
-      url: location+'/rest/controller/getpredic/'+metricName+'/'+metricValue+'/'+pearsonFactor+'/'+sprint+skillQuery,
+      url: location+'rest/controller/getpredic/'+metricName+'/'+metricValue+'/'+pearsonFactor+'/'+sprint+skillQuery,
       dataType: 'json', // data type of response
       success: function(data) {
         callback(data) ;
