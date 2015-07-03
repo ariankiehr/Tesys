@@ -32,6 +32,40 @@ define(["jquery"], function($) {
     });
   }
 
+
+  /**
+   * Obtiene las prediccines de los developers de la interfaz del tesys
+   * @param  {string} metricName    
+   *         nombre de la metrica
+   * @param  {float} metricValue   
+   *         valor de la metrica
+   * @param  {float} pearsonFactor  
+   *         factor de correlacion minimo de las metricas a predecir
+   * @param  {array of string} skills habilidades requeridas y con respecto a las cuales se predicira
+   *  
+   */
+  function getPredictions(metricName, metricValue, pearsonFactor, skills, callback) {
+    var skillQuery = "" ;
+    var sprint=2 ; 
+    $.each(skills, function(i, skill){
+      if (i===0) {
+        skillQuery+='?s='+skill;
+      } else {
+        skillQuery+='&s='+skill;
+      }
+    });
+    $.ajax({
+      type: 'GET',
+      url: location+'/rest/controller/getpredic/'+metricName+'/'+metricValue+'/'+pearsonFactor+'/'+sprint+skillQuery,
+      dataType: 'json', // data type of response
+      success: function(data) {
+        callback(data) ;
+      }
+
+    });
+  }
+
+
   function score(puntuador, puntuado, issue, puntuacion) { 
     var toSend = "{\"puntuador\": \"" + puntuador + "\"," +
               "\"puntuado\": \"" + puntuado + "\"," +
@@ -121,6 +155,7 @@ define(["jquery"], function($) {
     'score': score,
     'joinMetrics': joinMetrics,
     'storeAnalysis': storeAnalysis,
-    'storeMetric': storeMetric
+    'storeMetric': storeMetric,
+    getPredictions: getPredictions
   };
 });
