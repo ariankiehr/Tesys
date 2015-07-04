@@ -47,6 +47,7 @@ define(["jquery"], function($) {
   function getPredictions(metricName, metricValue, pearsonFactor, skills, callback) {
     var skillQuery = "" ;
     var sprint=2 ; 
+    pearsonFactor = 0.95;
     $.each(skills, function(i, skill){
       if (i===0) {
         skillQuery+='?s='+skill;
