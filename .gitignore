@@ -20,3 +20,7 @@ local.properties
 .loadpath
 *.launch
 *~*
+/bin
+
+# jsons
+*.json
