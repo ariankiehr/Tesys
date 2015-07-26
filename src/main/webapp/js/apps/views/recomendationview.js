@@ -282,6 +282,7 @@ define(
       this.render();
     },
     render: function(){
+      this.$el.empty();
       var self = this;
       _(this.collection.models).each(function(item){ // in case collection is not empty
         self.appendItem(item);
@@ -361,6 +362,7 @@ define(
       this.render();
     },
     render: function(){
+      this.$el.empty();
       var self = this;
       _(this.collection.models).each(function(item){ // in case collection is not empty
         self.appendItem(item);
