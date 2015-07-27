@@ -155,39 +155,36 @@ define(
     );
 
     var predictions = []; //todos los developer con las predicciones¿
-    var addPredictions = function (data) {
+    function addPredictions (data) {
       if (predictions === undefined || predictions.length === 0) {
-        console.log("Sin predicciones anteriores");
         predictions = data ;
       } else {
         for (i=0; i<data.length; i++) {
           var j = 0;
           //busco si el developer se encontraba en la prediccion
-          while (j<predictions.length && data[i].user!=predictions[j].user) {
+          while (j<predictions.length && data[i].name!=predictions[j].name) {
             j++;
           }
           if(j>=predictions.length) { // Si el developer no se encontro
-            console.log("Nuevo developer " + data[i].user);
             //agrego nuevo developer a la predicicon
             predictions.push(data[i]); 
           } else { 
-            console.log("Developer modificado " + data[i].user);
             //En caso de haber repetidos, piso las metricas y desviaciones viejas por las nuevas.
-            $.each(data[i].metricPred[0].metrics, function(index, value) {
-              predictions[j].metricPred[0].metrics[index] = value ;
-              predictions[j].metricPred[0].deviations[index] = data[i].metricPred[0].deviations[index] ;
-            });
+            for (var metric in data[i].issues[0].metrics) {
+              predictions[j].issues[0].metrics[metric] = data[i].issues[0].metrics[metric] ;
+              predictions[j].issues[0].deviations[metric] = data[i].issues[0].deviations[metric] ;
+            }
           }
         }
       }
-
       devPred.reset();
       devPred.reset(predictions);
-    };
+    }
 
     $('#estimationBtn').click(function(){
       // metricsValues
       // estimationSelectedSkills.array 
+      predictions = [] ;
       var minCorrelation = parseFloat($('#estimationCorrelation').val()) ;
       if (minCorrelation <= 1.0) { 
         for (var m in metricsValues) {
@@ -205,14 +202,6 @@ define(
 
     tesys.getMetrics(function(data){
       metrics.reset(data);
-
-   //   var metricList = [] ;
-   //   $(data).each(function(i, attr) {
-    //    metricList.push(attr.key) ;
-    //  });
-    //  console.log(metricList);
-    //  predPlotter.build(metricList);
-
     });
 
 
