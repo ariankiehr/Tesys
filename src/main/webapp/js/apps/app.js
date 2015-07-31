@@ -154,6 +154,49 @@ define(
         }
     );
 
+
+    /**
+     * Elimina repetidos en un array
+     * 
+     * @return {Array} Arreglo sin repetidos
+     */
+    Array.prototype.unique = function() {
+      var a = this.concat();
+      for(var i=0; i<a.length; ++i) {
+          for(var j=i+1; j<a.length; ++j) {
+              if(a[i] === a[j])
+                  a.splice(j--, 1);
+          }
+      }
+      return a;
+    };
+
+    /**
+     * Devuelve las metricas sin repetidos
+     *
+     * @param  {Array of String} allMetrics Es un json que representa un 
+     *   conjunto de issues, ejemplo, predicciones.
+     *    
+     * @return {Array of string} Arreglo de metricas sin repetidos
+     */
+    function metricSetFromPredictions( allMetrics ){
+      var metricSet = [] ;
+      if (allMetrics) {
+        for (var i = 0; i < allMetrics.length; i++) {
+          // Estoy recorriendo un arreglo de developers
+          for (var j = 0; j < allMetrics[i].issues.length; j++) {
+            // Ahora recorro un arreglo de issues
+            var metricSubset = [] ;
+            for (var metric in allMetrics[i].issues[j].metrics) {
+              metricSubset.push(metric);
+            }  
+            metricSet = metricSet.concat(metricSubset).unique();          
+          }
+        }
+      }
+      return metricSet ;
+    }
+
     var predictions = []; //todos los developer con las predicciones¿
     function addPredictions (data) {
       if (predictions === undefined || predictions.length === 0) {
@@ -165,8 +208,8 @@ define(
           while (j<predictions.length && data[i].name!=predictions[j].name) {
             j++;
           }
-          if(j>=predictions.length) { // Si el developer no se encontro
-            //agrego nuevo developer a la predicicon
+          if(j>=predictions.length) { 
+            // Si el developer no se encontro agrego nuevo developer a la predicicon
             predictions.push(data[i]); 
           } else { 
             //En caso de haber repetidos, piso las metricas y desviaciones viejas por las nuevas.
@@ -177,8 +220,11 @@ define(
           }
         }
       }
-      devPred.reset();
       devPred.reset(predictions);
+      
+      //TODO Usar esto como el conjunto de metricas a mostrar en la vista de predicciones.
+      var metricSet = metricSetFromPredictions(predictions) ;
+
     }
 
     $('#estimationBtn').click(function(){
