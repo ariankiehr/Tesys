@@ -133,12 +133,14 @@ define(
 
     /* Predictions */
 
+    var metricsPredicted = new model.MetricCollection() ;
+
     var metricsPredToPlot = { array:[] };
 
     var predPlotter = new bar("predBar") ;
 
     var metricsPredView = new recomendationView.MetricPredictionCollectionView(
-          { collection: metrics, 
+          { collection: metricsPredicted, 
             el: $('#metricsPred'), 
             metricsToPlot: metricsPredToPlot,
             plotter: predPlotter,
@@ -197,6 +199,27 @@ define(
       return metricSet ;
     }
 
+    /**
+     * Dado un arreglo de metricas (contiene las key de las metricas)
+     * y una colecion de metricas (una coleccion de backbone) crea una
+     * coleccion con la interseccion entre los dos conjuntos.
+     * 
+     * @param  {Backbone.Collection of metrics} metriccollection Coleccion de
+     *   entrada.
+     * 
+     * @param  {Array of string} metricArray Metricas que queremos tener.
+     * 
+     * @return {Backbone.Collection of metrics} Coleccion resultado de la
+     *   interseccion .
+     */
+    function selectMetricsFromModel(metricCollection, metricArray){
+      var result = new model.MetricCollection() ; 
+      for( var id in metricArray ) {
+          result.push(metricCollection.get(metricArray[id])) ;
+      }        
+      return result;
+    }
+
     var predictions = []; //todos los developer con las predicciones¿
     function addPredictions (data) {
       if (predictions === undefined || predictions.length === 0) {
@@ -222,9 +245,12 @@ define(
       }
       devPred.reset(predictions);
       
-      //TODO Usar esto como el conjunto de metricas a mostrar en la vista de predicciones.
-      var metricSet = metricSetFromPredictions(predictions) ;
-
+      metricsPredicted.reset(
+        selectMetricsFromModel(
+          metrics, 
+          metricSetFromPredictions(predictions)
+        ).models
+      );
     }
 
     $('#estimationBtn').click(function(){
