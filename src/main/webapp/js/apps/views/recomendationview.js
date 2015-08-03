@@ -91,48 +91,47 @@ define(
 
   var issuesViewsToPlot = { array:[] } ; 
 
-  var IssuePredictionView = Backbone.View.extend({
-    tagName: 'a',
+  var DeveloperPredictionView = Backbone.View.extend({ 
 
     //constants definitions 
-    UNSELECTED_COLOR: "white", 
+    DECORATION_HAS_ISSUES: "none", 
+    DECORATION_HASNOT_ISSUES: "line-through",
+    UNSELECTED_COLOR: "#dff0d8", 
     SELECTED_COLOR: "darksalmon", 
     //end constants definitions
-    
+
     events: {
       'click': 'select'
-    },
+    } ,
     initialize: function(options){
       this.options = options || {};
-      _.bindAll(this, 'render', 'select', 'plot', 'tag', 'adapt'); 
+      _.bindAll(this, 'render', 'tag', 'select', 'adapt', 'plot', 'plotSingle'); 
       this.isSelected = false;
-      this.render();
+      this.developerElement = null ;
     },
-    render: function(){
-      var issueId = this.model.get('issueId');
-
-      //Al renderizar deberia limpiar el elemento viejo, 
-      //ya que podria quedar basura en los atributos
-      this.el.id = "pred"+issueId; 
-      this.el.setAttribute('class', 'list-group-item');
-      this.el.textContent = "" ;
-
-      if (this.model.get('metrics').ncloc) {
-        //Si el Issue tiene codigo (suponesmos que hay codigo si existe la metrica 'nlocs')
-        //Inserto in icono distintivo al issue
-        var codeIcon = document.createElement("i");
-        codeIcon.setAttribute('class', 'glyphicon glyphicon glyphicon-bookmark');
-        this.el.appendChild(codeIcon);
+    render: function(){ 
+      var self = this ;
+      // Creating Developer name container
+      var devNameContainer = document.createElement("a");
+      devNameContainer.textContent = this.model.get('displayName');
+      devNameContainer.setAttribute('class', 'list-group-item list-group-item-success');
+      devNameContainer.setAttribute('data-parent', '#MainMenu2');
+      devNameContainer.setAttribute('data-toggle', 'collapse');
+      devNameContainer.setAttribute('href','#pred'+this.model.get('name'));
+      this.developerElement = devNameContainer ;
+      // If developer has not issues --> line-throught on devNameContainer.textContent
+      if (_.isEmpty(this.model.get('issues').models)) {
+        devNameContainer.style.textDecoration = this.DECORATION_HASNOT_ISSUES;
+      } else {
+        devNameContainer.style.textDecoration = this.DECORATION_HAS_ISSUES;
+        if(this.model.get('displayName')) {
+          this.el.appendChild(devNameContainer);
+        }
       }
-
-      //Debo insertar el texto, luego del icono del issue (si es que este fue creado)
-      this.el.appendChild(document.createTextNode(issueId)) ;
-      
       return this; // for chainable calls, like .render().el
     },
-
-    tag: function(){
-      return this.model.get('user') + "::" + this.model.get('issueId') ;
+    tag: function() {
+      return this.model.get('displayName');
     },
 
     /**
@@ -144,12 +143,12 @@ define(
     select: function() { 
       this.isSelected = !this.isSelected;
       if(this.isSelected) {
-        this.el.style.backgroundColor = this.SELECTED_COLOR ;
+        this.developerElement.style.backgroundColor = this.SELECTED_COLOR ;
         issuesViewsToPlot.array.push(this);
         this.plot(); 
       } else {
         issuesViewsToPlot.array = _.without(issuesViewsToPlot.array, this);
-        this.el.style.backgroundColor = this.UNSELECTED_COLOR ;
+        this.developerElement.style.backgroundColor = this.UNSELECTED_COLOR ;
         var self = this;
         _(this.options.plotter).each(function(p){
           p.removeGraph(self.tag());
@@ -158,22 +157,24 @@ define(
     },
 
     /**
-     * [adapt convierte un atributo del modelo en un arreglo, para poder ser
-     * graficado en un formato estandar]
-     * @param  {[type]} attributeToAdapt [el atributo puede ser 'metrics' o 
-     * 'skills']
-     * @return {[JSON of metricKey:metricValue]}                  
-     * [es el formato estandar con el cual se le pasaran los valores a graficar
-     * al plotter]
+     * Convierte un atributo del modelo en un arreglo, para poder ser
+     * graficado en un formato estandar.
+     * 
+     * @param  {[type]} attributeToAdapt el atributo puede ser 'metrics' o 
+     * 'skills'
+     * 
+     * @return {JSON of metricKey:metricValue}                  
+     * Es el formato estandar con el cual se le pasaran los valores a graficar
+     * al plotter.
      */
     adapt: function(attributeToAdapt){
       if (attributeToAdapt == 'metrics'){
-        return this.model.get('metrics');
+        return this.model.get('issues').models[0].get('metrics');
       } else if (attributeToAdapt == 'skills') {
         var skills = {} ;
 
         // convert skills to simple array
-        _(this.model.get('skills')).each(function(skill){
+        _(this.model.get('issues').models[0].get('skills')).each(function(skill){
           skills[skill.skillName] = skill.skillWeight;
         });
         return skills;
@@ -186,15 +187,15 @@ define(
      */
     plot: function(){
       //Ploting metrics
-      var self = this;
-      $(this.options.attrToPlot).each(function(i, attr){
-        if (self.options.plotter[i]){
-          var toPlot = self.adapt(attr) ;
+      for (var i in this.options.attrToPlot) {
+        var attr = this.options.attrToPlot[i] ;
+        if (this.options.plotter[i]){
+          var toPlot = this.adapt(attr) ;
           if (!_.isEmpty(toPlot)){
-            self.options.plotter[i].addGraph(self.tag(), toPlot);
+            this.options.plotter[i].addGraph(this.tag(), toPlot);
           }
-        }
-      });
+        } 
+      }
     },
 
     plotSingle: function(plotter, attr) {
@@ -205,69 +206,6 @@ define(
         }
       }
     } 
-  });
-
-  var DeveloperPredictionView = Backbone.View.extend({ 
-
-    //constants definitions 
-    DECORATION_HAS_ISSUES: "none", 
-    DECORATION_HASNOT_ISSUES: "line-through",
-    //end constants definitions
-    
-    events: {
-      'click': 'select'
-    } ,
-    initialize: function(options){
-      this.options = options || {};
-      _.bindAll(this, 'render', 'listIssues', 'select'); 
-    },
-    render: function(){ 
-      var self = this ;
-      // Creating Developer name container
-      var devNameContainer = document.createElement("a");
-      devNameContainer.textContent = this.model.get('displayName');
-      devNameContainer.setAttribute('class', 'list-group-item list-group-item-success');
-      devNameContainer.setAttribute('data-parent', '#MainMenu2');
-      devNameContainer.setAttribute('data-toggle', 'collapse');
-      devNameContainer.setAttribute('href','#pred'+this.model.get('name'));
-
-      // If developer has not issues --> line-throught on devNameContainer.textContent
-      if (_.isEmpty(this.model.get('issues').models)) {
-        devNameContainer.style.textDecoration = this.DECORATION_HASNOT_ISSUES;
-      } else {
-        devNameContainer.style.textDecoration = this.DECORATION_HAS_ISSUES;
-        if(this.model.get('displayName')) {
-            this.el.appendChild(devNameContainer);
-            self.listIssues();
-        }
-      }      
-      return this; // for chainable calls, like .render().el
-    },
-    listIssues: function(){ 
-
-      //devIssuesContainer es el panel desplegable (collapse) donde se listaran los issues
-      var devIssuesContainer = document.createElement("div");
-      devIssuesContainer.setAttribute('class', 'panel-collapse collapse');
-      devIssuesContainer.id = "pred"+this.model.get('name') ;
-      var self = this;
-      _(this.model.get('issues').models).each(function(issue){
-        //recorro todos los issues, por cada issue del modelo le asocio una vista.
-        //la cual la agrego a devIssuesContainer
-        var issueView = new IssuePredictionView(
-          { model: issue, 
-            plotter: self.options.plotter,
-            attrToPlot: self.options.attrToPlot
-          }
-        );
-        devIssuesContainer.appendChild(issueView.render().el);
-      });
-
-      this.el.appendChild(devIssuesContainer);
-      return this;
-    },
-    select: function() {
-      //console.log("clicked developer: " + this.model.get('name'));
-    }
   });
 
   var DeveloperPredictionCollectionView = Backbone.View.extend({
@@ -384,7 +322,6 @@ define(
   return {
     SkillCollectionView: SkillCollectionView,
     issuesViewsToPlot: issuesViewsToPlot,
-    IssuePredictionView: IssuePredictionView,
     DeveloperPredictionView: DeveloperPredictionView,
     DeveloperPredictionCollectionView: DeveloperPredictionCollectionView,
     MetricPredictionView: MetricPredictionView,
